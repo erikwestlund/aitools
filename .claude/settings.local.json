@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git mv:*)",
+      "Bash(chmod:*)",
+      "Bash(tlmgr install:*)",
+      "WebSearch",
+      "WebFetch(domain:arxiv.org)",
+      "Bash(curl:*)",
+      "WebFetch(domain:www.vellum.ai)",
+      "WebFetch(domain:www.digitalapplied.com)",
+      "WebFetch(domain:automatio.ai)",
+      "Bash(find:*)",
+      "Bash(quarto render:*)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:developers.openai.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:openai.com)",
+      "WebFetch(domain:llm-stats.com)",
+      "WebFetch(domain:pricepertoken.com)"
+    ]
+  }
+}

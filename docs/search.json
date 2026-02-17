@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "course_docs/syllabus.html",
+    "href": "course_docs/syllabus.html",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "Erik Westlund, PhD\nDepartment of Biostatistics\nJohns Hopkins Bloomberg School of Public Health\newestlund@jhu.edu"
+  },
+  {
+    "objectID": "course_docs/syllabus.html#instructor",
+    "href": "course_docs/syllabus.html#instructor",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "Erik Westlund, PhD\nDepartment of Biostatistics\nJohns Hopkins Bloomberg School of Public Health\newestlund@jhu.edu"
+  },
+  {
+    "objectID": "course_docs/syllabus.html#course-description",
+    "href": "course_docs/syllabus.html#course-description",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Course Description",
+    "text": "Course Description\nAs AI tools are rapidly adopted across research and industry, there is a growing need for statisticians and data scientists to understand what these tools are capable of and how to use them responsibly. This course provides practical approaches for integrating large language models and agent-based tools into statistical workflows. Students learn how to structure AI-assisted processes for analysis, simulation, and pipeline development, along with core skills in context management and agent orchestration. The course emphasizes AI safety, privacy, and responsible handling of sensitive data. Students will discuss these topics and do hands-on exercises to test the strengths and weaknesses of AI tools in practice."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#course-details",
+    "href": "course_docs/syllabus.html#course-details",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Course Details",
+    "text": "Course Details\n\n\n\nDates\nFebruary 19, February 26, March 5, March 12, 2026\n\n\nTime\n9:00–10:20 AM ET\n\n\nLocation\nZoom (link provided on CoursePlus)\n\n\nFormat\nLecture, live demos, discussion, hands-on exercises\n\n\nGrading\nPass/Fail"
+  },
+  {
+    "objectID": "course_docs/syllabus.html#course-learning-objectives",
+    "href": "course_docs/syllabus.html#course-learning-objectives",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Course Learning Objectives",
+    "text": "Course Learning Objectives\nBy the end of this course, students will be able to:\n\nDescribe how large language models work at a conceptual level, including their capabilities and limitations for statistical work.\nEvaluate the ethical implications of AI tool use in research, including privacy, bias, reproducibility, and academic integrity.\nUse code to work with data, not the LLM itself, to protect sensitive and regulated data (including PHI) in privacy-sensitive contexts.\nNavigate the landscape of AI tools — chat interfaces, IDE integrations, CLI agents, and supporting tools — and select appropriate tools for different tasks.\nUse AI assistants to write, debug, and audit code for data cleaning, visualization, and statistical analysis.\nBuild analysis workflows on synthetic data and deploy validated code to secure data environments using Git.\nCritically assess AI-generated output and identify errors, hallucinations, and inappropriate statistical choices."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#schedule",
+    "href": "course_docs/syllabus.html#schedule",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Schedule",
+    "text": "Schedule\n\nSession 1: Ethics and Foundations — February 19\nWhat are we dealing with, and what are the stakes?\n\n\n\n\n\n\n\n\nBlock\nMin\nTopic\n\n\n\n\nDiscussion\n15\nHow are you using AI now? What feels OK, what feels uncomfortable?\n\n\nLecture\n15\nAI ethics and responsible use: privacy and PHI, bias, reproducibility, academic integrity, environmental cost — a framework for reasoning, not a list of rules\n\n\nCase study\n10\nHow this syllabus was built with AI — is that OK? Why or why not?\n\n\nLecture\n15\nWhat is an LLM? Tokens, context windows, temperature, stochasticity. Why the same prompt gives different answers. Model landscape: GPT, Claude, Gemini, DeepSeek\n\n\nHands-on\n20\nEveryone gets the same statistical task; use your own tool; compare results across tools — what worked, what hallucinated?\n\n\nWrap-up\n5\nIntroduce moonshot assignment; tools and subscriptions overview\n\n\n\nHomework: Brainstorm your moonshot task. Try a second AI tool you haven’t used before for a small task and note the differences.\n\n\nSession 2: The Toolbox — February 26\nWhat’s out there, and how do you use it?\n\n\n\n\n\n\n\n\nBlock\nMin\nTopic\n\n\n\n\nDiscussion\n10\nDebrief: what happened when you tried a new tool? Surprises?\n\n\nLecture + demo\n20\nThe AI tools: models and model selection, chat windows, autocomplete tools, IDE agents (VS Code, Cursor, RStudio, Positron), CLI agents (Claude Code, etc.), Model Context Protocol\n\n\nLecture + demo\n15\nThe supporting tools: command line basics, tmux for persistent sessions, Git and GitHub, API keys vs. subscriptions, cost management\n\n\nHands-on\n30\nGet set up with an IDE or CLI agent. Work through a guided exercise: use an integrated tool (not a chat window) to complete a coding task.\n\n\nWrap-up\n5\nMoonshot check-in\n\n\n\nHomework: Make progress on your moonshot. Ensure Git is set up and working.\n\n\nSession 3: AI-Assisted Statistical Workflows — March 5\nDoing real work: from prompting to pipelines\n\n\n\n\n\n\n\n\nBlock\nMin\nTopic\n\n\n\n\nLecture + demo\n15\nContext and prompting: structuring prompts for statistical work, project context files, system prompts, good prompt vs. bad prompt\n\n\nLecture + demo\n15\nThe code-not-data principle in practice. Synthetic data as a development strategy. Git as a bridge between AI-assisted and secure data environments\n\n\nLecture\n10\nAI for statistical thinking: data cleaning, EDA, visualization, modeling, DAGs and causal assumptions, simulation, model validation — where AI is a thought partner and where it confidently misleads\n\n\nHands-on\n30\nBuild an analysis pipeline on synthetic data using AI tools: cleaning, summary statistics, visualization, a simple model. Audit the output — catch the mistakes.\n\n\nWrap-up\n10\nMoonshot progress reports. Prepare a 3-minute informal share for next week.\n\n\n\nHomework: Finish your moonshot attempt. Prepare to share what you tried, what worked, and what didn’t (3 minutes, informal, no slides required).\n\n\nSession 4: Synthesis and Looking Forward — March 12\nWhat did we learn, and where do we go from here?\n\n\n\n\n\n\n\n\nBlock\nMin\nTopic\n\n\n\n\nLecture\n10\nReproducibility and documentation: organizing AI-assisted projects, documenting workflows, project setup and progress tracking\n\n\nMoonshot share\n40\nLightning rounds: each student shares their moonshot (~3 min) — what they attempted, what worked, what failed, what surprised them. Class discussion after each.\n\n\nDiscussion\n15\nLooking forward: picking models for different tasks, staying current as tools change, where these tools are headed, finding your personal line\n\n\nWrap-up\n15\nCourse retrospective: what was most useful? What do you wish we covered? Feedback for the pilot."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#moonshot-project",
+    "href": "course_docs/syllabus.html#moonshot-project",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Moonshot Project",
+    "text": "Moonshot Project\nEach student will attempt a “moonshot” task using AI tools — something you know little about, or that feels beyond your current capability. The goal is not to produce publication-quality work. It is to explore the limits and possibilities of these tools in a low-stakes way and to report honestly on what happened.\n\nSession 1: Brainstorm your task\nSession 3: Work session and progress check-in\nSession 4: Informal 3-minute presentation to the class"
+  },
+  {
+    "objectID": "course_docs/syllabus.html#tools-and-subscriptions",
+    "href": "course_docs/syllabus.html#tools-and-subscriptions",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Tools and Subscriptions",
+    "text": "Tools and Subscriptions\nStudents should subscribe to at least one AI tool for the duration of the course. Options include:\n\n\n\nTool\nCost\n\n\n\n\nOpenAI ChatGPT Plus\n$20/month\n\n\nAnthropic Claude Pro\n$20/month\n\n\nGoogle Gemini Advanced\n$20/month (one month free trial)\n\n\nCursor Pro\n$20/month\n\n\nGitHub Copilot Pro\n$10/month\n\n\n\nVariety across the class is encouraged — we will compare how different tools handle the same problems. If financing is a concern, please reach out to the instructor. Google Gemini Advanced offers a free trial that can cover the course period.\nStudents should also ensure that Git is installed and a GitHub account is registered before the first class. Mac and Linux typically have Git pre-installed. Otherwise, follow directions at git-scm.com."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#course-materials",
+    "href": "course_docs/syllabus.html#course-materials",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Course Materials",
+    "text": "Course Materials\nThere is no required textbook. Readings and resources will be shared on CoursePlus."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#methods-of-assessment",
+    "href": "course_docs/syllabus.html#methods-of-assessment",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Methods of Assessment",
+    "text": "Methods of Assessment\nThis is a pass/fail course. Assessment is based on:\n\nParticipation (50%): Attend all sessions and engage actively in discussions and hands-on exercises.\nMoonshot project (50%): Attempt your moonshot task and present your experience to the class in Session 4."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#generative-ai-policy",
+    "href": "course_docs/syllabus.html#generative-ai-policy",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Generative AI Policy",
+    "text": "Generative AI Policy\nUsing AI tools is the subject of this course. Their use is permitted, encouraged, and expected. It is nevertheless the student’s responsibility to understand the output of these tools and ensure their correctness. Students are strongly encouraged to approach these tools as learning aids and not crutches."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#academic-ethics",
+    "href": "course_docs/syllabus.html#academic-ethics",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Academic Ethics",
+    "text": "Academic Ethics\nStudents enrolled in the Bloomberg School of Public Health of The Johns Hopkins University assume an obligation to conduct themselves in a manner appropriate to the University’s mission as an institution of higher education. Students should be familiar with the policies and procedures specified under Policy and Procedure Manual Student-01 (Academic Ethics) and the Student Conduct Code (Student-06), available at my.publichealth.jhu.edu."
+  },
+  {
+    "objectID": "course_docs/syllabus.html#student-health-and-well-being",
+    "href": "course_docs/syllabus.html#student-health-and-well-being",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Student Health and Well-being",
+    "text": "Student Health and Well-being\nIf you are struggling with anxiety, stress, depression, or other mental health related concerns, please consider connecting with resources:\n\nStudent support: bit.ly/bsphstudentsupport\nMental Health Services: wellbeing.jhu.edu/MentalHealthServices\nBehavioral Health Crisis Support Team (24/7): 410-516-9355"
+  },
+  {
+    "objectID": "course_docs/syllabus.html#disability-accommodations",
+    "href": "course_docs/syllabus.html#disability-accommodations",
+    "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
+    "section": "Disability Accommodations",
+    "text": "Disability Accommodations\nStudent Disability Services (SDS) provides accessible and inclusive educational experiences for students with disabilities. To request accommodations:\n\nComplete the SDS online application via AIM\nSubmit documentation using the provided link after application submission\nSchedule a meeting with Audrey Ndaba\n\nMore information: Student Disability Services"
+  }
+]

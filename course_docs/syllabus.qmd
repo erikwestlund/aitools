@@ -1,6 +1,6 @@
 ---
-title: "AI Tools for Data Science and Statistics"
-subtitle: "140.604.81, 4th Term, 2025–2026"
+title: "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics"
+subtitle: "140.850, 4th Term, 2025–2026"
 date: last-modified
 format:
   html:
@@ -39,7 +39,7 @@ By the end of this course, students will be able to:
 
 - Describe how large language models work at a conceptual level, including their capabilities and limitations for statistical work.
 - Evaluate the ethical implications of AI tool use in research, including privacy, bias, reproducibility, and academic integrity.
-- Apply the code-not-data principle to protect sensitive and regulated data (including PHI) when using AI tools.
+- Use code to work with data, not the LLM itself, to protect sensitive and regulated data (including PHI) in privacy-sensitive contexts.
 - Navigate the landscape of AI tools — chat interfaces, IDE integrations, CLI agents, and supporting tools — and select appropriate tools for different tasks.
 - Use AI assistants to write, debug, and audit code for data cleaning, visualization, and statistical analysis.
 - Build analysis workflows on synthetic data and deploy validated code to secure data environments using Git.
@@ -128,6 +128,10 @@ Students should also ensure that Git is installed and a GitHub account is regist
 ## Course Materials
 
 There is no required textbook. Readings and resources will be shared on CoursePlus.
+
+### Readings
+
+- Gloaguen, T., Mündler, N., Müller, M., Raychev, V., & Vechev, M. (2025). [Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](readings/gloaguen-2025-evaluating-agents-md.pdf)
 
 ## Methods of Assessment
 

@@ -10,7 +10,7 @@
 # Private directories (anywhere in project tree)
 **/private/**
 **/*_private/**
-docs/surveys/*
+util_docs/
 
 # ============================================================================
 # SECRETS AND CREDENTIALS - NEVER COMMIT
@@ -132,3 +132,6 @@ ehthumbs.db
 *.bak
 *.swp
 *~
+
+/.quarto/
+**/*.quarto_ipynb

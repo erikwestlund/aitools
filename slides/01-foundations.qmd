@@ -1,0 +1,559 @@
+---
+title: "AI Tools for Data Science and Statistics"
+subtitle: "Foundations"
+author: "Erik Westlund, PhD"
+date: "February 19, 2026"
+bibliography: references.bib
+format:
+  revealjs:
+    slide-number: true
+    transition: slide
+    background-transition: fade
+    self-contained: true
+---
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Good Old-Fashioned AI
+:::
+
+::: {style="color: #ecf0f1; font-size: 0.9em; text-align: center;"}
+Before LLMs: 70 years of trying to make machines think.
+:::
+
+
+## The Initial Vision (1950s-1960s)
+
+- **1950:** Turing proposes the imitation game. "Can machines think?"
+- **1956:** Dartmouth workshop coins "Artificial Intelligence." Marvin Minsky, Herbert Simon, and others predict human-level AI within a generation.
+- **1958:** Frank Rosenblatt builds the Perceptron. The first neural network. The *New York Times* reports the Navy expects it to "walk, talk, see, write, reproduce itself, and be conscious."
+
+. . .
+
+**Marvin Minsky (1967):** "Within a generation... the problem of creating 'artificial intelligence' will substantially be solved."
+
+
+## The Symbolic Era: GOFAI {.smaller}
+
+"Good Old-Fashioned AI" (John Haugeland's term) posits that intelligence is symbol manipulation.
+
+**The approach:** Encode human knowledge as logical rules, then reason over them.
+
+| System | What It Did | Limitation |
+|:-------|:-----------|:-----------|
+| ELIZA (1966) | Pattern-matched to simulate a therapist | No understanding; pure string tricks |
+| SHRDLU (1971) | Understood natural language about blocks on a table | Only worked in a tiny toy world |
+| MYCIN (1976) | Diagnosed bacterial infections with ~600 rules | Couldn't learn; every rule hand-written |
+| CYC (1984-) | Attempted to encode all common sense | 40+ years later, still not done |
+
+
+## The Critics
+
+Two philosophers saw fundamental problems:
+
+**Hubert Dreyfus** (1972, *What Computers Can't Do*): Human expertise is embodied and intuitive, not rule-based. A chess master doesn't search a tree. They *see* the board. GOFAI can't capture this. (His brother **Stuart Dreyfus**, an operations researcher, co-developed the skill acquisition model behind this critique.)
+
+. . .
+
+**John Searle** (1980, "Chinese Room"): A system can manipulate symbols perfectly and understand *nothing*. Syntax is not semantics.
+
+. . .
+
+**Dreyfus again** (1992, *What Computers Still Can't Do*): After 20 more years, the same problems remain. GOFAI is still a failure.
+
+
+## AI "Winters"
+
+Overpromising leads to underfunding. Twice:
+
+**First AI Winter (1974-1980)**
+
+- Lighthill Report (UK, 1973): AI has failed to deliver on its promises
+- DARPA cuts funding; the field contracts
+
+**Second AI Winter (1987-1993)**
+
+- Expert systems boom, then bust. Too brittle, too expensive to maintain
+- Japan's Fifth Generation Computer Systems fails to provide a foundation for AI
+- Neural network research stalls 
+
+## AI Revival (1990s-now)
+
+AI stopped trying to be "intelligent" and started being useful:
+
+- **Machine learning** replaces hand-coded rules with learning from data
+- **Statistical methods** dominate: SVMs, random forests, boosting. These are tools many of you already likely use.
+- **Deep learning breakthrough** (2012): AlexNet wins ImageNet by a landslide using a neural network and GPUs
+
+. . .
+
+The shift: from **"encode what we know"** to **"learn from what we have."**
+
+
+## What Searle and Dreyfus Would Say Now
+
+Their critiques haven't gone away. They've shapeshifted:
+
+| GOFAI Critique | LLM Version |
+|:---------------|:------------|
+| Can't handle ambiguity | Handles surface ambiguity; fails on deep reasoning |
+| Brittle when rules don't cover the case | Fails catastrophically on buggy or novel contexts |
+| Syntax without semantics (Searle) | Generates fluent text without "understanding" it |
+| No embodied knowledge (Dreyfus) | No experience, no clinical intuition, no common sense grounding |
+
+. . .
+
+**The question hasn't changed: Is sophisticated pattern matching the same as understanding?**
+
+
+## The Hype Cycle Is Not New
+
+| Era | The Promise | What Actually Happened |
+|:----|:-----------|:----------------------|
+| 1960s | "AI in a generation" | Two AI winters |
+| 1980s | Expert systems will replace professionals | Too brittle; collapsed |
+| 2010s | Self-driving cars by 2020 | Still not solved in 2026 |
+| 2020s | AGI is imminent; all jobs automated | ??? |
+
+. . .
+
+**We are somewhere on this curve. Knowing the history helps you locate where.**
+
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+What is a Large Language Model?
+:::
+
+::: {style="color: #ecf0f1; font-size: 0.9em; text-align: center;"}
+What follows is simplified for teaching. The goal is a useful mental model, not technical precision.
+:::
+
+
+## The Simplest Explanation
+
+An LLM is a function that predicts the next word.
+
+. . .
+
+Given a sequence of words, it outputs a probability distribution over what comes next.
+
+. . .
+
+It is often called "sophisticated autocomplete" --- though with advances in context windows and planning-like behavior on some tasks, the analogy has limits.
+
+
+## Tokens and Embeddings
+
+- Text is split into **tokens** (subword units, not whole words)
+  - "biostatistics" $\rightarrow$ "bio" + "stat" + "istics"
+- Each token is mapped to a **vector** (a list of numbers)
+- These vectors capture meaning through position in high-dimensional space
+
+. . .
+
+**Principal Components Analysis analogy:** Just as PCA finds axes of variation in your data, embeddings find axes of meaning in language. Words with similar meanings cluster together.
+
+
+## Attention
+
+The core innovation (Vaswani et al., 2017):
+
+**Words look at other words to determine their meaning.**
+
+. . .
+
+> "They walked along the **bank** of the river."
+
+> "She deposited the check at the **bank**."
+
+Same word, different meaning. Attention resolves this by weighing context.
+
+. . .
+
+**An analogy:** Wittgenstein's "meaning is use" (*Philosophical Investigations*, 1953): a word's meaning isn't fixed; it comes from how it's used in context. Attention mechanisms capture something structurally similar.
+
+
+## How Do LLMs "Learn?""
+
+Three stages. Most capability comes from stage 1. Stages 2-3 mostly shape behavior, not knowledge.
+
+1. **Pre-training:** Predict the next token across massive text corpora (internet, books, code, curated datasets). The model learns statistical patterns of language and knowledge. It stores weights and distributed patterns, not documents.
+
+2. **Instruction tuning (Supervised Fine-Tuning):** Fine-tune on curated prompt-response examples so the model follows instructions and behaves like an assistant. This changes behavior more than knowledge.
+
+3. **Preference optimization (Reinforcement Learning from Human Feedback, or similar):** Humans compare outputs; a reward model learns their preferences; the model is optimized to produce responses humans rate as more helpful and aligned.
+
+
+## Key Concepts for Users
+
+| Concept | What It Means |
+|:--------|:--------------|
+| **Context window** | How much text the model can "see" at once (200K-400K tokens for frontier models) |
+| **Temperature** | Controls randomness. Low = deterministic, high = creative |
+| **Stochasticity** | Same prompt can give different answers each time |
+| **No memory** | Each conversation starts from scratch (unless you provide context) |
+
+
+## What an LLM Is Not
+
+- **Not a database.** It doesn't "look up" answers. It generates them.
+- **Not a search engine.** It doesn't retrieve documents (unless given tools to do so).
+- **Not deterministic.** Same input $\neq$ same output.
+- **Not "thinking" the way you do.** It can produce both correct reasoning chains and convincing nonsense, with no reliable way to tell the difference from the inside.
+- **Not an expert.** It can sound authoritative while being completely wrong.
+
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+A Brief History of LLMs (2017-2026)
+:::
+
+
+## The Foundation (2017-2020)
+
+- **2017:** "Attention Is All You Need" introduces the Transformer architecture
+- **2018:** GPT-1 (117M parameters). Language modeling as pre-training
+- **2019:** GPT-2 (1.5B). "Too dangerous to release" 
+- **2020:** GPT-3 (175B). Can perform tasks from just a few examples in the prompt, without additional training
+
+**Where we were on math:** The best models scored 3--7% on the MATH benchmark. GPT-2 1.5B reached 6.9% after pretraining on a math corpus and fine-tuning; GPT-3 175B managed only 5.2% few-shot. [P7, 2021]
+
+
+## The Scaling Era (2021-2023)
+
+- **2021:** Codex, which was GPT-3 fine-tuned on code, powers GitHub Copilot
+- **2022:** ChatGPT launches (November). AI enters mainstream consciousness
+- **2023:** GPT-4 arrives. A leap:
+  - 80.5% on HumanEval (code generation) [P1, 2024]
+  - 42.5% on MATH (competition math) [P6, 2023]
+  - 86.4% on MMLU (academic knowledge) [P6, 2023]
+- **Open-source explosion:** LLaMA, Code Llama, StarCoder, Mistral
+
+
+## The Reasoning Era (2024-2025)
+
+- **2024:** OpenAI releases o1. A "reasoning model" that thinks step-by-step
+- **2025:** o3-mini, DeepSeek-R1 push reasoning further
+  - o3-mini: 13.4% on Humanity's Last Exam (vs. GPT-4o at 2.7%) [P8, 2025]
+
+. . .
+
+**Key insight:** Reasoning models use the **same underlying architecture**. What's different is how they're trained and how they spend compute: they think longer before answering, they're trained on different data mixtures, and they check their own work. It's a harness of the models.
+
+
+## What Makes Reasoning Models Different?
+
+Reasoning models (o1, o3-mini, DeepSeek-R1) are built on the same transformer architecture as every other LLM.
+
+The difference is **how they spend compute**:
+
+- A standard model answers immediately --- one pass through the network
+- A reasoning model "thinks out loud" before answering (you see this as a loading delay)
+- It spends more compute per question, trading speed and cost for accuracy
+
+. . .
+
+**o3-mini scored ~5x higher than GPT-4o on Humanity's Last Exam** [P8, 2025]
+
+
+## Why Reasoning Models Matter
+
+What changed beyond just "thinking longer":
+
+- Trained on different data mixtures emphasizing step-by-step problem solving
+- Built-in verification loops --- the model checks its own work
+- Preference optimization tuned specifically for careful deliberation
+
+. . .
+
+The tradeoff: slower, more expensive, but substantially better on hard problems.
+
+. . .
+
+**The architecture is the same. The way it's trained and run is different.**
+
+
+## What Likely Still Holds
+
+Even with better models, these problems are probably not solved:
+
+- **Buggy context catastrophe.** Models still don't detect upstream bugs [P15, 2023]
+- **Poor calibration.** Overconfidence is architectural, not just a training issue [P8, 2025]
+- **Security vulnerabilities.** No systematic re-evaluation on frontier models [P12, 2024]
+- **Benchmark contamination.** Gets worse as training data grows [P4, 2025]
+- **Agent self-repair at 4%.** Agents still can't fix their own mistakes [P16, 2026]
+
+. . .
+
+**Working assumption: ~30% of generated code still needs careful review.**
+
+
+## Today (February 2026)
+
+| | Claude Opus 4.6 | GPT-5.3-Codex |
+|:--|:--|:--|
+| **Developer** | Anthropic | OpenAI |
+| **Context window** | 200K tokens (1M beta) | 400K tokens |
+| **Pricing (input)** | $5 / 1M tokens | $1.75 / 1M tokens |
+| **Architecture** | Reasoning model | Reasoning (code-optimized) |
+
+*Pricing and specs from vendor documentation as of Feb 2026; subject to change.*
+
+## The Speed of Change {.smaller}
+
+MATH benchmark progression (competition-level mathematics):
+
+| Year | Model | MATH Score | Conditions |
+|:-----|:------|:-----------|:-----------|
+| 2021 | GPT-2 1.5B | 6.9% | Math-pretrained + fine-tuned [P7, 2021] |
+| 2021 | GPT-3 175B | 5.2% | Few-shot [P7, 2021] |
+| 2023 | GPT-4 | 42.5% | [P6, 2023] |
+| 2025 | o3-mini | ~87% | Reported |
+| 2026 | GPT-5.3-Codex | ~96% | Reported |
+
+**Competition math went from "unsolved" to "near-saturated" in 3 years.**
+
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+What Does the Research Say?
+:::
+
+
+
+## Where LLMs Succeed
+
+| Task | Performance | Source |
+|:-----|:-----------|:-------|
+| Code generation (syntactically valid) | 91.5% | [P12, 2024] |
+| Grade-school math (GSM8k) | 92.0% | [P6, 2023] |
+| Academic knowledge (MMLU) | 86.4% | [P6, 2023] |
+| Undergraduate statistics | 82.85% | [P5, 2025] |
+| Python function synthesis (HumanEval) | 80.5% | [P1, 2024] |
+
+. . .
+
+**Pattern:** LLMs excel at tasks with clear patterns, well-represented training data, and unambiguous evaluation criteria.
+
+
+## Where LLMs Struggle {.smaller}
+
+| Task | Performance | Source |
+|:-----|:-----------|:-------|
+| Research-level statistics | <57% | [P5, 2025] |
+| Expert-level questions (HLE) | 2.7-13.4% | [P8, 2025] |
+| Real-world code translation | 8.1% (GPT-4) | [P10, 2024] |
+| Code completion with buggy context | 0.5-3.1% | [P15, 2023] |
+| Agent self-repair | 4% | [P16, 2026] |
+
+. . .
+
+**Pattern:** LLMs fail when tasks require genuine reasoning, when context is messy, or when there's no clear template to follow.
+
+
+## The Buggy Context Problem
+
+A single bug in the surrounding code is catastrophic:
+
+| Model | Clean Context | Buggy Context |
+|:------|:-------------|:-------------|
+| InCoder-6.7B | 54.9% | 2.4% |
+| CodeGen-16B | 50.0% | 3.1% |
+| StarCoder-15B | 41.1% | 1.2% |
+
+90% of failures: the model **propagates the bug** without reacting to it. [P15, 2023]
+
+. . .
+
+**Takeaway: Context quality > model quality.**
+
+
+## Overconfidence
+
+LLMs are wrong frequently and act certain almost always:
+
+- **Calibration error on expert questions:** 70-89% RMS error across all models [P8, 2025]
+- On MATH, confidence is near 100% **regardless of correctness** [P7, 2021]
+- **29% of generated Python code** contains bugs [P9, 2024]
+- **29.8% of Copilot snippets** contain security vulnerabilities across 38 CWE categories [P12, 2024]
+
+. . .
+
+**Wrong ~30% of the time, acts certain.**
+
+
+## Benchmarks Lie
+
+**When models have seen the test before, scores are ~3x too high:**
+
+A code-generation model that had seen all the benchmark problems during training solved 68% of them. The same model, given *new problems testing the same skills*, solved only 22%. [P4, 2025]
+
+. . .
+
+**Benchmark vs. real-world gap:**
+
+GPT-4 code translation: 47.3% on benchmarks, 8.1% on real-world projects. [P10, 2024]
+
+. . .
+
+**Be skeptical of headline numbers.**
+
+
+## The Models Have Changed {.smaller}
+
+Frontier comparison. Literature-era best vs. February 2026:
+
+| Benchmark | Best in Papers | 2026 Frontier | Change |
+|:----------|:--------------|:-------------|:-------|
+| MATH (competition) | 42.5% (GPT-4) [P6, 2023] | ~96% (GPT-5.3-Codex) | +54 pts |
+| HLE (expert questions) | 13.4% (o3-mini) [P8, 2025] | 53.1% (Opus 4.6, with tools) | +40 pts |
+| HumanEval (code gen) | 80.5% (GPT-4) [P1, 2024] | ~95% (Opus 4.6) | +15 pts |
+| MMLU (academic) | 86.4% (GPT-4) [P6, 2023] | ~93% (GPT-5.3-Codex) | +7 pts |
+| SWE-bench Verified | -- | 80.8% (Opus 4.6) | -- |
+
+**Enormous improvement in 2-3 years.** But recall: benchmarks lie.
+
+
+
+## Summary: What the Research Shows
+
+. . .
+
+1. **LLMs are tools, not experts.** They excel at patterns; they can struggle with reasoning.
+
+. . .
+
+2. **Context quality is important.** One upstream bug causes catastrophic failure.
+
+. . .
+
+3. **Validate everything.** ~29% bugs, ~30% security vulnerabilities, terrible calibration.
+
+. . .
+
+## Summary: What This Means for You
+
+4. **Prompting matters.** Few-shot examples, chain-of-thought, and explicit framing improve results 5-50 percentage points.
+
+. . .
+
+5. **Model selection matters.** The gap between models is enormous (2.7% to 53.1% on expert questions; the high end is with tools).
+
+. . .
+
+6. **Human expertise is essential.** Developers who know code is AI-generated catch 13 percentage points more bugs [P11, 2024].
+
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Hype, Skepticism, and Nuance
+:::
+
+
+## The Bull Case
+
+The optimists have real evidence:
+
+- MATH benchmark: ~7% $\rightarrow$ ~96% in a few years
+- SWE-bench Verified: 80.8% (Opus 4.6 fixing real GitHub issues)
+- Costs dropped 10-20x in 2 years (GPT-4 at $30/M tokens $\rightarrow$ GPT-5.3-Codex at $1.75/M)
+- McKinsey: 60-70% of work activities could be automated
+- Goldman Sachs: generative AI could raise global GDP by 7%
+
+
+## The Bear Case
+
+The skeptics also have real evidence:
+
+- Benchmark contamination inflates scores ~3x [P4, 2025]
+- 29% of generated code has bugs [P9, 2024]
+- 29.8% of Copilot snippets have security vulnerabilities [P12, 2024]
+- Buggy context drops performance from 50% to 2% [P15, 2023]
+- Best agent self-repair: 4% accuracy [P16, 2026]
+- Real-world code translation: 8.1% (vs. 47.3% on benchmarks) [P10, 2024]
+
+
+## The Nuance
+
+::: {.columns}
+::: {.column width="50%"}
+**Good at:**
+
+- First drafts and boilerplate
+- Syntax and API lookup
+- Standard patterns
+- Explaining code
+- Brainstorming approaches
+:::
+
+::: {.column width="50%"}
+**Poor at:**
+
+- Judgment calls
+- Security-sensitive code
+- Messy or buggy contexts
+- Novel algorithms
+- Knowing when it's wrong
+:::
+:::
+
+. . .
+
+**"High pattern matching, low judgment."**
+
+
+## Biostatistics and the Job Market
+
+What AI can do well in our field:
+
+- Write code for data cleaning, visualization, standard analyses
+- Generate boilerplate for reports and documentation
+- Translate between programming languages
+- Explain unfamiliar code or statistical concepts
+
+. . .
+
+What AI cannot do:
+
+- Design a study
+- Interpret clinical context
+- Make judgment calls about model assumptions
+- Navigate IRB requirements and data use agreements
+- Explain findings to a collaborator
+
+. . .
+
+**The job changes. It doesn't disappear.**
+
+
+## Discussion Prompts
+
+1. Would you trust AI-generated code in a **clinical trial analysis**? Under what conditions?
+
+2. If an LLM writes 70% of a methods section, who is the **author**?
+
+3. Should researchers be required to **disclose** AI tool use? At what level of detail?
+
+4. LLMs are trained on public code and text, often without consent. **Is this ethical?** Does it matter if the model is open-source vs. proprietary?
+
+5. If AI tools make data analysis faster and cheaper, what happens to the **value of your degree**?
+
+
+## What's Next
+
+**Today's hands-on exercise:** Everyone gets the same statistical task. Use your own tool. We'll compare results.
+
+**Moonshot assignment:** Brainstorm a task that feels beyond your current ability. We'll work on it throughout the course.
+
+**Homework:**
+
+- Try a second AI tool you haven't used before for a small task
+- Note the differences from your primary tool
+- Start thinking about your moonshot
+
