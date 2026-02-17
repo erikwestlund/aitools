@@ -1323,6 +1323,48 @@ Erik Westlund, PhD
 <p><strong>Key insight:</strong> Reasoning models use the <strong>same underlying architecture</strong>. What’s different is how they’re trained and how they spend compute: they think longer before answering, they’re trained on different data mixtures, and they check their own work. It’s a harness of the models.</p>
 </div>
 </section>
+<section id="what-makes-reasoning-models-different" class="slide level2 center">
+<h2>What Makes Reasoning Models Different?</h2>
+<p>Reasoning models (o1, o3-mini, DeepSeek-R1) are built on the same transformer architecture as every other LLM.</p>
+<p>The difference is <strong>how they spend compute</strong>:</p>
+<ul>
+<li>A standard model answers immediately — one pass through the network</li>
+<li>A reasoning model “thinks out loud” before answering (you see this as a loading delay)</li>
+<li>It spends more compute per question, trading speed and cost for accuracy</li>
+</ul>
+<div class="fragment">
+<p><strong>o3-mini scored ~5x higher than GPT-4o on Humanity’s Last Exam</strong> [P8, 2025]</p>
+</div>
+</section>
+<section id="why-reasoning-models-matter" class="slide level2 center">
+<h2>Why Reasoning Models Matter</h2>
+<p>What changed beyond just “thinking longer”:</p>
+<ul>
+<li>Trained on different data mixtures emphasizing step-by-step problem solving</li>
+<li>Built-in verification loops — the model checks its own work</li>
+<li>Preference optimization tuned specifically for careful deliberation</li>
+</ul>
+<div class="fragment">
+<p>The tradeoff: slower, more expensive, but substantially better on hard problems.</p>
+</div>
+<div class="fragment">
+<p><strong>The architecture is the same. The way it’s trained and run is different.</strong></p>
+</div>
+</section>
+<section id="what-likely-still-holds" class="slide level2 center">
+<h2>What Likely Still Holds</h2>
+<p>Even with better models, these problems are probably not solved:</p>
+<ul>
+<li><strong>Buggy context catastrophe.</strong> Models still don’t detect upstream bugs [P15, 2023]</li>
+<li><strong>Poor calibration.</strong> Overconfidence is architectural, not just a training issue [P8, 2025]</li>
+<li><strong>Security vulnerabilities.</strong> No systematic re-evaluation on frontier models [P12, 2024]</li>
+<li><strong>Benchmark contamination.</strong> Gets worse as training data grows [P4, 2025]</li>
+<li><strong>Agent self-repair at 4%.</strong> Agents still can’t fix their own mistakes [P16, 2026]</li>
+</ul>
+<div class="fragment">
+<p><strong>Working assumption: ~30% of generated code still needs careful review.</strong></p>
+</div>
+</section>
 <section id="today-february-2026" class="slide level2 center">
 <h2>Today (February 2026)</h2>
 <table class="caption-top">
@@ -1607,45 +1649,16 @@ Erik Westlund, PhD
 </table>
 <p><strong>Enormous improvement in 2-3 years.</strong> But recall: benchmarks lie.</p>
 </section>
-<section id="reasoning-models-explained" class="slide level2 center">
-<h2>Reasoning Models Explained</h2>
-<p>Reasoning models (o1, o3-mini, DeepSeek-R1) are built on the same transformer architecture.</p>
-<p>The key change: <strong>more compute at inference time</strong>, combined with specialized training.</p>
-<div class="fragment">
-<p>What’s different:</p>
-<ul>
-<li>The model “thinks out loud” before answering (you see this as a loading delay)</li>
-<li>More compute is spent per question (inference-time scaling)</li>
-<li>Training mixtures, verification loops, and preference optimization are tuned for deliberation</li>
-<li>The tradeoff: slower, more expensive, but substantially better on hard problems</li>
-</ul>
-<p><strong>o3-mini scored ~5x higher than GPT-4o on Humanity’s Last Exam</strong> [P8, 2025]</p>
-</div>
-</section>
-<section id="what-likely-still-holds" class="slide level2 center">
-<h2>What Likely Still Holds</h2>
-<p>Even with better models, these problems are probably not solved:</p>
-<ul>
-<li><strong>Buggy context catastrophe.</strong> Models still don’t detect upstream bugs [P15, 2023]</li>
-<li><strong>Poor calibration.</strong> Overconfidence is architectural, not just a training issue [P8, 2025]</li>
-<li><strong>Security vulnerabilities.</strong> No systematic re-evaluation on frontier models [P12, 2024]</li>
-<li><strong>Benchmark contamination.</strong> Gets worse as training data grows [P4, 2025]</li>
-<li><strong>Agent self-repair at 4%.</strong> Agents still can’t fix their own mistakes [P16, 2026]</li>
-</ul>
-<div class="fragment">
-<p><strong>Working assumption: ~30% of generated code still needs careful review.</strong></p>
-</div>
-</section>
-<section id="the-literature-in-one-slide" class="slide level2 center">
-<h2>The Literature in One Slide</h2>
+<section id="summary-what-the-research-shows" class="slide level2 center">
+<h2>Summary: What the Research Shows</h2>
 <div class="fragment">
 <ol type="1">
-<li><strong>LLMs are tools, not experts.</strong> They excel at patterns; they fail at reasoning.</li>
+<li><strong>LLMs are tools, not experts.</strong> They excel at patterns; they can struggle with reasoning.</li>
 </ol>
 </div>
 <div class="fragment">
 <ol start="2" type="1">
-<li><strong>Context quality is everything.</strong> One upstream bug causes catastrophic failure.</li>
+<li><strong>Context quality is important.</strong> One upstream bug causes catastrophic failure.</li>
 </ol>
 </div>
 <div class="fragment">
@@ -1653,11 +1666,12 @@ Erik Westlund, PhD
 <li><strong>Validate everything.</strong> ~29% bugs, ~30% security vulnerabilities, terrible calibration.</li>
 </ol>
 </div>
-<div class="fragment">
+</section>
+<section id="summary-what-this-means-for-you" class="slide level2 center">
+<h2>Summary: What This Means for You</h2>
 <ol start="4" type="1">
 <li><strong>Prompting matters.</strong> Few-shot examples, chain-of-thought, and explicit framing improve results 5-50 percentage points.</li>
 </ol>
-</div>
 <div class="fragment">
 <ol start="5" type="1">
 <li><strong>Model selection matters.</strong> The gap between models is enormous (2.7% to 53.1% on expert questions; the high end is with tools).</li>
