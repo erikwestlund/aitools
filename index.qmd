@@ -1,0 +1,36 @@
+---
+title: "AI Tools for Data Science and Statistics"
+subtitle: "Advanced Topics in Biostatistics (140.850), 4th Term, 2025–2026"
+date: last-modified
+format:
+  html:
+    toc: false
+---
+
+Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
+
+**Instructor:** Erik Westlund, PhD ([ewestlund@jhu.edu](mailto:ewestlund@jhu.edu))
+**Dates:** February 19, February 26, March 5, March 12, 2026
+**Time:** 9:00–10:20 AM ET
+
+[Syllabus](course_docs/syllabus.html)
+
+## Sessions
+
+### Session 1: Ethics and Foundations — February 19
+
+*What are we dealing with, and what are the stakes?*
+
+- [Slides](slides/01-foundations.html)
+
+### Session 2: The Toolbox — February 26
+
+*What's out there, and how do you use it?*
+
+### Session 3: AI-Assisted Statistical Workflows — March 5
+
+*Doing real work: from prompting to pipelines*
+
+### Session 4: Synthesis and Looking Forward — March 12
+
+*What did we learn, and where do we go from here?*
