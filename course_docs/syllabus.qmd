@@ -1,6 +1,6 @@
 ---
 title: "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics"
-subtitle: "140.850, 4th Term, 2025–2026"
+subtitle: "140.850, 3rd Term, 2025–2026"
 date: last-modified
 format:
   html:
@@ -29,7 +29,7 @@ As AI tools are rapidly adopted across research and industry, there is a growing
 |--------------|----------------------------------------------------|
 | **Dates**    | February 19, February 26, March 5, March 12, 2026  |
 | **Time**     | 9:00–10:20 AM ET                                   |
-| **Location** | Zoom (link provided on CoursePlus)                  |
+| **Location** | Zoom (link provided on CoursePlus/Email)           |
 | **Format**   | Lecture, live demos, discussion, hands-on exercises |
 | **Grading**  | Pass/Fail                                           |
 
@@ -47,67 +47,38 @@ By the end of this course, students will be able to:
 
 ## Schedule
 
-### Session 1: Ethics and Foundations — February 19
+### Session 1 (February 19): Foundations: History, Today, and Ethics
 
-*What are we dealing with, and what are the stakes?*
+We will share our experiences using AI and study the foundations of AI tools. We will discuss ethics and concerns people have with using the tools.
 
-| Block | Min | Topic |
-|:------|----:|:------|
-| Discussion | 15 | How are you using AI now? What feels OK, what feels uncomfortable? |
-| Lecture | 15 | AI ethics and responsible use: privacy and PHI, bias, reproducibility, academic integrity, environmental cost — a framework for reasoning, not a list of rules |
-| Case study | 10 | How this syllabus was built with AI — is that OK? Why or why not? |
-| Lecture | 15 | What is an LLM? Tokens, context windows, temperature, stochasticity. Why the same prompt gives different answers. Model landscape: GPT, Claude, Gemini, DeepSeek |
-| Hands-on | 20 | Everyone gets the same statistical task; use your own tool; compare results across tools — what worked, what hallucinated? |
-| Wrap-up | 5 | Introduce moonshot assignment; tools and subscriptions overview |
+### Session 2 (February 26): The Toolbox
 
-**Homework:** Brainstorm your moonshot task. Try a second AI tool you haven't used before for a small task and note the differences.
+We will introduce and demonstrate various tools available to us, including major models (Claude, GPT, Gemini), open source models, chat tools, IDEs (VS Code, Positron, Cursor), CLI tools (Claude Code, Codex, OpenCode), and supporting utilities (tmux, Git).
 
-### Session 2: The Toolbox — February 26
+- **Due before class:** Email course project topic to [ewestlund@jhu.edu](mailto:ewestlund@jhu.edu)
 
-*What's out there, and how do you use it?*
+### Session 3 (March 5): AI-Assisted Statistical Workflows
 
-| Block | Min | Topic |
-|:------|----:|:------|
-| Discussion | 10 | Debrief: what happened when you tried a new tool? Surprises? |
-| Lecture + demo | 20 | The AI tools: models and model selection, chat windows, autocomplete tools, IDE agents (VS Code, Cursor, RStudio, Positron), CLI agents (Claude Code, etc.), Model Context Protocol |
-| Lecture + demo | 15 | The supporting tools: command line basics, tmux for persistent sessions, Git and GitHub, API keys vs. subscriptions, cost management |
-| Hands-on | 30 | Get set up with an IDE or CLI agent. Work through a guided exercise: use an integrated tool (not a chat window) to complete a coding task. |
-| Wrap-up | 5 | Moonshot check-in |
+We will discuss how to use these tools to summarize datasets, generate synthetic/simulated data, and build models. We will pay special attention to how to work with PHI using these tools.
 
-**Homework:** Make progress on your moonshot. Ensure Git is set up and working.
+- **Due:** Make progress on course project; prepare for check-in
 
-### Session 3: AI-Assisted Statistical Workflows — March 5
+### Session 4 (March 12): Synthesis and Looking Forward
 
-*Doing real work: from prompting to pipelines*
+We will spend most of this session sharing our experiences with our projects, but will leave it open to address lingering questions.
 
-| Block | Min | Topic |
-|:------|----:|:------|
-| Lecture + demo | 15 | Context and prompting: structuring prompts for statistical work, project context files, system prompts, good prompt vs. bad prompt |
-| Lecture + demo | 15 | The code-not-data principle in practice. Synthetic data as a development strategy. Git as a bridge between AI-assisted and secure data environments |
-| Lecture | 10 | AI for statistical thinking: data cleaning, EDA, visualization, modeling, DAGs and causal assumptions, simulation, model validation — where AI is a thought partner and where it confidently misleads |
-| Hands-on | 30 | Build an analysis pipeline on synthetic data using AI tools: cleaning, summary statistics, visualization, a simple model. Audit the output — catch the mistakes. |
-| Wrap-up | 10 | Moonshot progress reports. Prepare a 3-minute informal share for next week. |
+- **Due:** Course project materials and 2–3 page reflection; in-class share
 
-**Homework:** Finish your moonshot attempt. Prepare to share what you tried, what worked, and what didn't (3 minutes, informal, no slides required).
+## Course Project
 
-### Session 4: Synthesis and Looking Forward — March 12
+Each student will attempt an ambitious task using AI tools — something you know little about, or that feels beyond your current capability. The goal is not to produce publication-quality work. It is to explore the limits and possibilities of these tools in a low-stakes way and to report honestly on what happened. See the [course project page](course-project.html) for full details.
 
-*What did we learn, and where do we go from here?*
-
-| Block | Min | Topic |
-|:------|----:|:------|
-| Lecture | 10 | Reproducibility and documentation: organizing AI-assisted projects, documenting workflows, project setup and progress tracking |
-| Moonshot share | 40 | Lightning rounds: each student shares their moonshot (~3 min) — what they attempted, what worked, what failed, what surprised them. Class discussion after each. |
-| Discussion | 15 | Looking forward: picking models for different tasks, staying current as tools change, where these tools are headed, finding your personal line |
-| Wrap-up | 15 | Course retrospective: what was most useful? What do you wish we covered? Feedback for the pilot. |
-
-## Moonshot Project
-
-Each student will attempt a "moonshot" task using AI tools — something you know little about, or that feels beyond your current capability. The goal is not to produce publication-quality work. It is to explore the limits and possibilities of these tools in a low-stakes way and to report honestly on what happened.
-
-- **Session 1:** Brainstorm your task
-- **Session 3:** Work session and progress check-in
-- **Session 4:** Informal 3-minute presentation to the class
+| Date | Milestone |
+|:-----|:----------|
+| February 19 (Session 1) | Assignment introduced; begin brainstorming |
+| February 26 (Session 2) | Topic proposal due via email |
+| March 5 (Session 3) | Progress check-in during class |
+| March 12 (Session 4) | Project and reflection due; in-class share |
 
 ## Tools and Subscriptions
 
@@ -127,18 +98,14 @@ Students should also ensure that Git is installed and a GitHub account is regist
 
 ## Course Materials
 
-There is no required textbook. Readings and resources will be shared on CoursePlus.
-
-### Readings
-
-- Gloaguen, T., Mündler, N., Müller, M., Raychev, V., & Vechev, M. (2025). [Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](readings/gloaguen-2025-evaluating-agents-md.pdf)
+There is no required textbook. Course readings and further reading are listed on the [course website](../index.html).
 
 ## Methods of Assessment
 
 This is a pass/fail course. Assessment is based on:
 
 - **Participation (50%):** Attend all sessions and engage actively in discussions and hands-on exercises.
-- **Moonshot project (50%):** Attempt your moonshot task and present your experience to the class in Session 4.
+- **Course project (50%):** Attempt your project and present your experience to the class in Session 4.
 
 ## Generative AI Policy
 

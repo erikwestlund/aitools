@@ -1,0 +1,60 @@
+---
+title: "Course Project"
+subtitle: "AI Tools for Data Science and Statistics (140.850)"
+date: last-modified
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    theme: cosmo
+---
+
+## Overview
+
+The only assignment for this course to attempt something ambitious with AI tools and report honestly on what happened.
+
+Pick a task that feels beyond your current ability, or in a domain you know little about, and use AI tools to make a serious attempt at it. You do not need to write a single line of code yourself. You can let the AI write all of it. In fact, I would encourage you to see how far you can go. What I want to see is the attempt, the reflection, and the honest accounting of what worked and what didn't.
+
+## Deliverables
+
+### 1. Topic proposal
+
+**Due: February 26 (before Session 2)**
+
+Email a short description of your proposed moonshot task (a few sentences is fine) to [ewestlund@jhu.edu](mailto:ewestlund@jhu.edu).
+
+### 2. Project and reflection
+
+**Due: March 12 (Session 4)**
+
+Submit your project materials and a written reflection.
+
+**Project materials:** Share via a GitHub repository (preferred) or a zip file emailed to [ewestlund@jhu.edu](mailto:ewestlund@jhu.edu). Include whatever you produced --- code, output, data, notebooks, etc. The project does not need to be finished.
+
+**Written reflection (2--3 pages):** Your reflection must address:
+
+- **What you attempted.** Describe the task and why you chose it.
+- **What worked and what didn't.** Be specific. Which parts did AI tools handle well? Where did they fail, mislead, or produce something you couldn't use?
+- **How you checked your work.** Explain how you verified that AI-generated output was correct. What strategies did you use? What did you catch? What might you have missed?
+
+### 3. In-class share (Session 4)
+
+During Session 4, each student will give an informal 3-minute summary of their moonshot to the class. No slides required. We will discuss as a group after each share.
+
+The project does not need to be "finished" by Session 4. Incomplete attempts with honest reflection are perfectly acceptable.
+
+## Guidelines
+
+- **No code writing required.** You may let AI tools generate all code. The point is to explore what the tools can and cannot do, not to demonstrate your own coding ability.
+- **Honest reporting matters more than success.** A failed attempt with a thoughtful reflection is worth more than a polished result with no critical analysis.
+- **Use any AI tools you want.** ChatGPT, Claude, Copilot, Cursor, Claude Code, or anything else. You may use multiple tools and compare them.
+- **Document your process.** Save chat logs, screenshots, or session histories where possible. These can support your reflection but are not required as part of the submission.
+
+## Timeline
+
+| Date | Milestone |
+|:-----|:----------|
+| February 19 (Session 1) | Assignment introduced; begin brainstorming |
+| February 26 (Session 2) | Topic proposal due via email |
+| March 5 (Session 3) | Progress check-in during class |
+| March 12 (Session 4) | Project and reflection due; in-class share |

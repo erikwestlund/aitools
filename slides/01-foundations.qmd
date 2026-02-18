@@ -36,7 +36,7 @@ Before LLMs: 70 years of trying to make machines think.
 
 ## The Symbolic Era: GOFAI {.smaller}
 
-"Good Old-Fashioned AI" (John Haugeland's term) posits that intelligence is symbol manipulation.
+"Good Old-Fashioned AI" [@haugeland1985ai] posits that intelligence is symbol manipulation.
 
 **The approach:** Encode human knowledge as logical rules, then reason over them.
 
@@ -52,15 +52,15 @@ Before LLMs: 70 years of trying to make machines think.
 
 Two philosophers saw fundamental problems:
 
-**Hubert Dreyfus** (1972, *What Computers Can't Do*): Human expertise is embodied and intuitive, not rule-based. A chess master doesn't search a tree. They *see* the board. GOFAI can't capture this. (His brother **Stuart Dreyfus**, an operations researcher, co-developed the skill acquisition model behind this critique.)
+**Hubert Dreyfus** [*What Computers Can't Do*; -@dreyfus1972whatcomputers]: Human expertise is embodied and intuitive, not rule-based. A chess master doesn't search a tree. They *see* the board. GOFAI can't capture this. (His brother **Stuart Dreyfus**, an operations researcher, co-developed the skill acquisition model behind this critique.)
 
 . . .
 
-**John Searle** (1980, "Chinese Room"): A system can manipulate symbols perfectly and understand *nothing*. Syntax is not semantics.
+**John Searle** ["Chinese Room"; -@searle1980minds]: A system can manipulate symbols perfectly and understand *nothing*. Syntax is not semantics.
 
 . . .
 
-**Dreyfus again** (1992, *What Computers Still Can't Do*): After 20 more years, the same problems remain. GOFAI is still a failure.
+**Dreyfus again** [*What Computers Still Can't Do*; -@dreyfus1992whatcomputers]: After 20 more years, the same problems remain. GOFAI is still a failure.
 
 
 ## AI "Winters"
@@ -101,6 +101,7 @@ Their critiques haven't gone away. They've shapeshifted:
 | Brittle when rules don't cover the case | Fails catastrophically on buggy or novel contexts |
 | Syntax without semantics (Searle) | Generates fluent text without "understanding" it |
 | No embodied knowledge (Dreyfus) | No experience, no clinical intuition, no common sense grounding |
+| Can't plan or reason (both) | LLMs fail on classical planning tasks that require genuine reasoning [@valmeekam2023planning; @kambhampati2024llmmodulo] |
 
 . . .
 
@@ -159,7 +160,7 @@ It is often called "sophisticated autocomplete" --- though with advances in cont
 
 ## Attention
 
-The core innovation (Vaswani et al., 2017):
+The core innovation [@vaswani2017attention]:
 
 **Words look at other words to determine their meaning.**
 
@@ -173,10 +174,10 @@ Same word, different meaning. Attention resolves this by weighing context.
 
 . . .
 
-**An analogy:** Wittgenstein's "meaning is use" (*Philosophical Investigations*, 1953): a word's meaning isn't fixed; it comes from how it's used in context. Attention mechanisms capture something structurally similar.
+**An analogy:** Wittgenstein's "meaning is use" [*Philosophical Investigations*; -@wittgenstein1953philosophical]: a word's meaning isn't fixed; it comes from how it's used in context. Attention mechanisms capture something structurally similar.
 
 
-## How Do LLMs "Learn?""
+## How Do LLMs "Learn?"
 
 Three stages. Most capability comes from stage 1. Stages 2-3 mostly shape behavior, not knowledge.
 
@@ -220,7 +221,7 @@ A Brief History of LLMs (2017-2026)
 - **2019:** GPT-2 (1.5B). "Too dangerous to release" 
 - **2020:** GPT-3 (175B). Can perform tasks from just a few examples in the prompt, without additional training
 
-**Where we were on math:** The best models scored 3--7% on the MATH benchmark. GPT-2 1.5B reached 6.9% after pretraining on a math corpus and fine-tuning; GPT-3 175B managed only 5.2% few-shot. [P7, 2021]
+**Where we were on math:** The best models scored 3--7% on the MATH benchmark. GPT-2 1.5B reached 6.9% after pretraining on a math corpus and fine-tuning; GPT-3 175B managed only 5.2% few-shot. [@hendrycks2021math]
 
 
 ## The Scaling Era (2021-2023)
@@ -228,9 +229,9 @@ A Brief History of LLMs (2017-2026)
 - **2021:** Codex, which was GPT-3 fine-tuned on code, powers GitHub Copilot
 - **2022:** ChatGPT launches (November). AI enters mainstream consciousness
 - **2023:** GPT-4 arrives. A leap:
-  - 80.5% on HumanEval (code generation) [P1, 2024]
-  - 42.5% on MATH (competition math) [P6, 2023]
-  - 86.4% on MMLU (academic knowledge) [P6, 2023]
+  - 80.5% on HumanEval (code generation) [@ni2024l2ceval]
+  - 42.5% on MATH (competition math) [@fu2023cothub]
+  - 86.4% on MMLU (academic knowledge) [@fu2023cothub]
 - **Open-source explosion:** LLaMA, Code Llama, StarCoder, Mistral
 
 
@@ -238,7 +239,7 @@ A Brief History of LLMs (2017-2026)
 
 - **2024:** OpenAI releases o1. A "reasoning model" that thinks step-by-step
 - **2025:** o3-mini, DeepSeek-R1 push reasoning further
-  - o3-mini: 13.4% on Humanity's Last Exam (vs. GPT-4o at 2.7%) [P8, 2025]
+  - o3-mini: 13.4% on Humanity's Last Exam (vs. GPT-4o at 2.7%) [@phan2025hle]
 
 . . .
 
@@ -257,7 +258,7 @@ The difference is **how they spend compute**:
 
 . . .
 
-**o3-mini scored ~5x higher than GPT-4o on Humanity's Last Exam** [P8, 2025]
+**o3-mini scored ~5x higher than GPT-4o on Humanity's Last Exam** [@phan2025hle]
 
 
 ## Why Reasoning Models Matter
@@ -281,11 +282,11 @@ The tradeoff: slower, more expensive, but substantially better on hard problems.
 
 Even with better models, these problems are probably not solved:
 
-- **Buggy context catastrophe.** Models still don't detect upstream bugs [P15, 2023]
-- **Poor calibration.** Overconfidence is architectural, not just a training issue [P8, 2025]
-- **Security vulnerabilities.** No systematic re-evaluation on frontier models [P12, 2024]
-- **Benchmark contamination.** Gets worse as training data grows [P4, 2025]
-- **Agent self-repair at 4%.** Agents still can't fix their own mistakes [P16, 2026]
+- **Buggy context catastrophe.** Models still don't detect upstream bugs [@dinh2023buggy]
+- **Poor calibration.** Overconfidence is architectural, not just a training issue [@phan2025hle]
+- **Security vulnerabilities.** No systematic re-evaluation on frontier models [@zhou2024copilot]
+- **Benchmark contamination.** Gets worse as training data grows [@chen2025dycodeeval]
+- **Agent self-repair at 4%.** Agents still can't fix their own mistakes [@islam2026agents-fail]
 
 . . .
 
@@ -309,9 +310,9 @@ MATH benchmark progression (competition-level mathematics):
 
 | Year | Model | MATH Score | Conditions |
 |:-----|:------|:-----------|:-----------|
-| 2021 | GPT-2 1.5B | 6.9% | Math-pretrained + fine-tuned [P7, 2021] |
-| 2021 | GPT-3 175B | 5.2% | Few-shot [P7, 2021] |
-| 2023 | GPT-4 | 42.5% | [P6, 2023] |
+| 2021 | GPT-2 1.5B | 6.9% | Math-pretrained + fine-tuned [@hendrycks2021math] |
+| 2021 | GPT-3 175B | 5.2% | Few-shot [@hendrycks2021math] |
+| 2023 | GPT-4 | 42.5% | [@fu2023cothub] |
 | 2025 | o3-mini | ~87% | Reported |
 | 2026 | GPT-5.3-Codex | ~96% | Reported |
 
@@ -330,26 +331,27 @@ What Does the Research Say?
 
 | Task | Performance | Source |
 |:-----|:-----------|:-------|
-| Code generation (syntactically valid) | 91.5% | [P12, 2024] |
-| Grade-school math (GSM8k) | 92.0% | [P6, 2023] |
-| Academic knowledge (MMLU) | 86.4% | [P6, 2023] |
-| Undergraduate statistics | 82.85% | [P5, 2025] |
-| Python function synthesis (HumanEval) | 80.5% | [P1, 2024] |
+| Code generation (syntactically valid) | 91.5% | [@ni2024l2ceval] |
+| Grade-school math (GSM8k) | 92.0% | [@fu2023cothub] |
+| Academic knowledge (MMLU) | 86.4% | [@fu2023cothub] |
+| Undergraduate statistics | 82.85% | [@lu2025stateval] |
+| Python function synthesis (HumanEval) | 80.5% | [@ni2024l2ceval] |
+| Data science code (DS-1000) | 43.3% (Codex) | [@lai2023ds1000] |
 
 . . .
 
-**Pattern:** LLMs excel at tasks with clear patterns, well-represented training data, and unambiguous evaluation criteria.
+**Pattern:** LLMs excel at tasks with clear patterns, well-represented training data, and unambiguous evaluation criteria. Note the gap between generic coding benchmarks and data-science-specific ones.
 
 
 ## Where LLMs Struggle {.smaller}
 
 | Task | Performance | Source |
 |:-----|:-----------|:-------|
-| Research-level statistics | <57% | [P5, 2025] |
-| Expert-level questions (HLE) | 2.7-13.4% | [P8, 2025] |
-| Real-world code translation | 8.1% (GPT-4) | [P10, 2024] |
-| Code completion with buggy context | 0.5-3.1% | [P15, 2023] |
-| Agent self-repair | 4% | [P16, 2026] |
+| Research-level statistics | <57% | [@lu2025stateval] |
+| Expert-level questions (HLE) | 2.7-13.4% | [@phan2025hle] |
+| Real-world code translation | 8.1% (GPT-4) | [@pan2024lost] |
+| Code completion with buggy context | 0.5-3.1% | [@dinh2023buggy] |
+| Agent self-repair | 4% | [@islam2026agents-fail] |
 
 . . .
 
@@ -366,7 +368,7 @@ A single bug in the surrounding code is catastrophic:
 | CodeGen-16B | 50.0% | 3.1% |
 | StarCoder-15B | 41.1% | 1.2% |
 
-90% of failures: the model **propagates the bug** without reacting to it. [P15, 2023]
+90% of failures: the model **propagates the bug** without reacting to it. [@dinh2023buggy]
 
 . . .
 
@@ -377,27 +379,31 @@ A single bug in the surrounding code is catastrophic:
 
 LLMs are wrong frequently and act certain almost always:
 
-- **Calibration error on expert questions:** 70-89% RMS error across all models [P8, 2025]
-- On MATH, confidence is near 100% **regardless of correctness** [P7, 2021]
-- **29% of generated Python code** contains bugs [P9, 2024]
-- **29.8% of Copilot snippets** contain security vulnerabilities across 38 CWE categories [P12, 2024]
+- **Calibration error on expert questions:** 70-89% RMS error across all models [@phan2025hle]
+- On MATH, confidence is near 100% **regardless of correctness** [@hendrycks2021math]
+- **29% of generated Python code** contains bugs [@tambon2024bugs]
+- **~40% of Copilot scenarios** produced at least one vulnerable code suggestion [@pearce2022asleep]; **29.8% of snippets** contain security vulnerabilities across 38 CWE categories [@zhou2024copilot]
 
 . . .
 
-**Wrong ~30% of the time, acts certain.**
+**It gets worse:** Users with AI assistants wrote *significantly less secure* code **and were more confident** in it [@perry2023insecure]. The overconfidence is contagious.
 
 
 ## Benchmarks Lie
 
 **When models have seen the test before, scores are ~3x too high:**
 
-A code-generation model that had seen all the benchmark problems during training solved 68% of them. The same model, given *new problems testing the same skills*, solved only 22%. [P4, 2025]
+A code-generation model that had seen all the benchmark problems during training solved 68% of them. The same model, given *new problems testing the same skills*, solved only 22%. [@chen2025dycodeeval]
+
+. . .
+
+**Even uncontaminated benchmarks are too easy:** Code that passes HumanEval often fails on more rigorous test suites --- the benchmark rewards surface correctness, not robustness [@liu2023evalplus].
 
 . . .
 
 **Benchmark vs. real-world gap:**
 
-GPT-4 code translation: 47.3% on benchmarks, 8.1% on real-world projects. [P10, 2024]
+GPT-4 code translation: 47.3% on benchmarks, 8.1% on real-world projects. [@pan2024lost]
 
 . . .
 
@@ -410,11 +416,11 @@ Frontier comparison. Literature-era best vs. February 2026:
 
 | Benchmark | Best in Papers | 2026 Frontier | Change |
 |:----------|:--------------|:-------------|:-------|
-| MATH (competition) | 42.5% (GPT-4) [P6, 2023] | ~96% (GPT-5.3-Codex) | +54 pts |
-| HLE (expert questions) | 13.4% (o3-mini) [P8, 2025] | 53.1% (Opus 4.6, with tools) | +40 pts |
-| HumanEval (code gen) | 80.5% (GPT-4) [P1, 2024] | ~95% (Opus 4.6) | +15 pts |
-| MMLU (academic) | 86.4% (GPT-4) [P6, 2023] | ~93% (GPT-5.3-Codex) | +7 pts |
-| SWE-bench Verified | -- | 80.8% (Opus 4.6) | -- |
+| MATH (competition) | 42.5% (GPT-4) [@fu2023cothub] | ~96% (GPT-5.3-Codex) | +54 pts |
+| HLE (expert questions) | 13.4% (o3-mini) [@phan2025hle] | 53.1% (Opus 4.6, with tools) | +40 pts |
+| HumanEval (code gen) | 80.5% (GPT-4) [@ni2024l2ceval] | ~95% (Opus 4.6) | +15 pts |
+| MMLU (academic) | 86.4% (GPT-4) [@fu2023cothub] | ~93% (GPT-5.3-Codex) | +7 pts |
+| SWE-bench Verified [@jimenez2024swebench] | -- | 80.8% (Opus 4.6) | -- |
 
 **Enormous improvement in 2-3 years.** But recall: benchmarks lie.
 
@@ -438,7 +444,7 @@ Frontier comparison. Literature-era best vs. February 2026:
 
 ## Summary: What This Means for You
 
-4. **Prompting matters.** Few-shot examples, chain-of-thought, and explicit framing improve results 5-50 percentage points.
+4. **Prompting matters.** Few-shot examples, chain-of-thought [@wei2022cot], and explicit framing improve results 5-50 percentage points.
 
 . . .
 
@@ -446,7 +452,7 @@ Frontier comparison. Literature-era best vs. February 2026:
 
 . . .
 
-6. **Human expertise is essential.** Developers who know code is AI-generated catch 13 percentage points more bugs [P11, 2024].
+6. **Human expertise is essential.** Developers who know code is AI-generated catch 13 percentage points more bugs [@tang2024developer].
 
 
 ## {background-color="#2c3e50"}
@@ -471,12 +477,12 @@ The optimists have real evidence:
 
 The skeptics also have real evidence:
 
-- Benchmark contamination inflates scores ~3x [P4, 2025]
-- 29% of generated code has bugs [P9, 2024]
-- 29.8% of Copilot snippets have security vulnerabilities [P12, 2024]
-- Buggy context drops performance from 50% to 2% [P15, 2023]
-- Best agent self-repair: 4% accuracy [P16, 2026]
-- Real-world code translation: 8.1% (vs. 47.3% on benchmarks) [P10, 2024]
+- Benchmark contamination inflates scores ~3x [@chen2025dycodeeval]
+- 29% of generated code has bugs [@tambon2024bugs]
+- ~40% of Copilot scenarios produced vulnerable suggestions [@pearce2022asleep]
+- Buggy context drops performance from 50% to 2% [@dinh2023buggy]
+- Best agent self-repair: 4% accuracy [@islam2026agents-fail]
+- Real-world code translation: 8.1% (vs. 47.3% on benchmarks) [@pan2024lost]
 
 
 ## The Nuance
@@ -517,6 +523,8 @@ What AI can do well in our field:
 - Translate between programming languages
 - Explain unfamiliar code or statistical concepts
 
+In practice, productivity gains are real but modest and uneven [@ziegler2024copilot; @liang2024survey].
+
 . . .
 
 What AI cannot do:
@@ -538,9 +546,9 @@ What AI cannot do:
 
 2. If an LLM writes 70% of a methods section, who is the **author**?
 
-3. Should researchers be required to **disclose** AI tool use? At what level of detail?
+3. Should researchers be required to **disclose** AI tool use? At what level of detail? [see @hosseini2023ethics; @liao2024transparency]
 
-4. LLMs are trained on public code and text, often without consent. **Is this ethical?** Does it matter if the model is open-source vs. proprietary?
+4. LLMs are trained on public code and text, often without consent. **Is this ethical?** Does it matter if the model is open-source vs. proprietary? [see @weidinger2022taxonomy]
 
 5. If AI tools make data analysis faster and cheaper, what happens to the **value of your degree**?
 

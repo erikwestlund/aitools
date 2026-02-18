@@ -17,7 +17,16 @@
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:openai.com)",
       "WebFetch(domain:llm-stats.com)",
-      "WebFetch(domain:pricepertoken.com)"
+      "WebFetch(domain:pricepertoken.com)",
+      "WebFetch(domain:proceedings.mlr.press)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:openreview.net)",
+      "Bash(bash -c 'ls /home/erik/Projects/ai-tools-for-data-science-and-statistics/')",
+      "Bash(bash -l -c:*)",
+      "Bash(test:*)",
+      "Bash(/bin/ls:*)",
+      "Bash(exec bash -c 'cd /home/erik && ls Projects/')",
+      "Bash(env -C /home/erik/Projects/ai-tools-for-data-science-and-statistics pwd:*)"
     ]
   }
 }
