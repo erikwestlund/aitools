@@ -28,7 +28,8 @@
       "Bash(exec bash -c 'cd /home/erik && ls Projects/')",
       "Bash(env -C /home/erik/Projects/ai-tools-for-data-science-and-statistics pwd:*)",
       "Bash(git -C /home/erik/Projects/ai-tools-for-data-science-and-statistics log --oneline -5)",
-      "Bash(git -C /home/erik/Projects/ai-tools-for-data-science-and-statistics ls-files course_docs/readings/)"
+      "Bash(git -C /home/erik/Projects/ai-tools-for-data-science-and-statistics ls-files course_docs/readings/)",
+      "Bash(bash render.sh)"
     ]
   }
 }

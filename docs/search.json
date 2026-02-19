@@ -410,7 +410,7 @@
     "href": "slides/01-foundations.html#demo-ai-generated-eda",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Demo: AI-Generated EDA",
-    "text": "Demo: AI-Generated EDA\nBefore we wrap up, let’s look at a real example: a complete exploratory data analysis notebook written entirely by an LLM.\n\nStata auto dataset: distributions, correlations, Box-Cox transformations\nEvery line of code was AI-generated\nWe’ll walk through what it got right, what’s questionable, and what you’d want to verify\n\nThe notebook is in the course repo: demos/llm-generated-eda.qmd"
+    "text": "Demo: AI-Generated EDA\nBefore we wrap up, let’s look at a real example: a complete exploratory data analysis notebook written entirely by an LLM.\n\nPalmer Penguins data\nFive different model-harnesses\nLets run the same prompt, examine results.\n\nThe notebook stems (all the same to start) are in the course repo: demos/1-eda"
   },
   {
     "objectID": "slides/01-foundations.html#whats-next",
