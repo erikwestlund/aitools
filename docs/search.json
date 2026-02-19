@@ -7,32 +7,60 @@
     "text": "Good Old-Fashioned AI\n\n\nBefore LLMs: 70 years of trying to make machines think."
   },
   {
+    "objectID": "slides/01-foundations.html#goals-for-today",
+    "href": "slides/01-foundations.html#goals-for-today",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Goals for Today",
+    "text": "Goals for Today\n\nUnderstand what an LLM is (and is not)\nPlace the current moment in historical context\nSee the recurring failure modes the research keeps finding\nLeave with a clear mindset: skeptical, empirical, and tool-agnostic"
+  },
+  {
     "objectID": "slides/01-foundations.html#the-initial-vision-1950s-1960s",
     "href": "slides/01-foundations.html#the-initial-vision-1950s-1960s",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Initial Vision (1950s-1960s)",
-    "text": "The Initial Vision (1950s-1960s)\n\n1950: Turing proposes the imitation game. “Can machines think?”\n1956: Dartmouth workshop coins “Artificial Intelligence.” Marvin Minsky, Herbert Simon, and others predict human-level AI within a generation.\n1958: Frank Rosenblatt builds the Perceptron. The first neural network. The New York Times reports the Navy expects it to “walk, talk, see, write, reproduce itself, and be conscious.”\n\n\nMarvin Minsky (1967): “Within a generation… the problem of creating ‘artificial intelligence’ will substantially be solved.”"
+    "text": "The Initial Vision (1950s-1960s)\n\n1950: Turing proposes the imitation game. “Can machines think?”\n1956: Dartmouth workshop coins “Artificial Intelligence.” Minsky, Simon, and others predict human-level AI within a generation.\n1958: Rosenblatt builds the Perceptron, the first neural network.\n\n\nThe New York Times reports the Navy expects it to “walk, talk, see, write, reproduce itself, and be conscious.”"
+  },
+  {
+    "objectID": "slides/01-foundations.html#the-promise",
+    "href": "slides/01-foundations.html#the-promise",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Promise",
+    "text": "The Promise\nMarvin Minsky (1967): “Within a generation… the problem of creating ‘artificial intelligence’ will substantially be solved.”\n\nThey were not close."
   },
   {
     "objectID": "slides/01-foundations.html#the-symbolic-era-gofai",
     "href": "slides/01-foundations.html#the-symbolic-era-gofai",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Symbolic Era: GOFAI",
-    "text": "The Symbolic Era: GOFAI\n“Good Old-Fashioned AI” (Haugeland 1985) posits that intelligence is symbol manipulation.\nThe approach: Encode human knowledge as logical rules, then reason over them.\n\n\n\n\n\n\n\n\nSystem\nWhat It Did\nLimitation\n\n\n\n\nELIZA (1966)\nPattern-matched to simulate a therapist\nNo understanding; pure string tricks\n\n\nSHRDLU (1971)\nUnderstood natural language about blocks on a table\nOnly worked in a tiny toy world\n\n\nMYCIN (1976)\nDiagnosed bacterial infections with ~600 rules\nCouldn’t learn; every rule hand-written\n\n\nCYC (1984-)\nAttempted to encode all common sense\n40+ years later, still not done"
+    "text": "The Symbolic Era: GOFAI\n“Good Old-Fashioned AI” (Haugeland 1985) posits that intelligence is symbol manipulation.\nThe approach: Encode human knowledge as logical rules, then reason over them.\n\n\n\n\n\n\n\n\n\nSystem\nWhat It Did\nLimitation\n\n\n\n\nELIZA (1966)\nPattern-matched to simulate a therapist\nNo understanding; pure string tricks\n\n\nSHRDLU (1971)\nUnderstood natural language about blocks on a table\nOnly worked in a tiny toy world\n\n\nMYCIN (1976)\nDiagnosed bacterial infections with ~600 rules\nCouldn’t learn; every rule hand-written\n\n\nCYC (1984-)\nAttempted to encode all common sense\n40+ years later, still not done"
   },
   {
-    "objectID": "slides/01-foundations.html#the-critics",
-    "href": "slides/01-foundations.html#the-critics",
+    "objectID": "slides/01-foundations.html#the-critics-dreyfus",
+    "href": "slides/01-foundations.html#the-critics-dreyfus",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "The Critics",
-    "text": "The Critics\nTwo philosophers saw fundamental problems:\nHubert Dreyfus [What Computers Can’t Do; (1972)]: Human expertise is embodied and intuitive, not rule-based. A chess master doesn’t search a tree. They see the board. GOFAI can’t capture this. (His brother Stuart Dreyfus, an operations researcher, co-developed the skill acquisition model behind this critique.)\n\nJohn Searle [“Chinese Room”; (1980)]: A system can manipulate symbols perfectly and understand nothing. Syntax is not semantics.\n\n\nDreyfus again [What Computers Still Can’t Do; (1992)]: After 20 more years, the same problems remain. GOFAI is still a failure."
+    "section": "The Critics: Dreyfus",
+    "text": "The Critics: Dreyfus\nHubert Dreyfus, What Computers Can’t Do (1972):\nHuman expertise is embodied and intuitive, not rule-based. A chess master doesn’t search a tree. They see the board. GOFAI can’t capture this.\n(His brother Stuart Dreyfus, an operations researcher, co-developed the skill acquisition model behind this critique.)"
   },
   {
-    "objectID": "slides/01-foundations.html#ai-winters",
-    "href": "slides/01-foundations.html#ai-winters",
+    "objectID": "slides/01-foundations.html#the-critics-searle",
+    "href": "slides/01-foundations.html#the-critics-searle",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "AI “Winters”",
-    "text": "AI “Winters”\nOverpromising leads to underfunding. Twice:\nFirst AI Winter (1974-1980)\n\nLighthill Report (UK, 1973): AI has failed to deliver on its promises\nDARPA cuts funding; the field contracts\n\nSecond AI Winter (1987-1993)\n\nExpert systems boom, then bust. Too brittle, too expensive to maintain\nJapan’s Fifth Generation Computer Systems fails to provide a foundation for AI\nNeural network research stalls"
+    "section": "The Critics: Searle",
+    "text": "The Critics: Searle\nJohn Searle “Chinese Room” (1980):\nA system can manipulate symbols perfectly and understand nothing. Syntax is not semantics.\n\nDreyfus again What Computers Still Can’t Do (1992): After 20 more years, the same problems remain."
+  },
+  {
+    "objectID": "slides/01-foundations.html#first-ai-winter-1974-1980",
+    "href": "slides/01-foundations.html#first-ai-winter-1974-1980",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "First AI Winter (1974-1980)",
+    "text": "First AI Winter (1974-1980)\nOverpromising leads to underfunding.\n\nLighthill Report (UK, 1973): AI has failed to deliver on its promises\nDARPA cuts funding; the field contracts"
+  },
+  {
+    "objectID": "slides/01-foundations.html#second-ai-winter-1987-1993",
+    "href": "slides/01-foundations.html#second-ai-winter-1987-1993",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Second AI Winter (1987-1993)",
+    "text": "Second AI Winter (1987-1993)\nIt happens again.\n\nExpert systems boom, then bust. Too brittle, too expensive to maintain\nJapan’s Fifth Generation Computer Systems fails\nNeural network research stalls"
   },
   {
     "objectID": "slides/01-foundations.html#ai-revival-1990s-now",
@@ -42,67 +70,95 @@
     "text": "AI Revival (1990s-now)\nAI stopped trying to be “intelligent” and started being useful:\n\nMachine learning replaces hand-coded rules with learning from data\nStatistical methods dominate: SVMs, random forests, boosting. These are tools many of you already likely use.\nDeep learning breakthrough (2012): AlexNet wins ImageNet by a landslide using a neural network and GPUs\n\n\nThe shift: from “encode what we know” to “learn from what we have.”"
   },
   {
-    "objectID": "slides/01-foundations.html#what-searle-and-dreyfus-would-say-now",
-    "href": "slides/01-foundations.html#what-searle-and-dreyfus-would-say-now",
+    "objectID": "slides/01-foundations.html#what-searle-and-dreyfus-might-say-now",
+    "href": "slides/01-foundations.html#what-searle-and-dreyfus-might-say-now",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "What Searle and Dreyfus Would Say Now",
-    "text": "What Searle and Dreyfus Would Say Now\nTheir critiques haven’t gone away. They’ve shapeshifted:\n\n\n\n\n\n\n\nGOFAI Critique\nLLM Version\n\n\n\n\nCan’t handle ambiguity\nHandles surface ambiguity; fails on deep reasoning\n\n\nBrittle when rules don’t cover the case\nFails catastrophically on buggy or novel contexts\n\n\nSyntax without semantics (Searle)\nGenerates fluent text without “understanding” it\n\n\nNo embodied knowledge (Dreyfus)\nNo experience, no clinical intuition, no common sense grounding\n\n\nCan’t plan or reason (both)\nLLMs fail on classical planning tasks that require genuine reasoning (Valmeekam et al. 2023; Kambhampati et al. 2024)\n\n\n\n\nThe question hasn’t changed: Is sophisticated pattern matching the same as understanding?"
+    "section": "What Searle and Dreyfus Might Say Now",
+    "text": "What Searle and Dreyfus Might Say Now\nInterpretive lens (not an empirical result): what their critiques would predict about LLM behavior.\n\n\n\n\n\n\n\n\nGOFAI Critique\nLLM Version\n\n\n\n\nCan’t handle ambiguity\nHandles surface ambiguity; fails on deep reasoning\n\n\nBrittle when rules don’t cover the case\nFails catastrophically on buggy or novel contexts\n\n\nSyntax without semantics (Searle)\nGenerates fluent text without “understanding” it"
+  },
+  {
+    "objectID": "slides/01-foundations.html#what-searle-and-dreyfus-might-say-now-cont.",
+    "href": "slides/01-foundations.html#what-searle-and-dreyfus-might-say-now-cont.",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "What Searle and Dreyfus Might Say Now (cont.)",
+    "text": "What Searle and Dreyfus Might Say Now (cont.)\n\n\n\n\n\n\n\n\nGOFAI Critique\nLLM Version\n\n\n\n\nNo embodied knowledge (Dreyfus)\nNo experience, no clinical intuition, no common sense grounding\n\n\nCan’t plan or reason (both)\nLLMs fail on classical planning tasks (Valmeekam et al. 2023; Kambhampati et al. 2024)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#the-question-hasnt-changed",
+    "href": "slides/01-foundations.html#the-question-hasnt-changed",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Question Hasn’t Changed",
+    "text": "The Question Hasn’t Changed\nIs sophisticated pattern matching the same as understanding?\n\nFor this course, we won’t try to settle that question philosophically. We’ll ask a narrower one:\nWhen should you trust LLM outputs in scientific work, and what failure modes should you expect?"
   },
   {
     "objectID": "slides/01-foundations.html#the-hype-cycle-is-not-new",
     "href": "slides/01-foundations.html#the-hype-cycle-is-not-new",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Hype Cycle Is Not New",
-    "text": "The Hype Cycle Is Not New\n\n\n\n\n\n\n\n\nEra\nThe Promise\nWhat Actually Happened\n\n\n\n\n1960s\n“AI in a generation”\nTwo AI winters\n\n\n1980s\nExpert systems will replace professionals\nToo brittle; collapsed\n\n\n2010s\nSelf-driving cars by 2020\nStill not solved in 2026\n\n\n2020s\nAGI is imminent; all jobs automated\n???\n\n\n\n\nWe are somewhere on this curve. Knowing the history helps you locate where."
+    "text": "The Hype Cycle Is Not New\n\n\n\n\n\n\n\n\n\nEra\nThe Promise\nWhat Actually Happened\n\n\n\n\n1960s\n“AI in a generation”\nTwo AI winters\n\n\n1980s\nExpert systems will replace professionals\nToo brittle; collapsed\n\n\n2010s\nSelf-driving cars by 2020\nStill not solved in 2026\n\n\n2020s\nAGI is imminent; all jobs automated\n???\n\n\n\n\n\nWe are somewhere on this curve. Knowing the history helps you locate where."
   },
   {
     "objectID": "slides/01-foundations.html#section-1",
     "href": "slides/01-foundations.html#section-1",
     "title": "AI Tools for Data Science and Statistics",
     "section": "",
-    "text": "What is a Large Language Model?\n\n\nWhat follows is simplified for teaching. The goal is a useful mental model, not technical precision."
+    "text": "What is a Large Language Model?"
   },
   {
     "objectID": "slides/01-foundations.html#the-simplest-explanation",
     "href": "slides/01-foundations.html#the-simplest-explanation",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Simplest Explanation",
-    "text": "The Simplest Explanation\nAn LLM is a function that predicts the next word.\n\nGiven a sequence of words, it outputs a probability distribution over what comes next.\n\n\nIt is often called “sophisticated autocomplete” — though with advances in context windows and planning-like behavior on some tasks, the analogy has limits."
+    "text": "The Simplest Explanation\nAn LLM is a function trained to predict the next token.\n\nGiven a sequence of tokens, it outputs a probability distribution over what comes next.\n\n\nThis training objective is why it is often called “sophisticated autocomplete.” At scale, the same objective can produce behavior that looks like reasoning on some tasks, but it is still fragile."
   },
   {
     "objectID": "slides/01-foundations.html#tokens-and-embeddings",
     "href": "slides/01-foundations.html#tokens-and-embeddings",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Tokens and Embeddings",
-    "text": "Tokens and Embeddings\n\nText is split into tokens (subword units, not whole words)\n\n“biostatistics” \\(\\rightarrow\\) “bio” + “stat” + “istics”\n\nEach token is mapped to a vector (a list of numbers)\nThese vectors capture meaning through position in high-dimensional space\n\n\nPrincipal Components Analysis analogy: Just as PCA finds axes of variation in your data, embeddings find axes of meaning in language. Words with similar meanings cluster together."
+    "text": "Tokens and Embeddings\n\nText is split into tokens (subword units, not whole words)\n\n“biostatistics” \\(\\rightarrow\\) “bio” + “stat” + “istics”\n\nEach token is mapped to a vector (a list of numbers)\nThese vectors capture meaning through position in high-dimensional space\n\n\nPCA analogy: Just as PCA finds axes of variation in your data, embeddings find axes of meaning in language. Words with similar meanings cluster together."
   },
   {
     "objectID": "slides/01-foundations.html#attention",
     "href": "slides/01-foundations.html#attention",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Attention",
-    "text": "Attention\nThe core innovation (Vaswani et al. 2017):\nWords look at other words to determine their meaning.\n\n\n“They walked along the bank of the river.”\n\n\n“She deposited the check at the bank.”\n\nSame word, different meaning. Attention resolves this by weighing context.\n\n\nAn analogy: Wittgenstein’s “meaning is use” [Philosophical Investigations; (1953)]: a word’s meaning isn’t fixed; it comes from how it’s used in context. Attention mechanisms capture something structurally similar."
+    "text": "Attention\nCore innovation (Vaswani et al. 2017):\nWords look at other words to determine their meaning.\n\n\n“They walked along the bank of the river.”\n\n\n“She deposited the check at the bank.”\n\nSame word, different meaning. Attention resolves this by weighing context."
   },
   {
-    "objectID": "slides/01-foundations.html#how-do-llms-learn",
-    "href": "slides/01-foundations.html#how-do-llms-learn",
+    "objectID": "slides/01-foundations.html#attention-an-analogy",
+    "href": "slides/01-foundations.html#attention-an-analogy",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "How Do LLMs “Learn?”",
-    "text": "How Do LLMs “Learn?”\nThree stages. Most capability comes from stage 1. Stages 2-3 mostly shape behavior, not knowledge.\n\nPre-training: Predict the next token across massive text corpora (internet, books, code, curated datasets). The model learns statistical patterns of language and knowledge. It stores weights and distributed patterns, not documents.\nInstruction tuning (Supervised Fine-Tuning): Fine-tune on curated prompt-response examples so the model follows instructions and behaves like an assistant. This changes behavior more than knowledge.\nPreference optimization (Reinforcement Learning from Human Feedback, or similar): Humans compare outputs; a reward model learns their preferences; the model is optimized to produce responses humans rate as more helpful and aligned."
+    "section": "Attention: An Analogy",
+    "text": "Attention: An Analogy\nWittgenstein’s “meaning is use” [Philosophical Investigations; (1953)]:\nA word’s meaning isn’t fixed; it comes from how it’s used in context.\n\nAttention mechanisms capture something structurally similar."
+  },
+  {
+    "objectID": "slides/01-foundations.html#how-do-llms-learn-12",
+    "href": "slides/01-foundations.html#how-do-llms-learn-12",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "How Do LLMs “Learn?” (1/2)",
+    "text": "How Do LLMs “Learn?” (1/2)\nThree stages. Most capability comes from stage 1.\n\nPre-training: Predict the next token across massive text corpora (internet, books, code, curated datasets). The model learns statistical patterns of language and knowledge. It stores weights and distributed patterns, not documents."
+  },
+  {
+    "objectID": "slides/01-foundations.html#how-do-llms-learn-22",
+    "href": "slides/01-foundations.html#how-do-llms-learn-22",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "How Do LLMs “Learn?” (2/2)",
+    "text": "How Do LLMs “Learn?” (2/2)\nStages 2-3 mostly shape behavior, not knowledge.\n\nInstruction tuning (Supervised Fine-Tuning): Fine-tune on curated prompt-response examples so the model follows instructions and behaves like an assistant.\nPreference optimization (Reinforcement Learning from Human Feedback, or RLHF): Humans compare pairs of model outputs and pick the better one. A reward model learns these preferences. The LLM is then fine-tuned with reinforcement learning to maximize that reward signal, producing responses humans rate as more helpful and aligned."
   },
   {
     "objectID": "slides/01-foundations.html#key-concepts-for-users",
     "href": "slides/01-foundations.html#key-concepts-for-users",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Key Concepts for Users",
-    "text": "Key Concepts for Users\n\n\n\n\n\n\n\nConcept\nWhat It Means\n\n\n\n\nContext window\nHow much text the model can “see” at once (200K-400K tokens for frontier models)\n\n\nTemperature\nControls randomness. Low = deterministic, high = creative\n\n\nStochasticity\nSame prompt can give different answers each time\n\n\nNo memory\nEach conversation starts from scratch (unless you provide context)"
+    "text": "Key Concepts for Users\n\n\n\n\n\n\n\n\nConcept\nWhat It Means\n\n\n\n\nContext window\nHow much text the model can “see” at once (200K-400K tokens for frontier models)\n\n\nTemperature\nControls randomness. Low = more deterministic, high = less deterministic\n\n\nStochasticity\nSame prompt can give different answers each time\n\n\nNo memory\nEach conversation starts from scratch (unless you provide context)"
   },
   {
     "objectID": "slides/01-foundations.html#what-an-llm-is-not",
     "href": "slides/01-foundations.html#what-an-llm-is-not",
     "title": "AI Tools for Data Science and Statistics",
     "section": "What an LLM Is Not",
-    "text": "What an LLM Is Not\n\nNot a database. It doesn’t “look up” answers. It generates them.\nNot a search engine. It doesn’t retrieve documents (unless given tools to do so).\nNot deterministic. Same input \\(\\neq\\) same output.\nNot “thinking” the way you do. It can produce both correct reasoning chains and convincing nonsense, with no reliable way to tell the difference from the inside.\nNot an expert. It can sound authoritative while being completely wrong."
+    "text": "What an LLM Is Not\n\nNot a database. It doesn’t “look up” answers. It generates them.\nNot a search engine. It doesn’t retrieve documents (unless given tools to do so).\nNot deterministic. Same input \\(\\neq\\) same output.\n\n\n\nNot “thinking” the way you do. It produces both correct reasoning and convincing nonsense, with no reliable way to tell the difference from the inside.\nNot an expert. It can sound authoritative while being completely wrong."
   },
   {
     "objectID": "slides/01-foundations.html#section-2",
@@ -116,56 +172,63 @@
     "href": "slides/01-foundations.html#the-foundation-2017-2020",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Foundation (2017-2020)",
-    "text": "The Foundation (2017-2020)\n\n2017: “Attention Is All You Need” introduces the Transformer architecture\n2018: GPT-1 (117M parameters). Language modeling as pre-training\n2019: GPT-2 (1.5B). “Too dangerous to release”\n2020: GPT-3 (175B). Can perform tasks from just a few examples in the prompt, without additional training\n\nWhere we were on math: The best models scored 3–7% on the MATH benchmark. GPT-2 1.5B reached 6.9% after pretraining on a math corpus and fine-tuning; GPT-3 175B managed only 5.2% few-shot. (Hendrycks et al. 2021)"
+    "text": "The Foundation (2017-2020)\n\n2017: “Attention Is All You Need” introduces the Transformer architecture\n2018: GPT-1 (117M parameters). Language modeling as pre-training\n2019: GPT-2 (1.5B). “Too dangerous to release”\n2020: GPT-3 (175B). Can perform tasks from just a few examples in the prompt"
   },
   {
-    "objectID": "slides/01-foundations.html#the-scaling-era-2021-2023",
-    "href": "slides/01-foundations.html#the-scaling-era-2021-2023",
+    "objectID": "slides/01-foundations.html#where-we-were-on-math",
+    "href": "slides/01-foundations.html#where-we-were-on-math",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "The Scaling Era (2021-2023)",
-    "text": "The Scaling Era (2021-2023)\n\n2021: Codex, which was GPT-3 fine-tuned on code, powers GitHub Copilot\n2022: ChatGPT launches (November). AI enters mainstream consciousness\n2023: GPT-4 arrives. A leap:\n\n80.5% on HumanEval (code generation) (Ni et al. 2024)\n42.5% on MATH (competition math) (Fu et al. 2023)\n86.4% on MMLU (academic knowledge) (Fu et al. 2023)\n\nOpen-source explosion: LLaMA, Code Llama, StarCoder, Mistral"
+    "section": "Where We Were on Math",
+    "text": "Where We Were on Math\nThe best models scored 3–7% on the MATH benchmark:\n\nGPT-2 1.5B reached 7% after pretraining on a math corpus and fine-tuning\nGPT-3 175B managed only 5% few-shot\n\n(Hendrycks et al. 2021)\n\nKeep these numbers in mind."
+  },
+  {
+    "objectID": "slides/01-foundations.html#the-scaling-era-2021-2022",
+    "href": "slides/01-foundations.html#the-scaling-era-2021-2022",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Scaling Era (2021-2022)",
+    "text": "The Scaling Era (2021-2022)\n\n2021: Codex (GPT-3 fine-tuned on code) powers GitHub Copilot\n2022: ChatGPT launches (November). AI enters mainstream consciousness"
+  },
+  {
+    "objectID": "slides/01-foundations.html#the-leap-2023",
+    "href": "slides/01-foundations.html#the-leap-2023",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Leap (2023)",
+    "text": "The Leap (2023)\n\nGPT-4 arrives. A step change in capability:\n\n80% on HumanEval (code generation, 0-shot) (Ni et al. 2024)\n43% on MATH (competition math) (Fu et al. 2023)\n86% on MMLU (academic knowledge) (Fu et al. 2023)\n\nOpen-source accelerates: LLaMA, Code Llama, StarCoder, Mistral"
   },
   {
     "objectID": "slides/01-foundations.html#the-reasoning-era-2024-2025",
     "href": "slides/01-foundations.html#the-reasoning-era-2024-2025",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Reasoning Era (2024-2025)",
-    "text": "The Reasoning Era (2024-2025)\n\n2024: OpenAI releases o1. A “reasoning model” that thinks step-by-step\n2025: o3-mini, DeepSeek-R1 push reasoning further\n\no3-mini: 13.4% on Humanity’s Last Exam (vs. GPT-4o at 2.7%) (Phan et al. 2025)\n\n\n\nKey insight: Reasoning models use the same underlying architecture. What’s different is how they’re trained and how they spend compute: they think longer before answering, they’re trained on different data mixtures, and they check their own work. It’s a harness of the models."
+    "text": "The Reasoning Era (2024-2025)\n\n2024: OpenAI releases o1. A “reasoning model” that thinks step-by-step\n2025: o3-mini, DeepSeek-R1 push reasoning further\n\no3-mini: 13% on Humanity’s Last Exam (vs. GPT-4o at 3%) (Phan et al. 2025)\n\n\n\nKey insight: Reasoning models use the same underlying architecture."
   },
   {
     "objectID": "slides/01-foundations.html#what-makes-reasoning-models-different",
     "href": "slides/01-foundations.html#what-makes-reasoning-models-different",
     "title": "AI Tools for Data Science and Statistics",
     "section": "What Makes Reasoning Models Different?",
-    "text": "What Makes Reasoning Models Different?\nReasoning models (o1, o3-mini, DeepSeek-R1) are built on the same transformer architecture as every other LLM.\nThe difference is how they spend compute:\n\nA standard model answers immediately — one pass through the network\nA reasoning model “thinks out loud” before answering (you see this as a loading delay)\nIt spends more compute per question, trading speed and cost for accuracy\n\n\no3-mini scored ~5x higher than GPT-4o on Humanity’s Last Exam (Phan et al. 2025)"
+    "text": "What Makes Reasoning Models Different?\nThe difference is how they spend compute:\n\nA standard model answers immediately. One pass through the network.\nA reasoning model “thinks out loud” before answering (you see this as a loading delay)\nIt spends more tokens per question, trading speed and cost for accuracy\n\n\no3-mini scored ~5x higher than GPT-4o on Humanity’s Last Exam (Phan et al. 2025)"
   },
   {
-    "objectID": "slides/01-foundations.html#why-reasoning-models-matter",
-    "href": "slides/01-foundations.html#why-reasoning-models-matter",
+    "objectID": "slides/01-foundations.html#what-hasnt-changed-yet",
+    "href": "slides/01-foundations.html#what-hasnt-changed-yet",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "Why Reasoning Models Matter",
-    "text": "Why Reasoning Models Matter\nWhat changed beyond just “thinking longer”:\n\nTrained on different data mixtures emphasizing step-by-step problem solving\nBuilt-in verification loops — the model checks its own work\nPreference optimization tuned specifically for careful deliberation\n\n\nThe tradeoff: slower, more expensive, but substantially better on hard problems.\n\n\nThe architecture is the same. The way it’s trained and run is different."
-  },
-  {
-    "objectID": "slides/01-foundations.html#what-likely-still-holds",
-    "href": "slides/01-foundations.html#what-likely-still-holds",
-    "title": "AI Tools for Data Science and Statistics",
-    "section": "What Likely Still Holds",
-    "text": "What Likely Still Holds\nEven with better models, these problems are probably not solved:\n\nBuggy context catastrophe. Models still don’t detect upstream bugs (Dinh et al. 2023)\nPoor calibration. Overconfidence is architectural, not just a training issue (Phan et al. 2025)\nSecurity vulnerabilities. No systematic re-evaluation on frontier models (Zhou et al. 2024)\nBenchmark contamination. Gets worse as training data grows (Chen, Pusarla, and Ray 2025)\nAgent self-repair at 4%. Agents still can’t fix their own mistakes (Islam et al. 2026)\n\n\nWorking assumption: ~30% of generated code still needs careful review."
+    "section": "What Hasn’t Changed Yet",
+    "text": "What Hasn’t Changed Yet\nEven with better models, these problems are probably not solved:\n\nBuggy context catastrophe. Models still don’t detect upstream bugs (Dinh et al. 2023)\nPoor calibration. Models are often badly miscalibrated on hard questions (Phan et al. 2025)\nBenchmark contamination. Static benchmark scores can be substantially inflated under contamination (Chen, Pusarla, and Ray 2025)"
   },
   {
     "objectID": "slides/01-foundations.html#today-february-2026",
     "href": "slides/01-foundations.html#today-february-2026",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Today (February 2026)",
-    "text": "Today (February 2026)\n\n\n\n\nClaude Opus 4.6\nGPT-5.3-Codex\n\n\n\n\nDeveloper\nAnthropic\nOpenAI\n\n\nContext window\n200K tokens (1M beta)\n400K tokens\n\n\nPricing (input)\n$5 / 1M tokens\n$1.75 / 1M tokens\n\n\nArchitecture\nReasoning model\nReasoning (code-optimized)\n\n\n\nPricing and specs from vendor documentation as of Feb 2026; subject to change."
+    "text": "Today (February 2026)\nThis snapshot is here to show churn, not to anchor on details. Specs and pricing change quickly; the broader patterns are what matter.\n\n\n\n\n\nClaude Opus 4.6\nGPT-5.3-Codex\n\n\n\n\nDeveloper\nAnthropic\nOpenAI\n\n\nContext window\n200K tokens (1M beta)\n400K tokens\n\n\nPricing (input)\n$5 / 1M tokens\n$1.75 / 1M tokens\n\n\nArchitecture\nReasoning model\nReasoning (code-optimized)\n\n\n\n\nPricing and specs from vendor documentation as of Feb 2026; subject to change."
   },
   {
     "objectID": "slides/01-foundations.html#the-speed-of-change",
     "href": "slides/01-foundations.html#the-speed-of-change",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Speed of Change",
-    "text": "The Speed of Change\nMATH benchmark progression (competition-level mathematics):\n\n\n\n\n\n\n\n\n\nYear\nModel\nMATH Score\nConditions\n\n\n\n\n2021\nGPT-2 1.5B\n6.9%\nMath-pretrained + fine-tuned (Hendrycks et al. 2021)\n\n\n2021\nGPT-3 175B\n5.2%\nFew-shot (Hendrycks et al. 2021)\n\n\n2023\nGPT-4\n42.5%\n(Fu et al. 2023)\n\n\n2025\no3-mini\n~87%\nReported\n\n\n2026\nGPT-5.3-Codex\n~96%\nReported\n\n\n\nCompetition math went from “unsolved” to “near-saturated” in 3 years."
+    "text": "The Speed of Change\nMATH benchmark progression (competition-level mathematics):\n\n\n\n\n\n\n\n\n\n\nYear\nModel\nMATH Score\nConditions\n\n\n\n\n2021\nGPT-2 1.5B\n7%\nMath-pretrained + fine-tuned (Hendrycks et al. 2021)\n\n\n2021\nGPT-3 175B\n5%\nFew-shot (Hendrycks et al. 2021)\n\n\n2023\nGPT-4\n43%\n(Fu et al. 2023)\n\n\n2025\no3-mini\n~87%\nVendor-reported\n\n\n2026\nGPT-5.3-Codex\n~96%\nVendor-reported"
   },
   {
     "objectID": "slides/01-foundations.html#section-3",
@@ -175,60 +238,116 @@
     "text": "What Does the Research Say?"
   },
   {
+    "objectID": "slides/01-foundations.html#a-simple-map-of-failure-modes",
+    "href": "slides/01-foundations.html#a-simple-map-of-failure-modes",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "A Simple Map of Failure Modes",
+    "text": "A Simple Map of Failure Modes\nFour patterns show up repeatedly in the literature:\n\nBrittleness to context: small upstream errors can cascade\nOverconfidence: models sound certain when they are wrong\nContamination: headline benchmark scores can be inflated\nDistribution shift: real-world tasks differ from curated benchmarks\n\n\nThe point is not to be pessimistic, but to develop good scientific instincts about when the tool is likely to help."
+  },
+  {
     "objectID": "slides/01-foundations.html#where-llms-succeed",
     "href": "slides/01-foundations.html#where-llms-succeed",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Where LLMs Succeed",
-    "text": "Where LLMs Succeed\n\n\n\nTask\nPerformance\nSource\n\n\n\n\nCode generation (syntactically valid)\n91.5%\n(Ni et al. 2024)\n\n\nGrade-school math (GSM8k)\n92.0%\n(Fu et al. 2023)\n\n\nAcademic knowledge (MMLU)\n86.4%\n(Fu et al. 2023)\n\n\nUndergraduate statistics\n82.85%\n(Lu et al. 2025)\n\n\nPython function synthesis (HumanEval)\n80.5%\n(Ni et al. 2024)\n\n\nData science code (DS-1000)\n43.3% (Codex)\n(Lai et al. 2023)\n\n\n\n\nPattern: LLMs excel at tasks with clear patterns, well-represented training data, and unambiguous evaluation criteria. Note the gap between generic coding benchmarks and data-science-specific ones."
+    "text": "Where LLMs Succeed\n\n\n\n\n\n\n\n\n\nTask\nPerformance\nSource\n\n\n\n\nCode generation (HumanEval, 0-shot)\n80% (GPT-4)\n(Ni et al. 2024)\n\n\nGrade-school math (GSM8k)\n92%\n(Fu et al. 2023)\n\n\nAcademic knowledge (MMLU)\n86%\n(Fu et al. 2023)\n\n\nUndergraduate statistics (StatEval, Statistics subset)\n87% (GPT-5)\n(Lu et al. 2025)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#where-llms-succeed-less",
+    "href": "slides/01-foundations.html#where-llms-succeed-less",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Where LLMs Succeed… Less",
+    "text": "Where LLMs Succeed… Less\n\n\n\n\nTask\nPerformance\nSource\n\n\n\n\nPython problems (MBPP, few-shot)\n74% (GPT-4)\n(Ni et al. 2024)\n\n\nData science code (DS-1000)\n43% (Codex)\n(Lai et al. 2023)\n\n\n\n\n\nPattern: LLMs excel at clear patterns and well-represented training data. Note the gap between generic coding benchmarks and data-science-specific ones."
   },
   {
     "objectID": "slides/01-foundations.html#where-llms-struggle",
     "href": "slides/01-foundations.html#where-llms-struggle",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Where LLMs Struggle",
-    "text": "Where LLMs Struggle\n\n\n\nTask\nPerformance\nSource\n\n\n\n\nResearch-level statistics\n&lt;57%\n(Lu et al. 2025)\n\n\nExpert-level questions (HLE)\n2.7-13.4%\n(Phan et al. 2025)\n\n\nReal-world code translation\n8.1% (GPT-4)\n(Pan et al. 2024)\n\n\nCode completion with buggy context\n0.5-3.1%\n(Dinh et al. 2023)\n\n\nAgent self-repair\n4%\n(Islam et al. 2026)\n\n\n\n\nPattern: LLMs fail when tasks require genuine reasoning, when context is messy, or when there’s no clear template to follow."
+    "text": "Where LLMs Struggle\n\n\n\n\n\n\n\n\n\nTask\nPerformance\nSource\n\n\n\n\nResearch-level statistics\n~58% (best closed model)\n(Lu et al. 2025)\n\n\nExpert-level questions (HLE)\n3-13%\n(Phan et al. 2025)\n\n\nReal-world code translation\n8% (GPT-4)\n(Pan et al. 2024)\n\n\nCode completion with buggy context\n1-3%\n(Dinh et al. 2023)\n\n\nAgent self-repair\n4%\n(Islam et al. 2026)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#the-pattern",
+    "href": "slides/01-foundations.html#the-pattern",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Pattern",
+    "text": "The Pattern\nLLMs fail when tasks require genuine reasoning, when context is messy, or when there’s no clear template to follow."
+  },
+  {
+    "objectID": "slides/01-foundations.html#the-training-data-problem",
+    "href": "slides/01-foundations.html#the-training-data-problem",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Training Data Problem",
+    "text": "The Training Data Problem\nLLMs learn from what they’ve seen. Performance drops sharply outside that distribution.\n\nHeavily represented: Python, JavaScript, standard ML workflows, common statistical methods\nUnderrepresented: Niche R packages, domain-specific pipelines, novel methods, non-English documentation\nNot represented at all: Your unpublished data, your institution’s internal tools, anything after the training cutoff\n\n\nIf your task looks like something on Stack Overflow, the model will do well. If it doesn’t, expect more errors."
   },
   {
     "objectID": "slides/01-foundations.html#the-buggy-context-problem",
     "href": "slides/01-foundations.html#the-buggy-context-problem",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Buggy Context Problem",
-    "text": "The Buggy Context Problem\nA single bug in the surrounding code is catastrophic:\n\n\n\nModel\nClean Context\nBuggy Context\n\n\n\n\nInCoder-6.7B\n54.9%\n2.4%\n\n\nCodeGen-16B\n50.0%\n3.1%\n\n\nStarCoder-15B\n41.1%\n1.2%\n\n\n\n90% of failures: the model propagates the bug without reacting to it. (Dinh et al. 2023)\n\nTakeaway: Context quality &gt; model quality."
+    "text": "The Buggy Context Problem\nA single bug in the surrounding code is catastrophic:\n“Buggy-HumanEval” is a code-completion variant of HumanEval where the model must finish a program given a prefix.\n\nReference prefix: surrounding code is correct\nBuggy prefix: the prefix contains a small upstream bug; the model continues anyway\n\nPass@1 = percent of problems solved with one sampled completion."
   },
   {
-    "objectID": "slides/01-foundations.html#overconfidence",
-    "href": "slides/01-foundations.html#overconfidence",
+    "objectID": "slides/01-foundations.html#buggy-context-results",
+    "href": "slides/01-foundations.html#buggy-context-results",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "Overconfidence",
-    "text": "Overconfidence\nLLMs are wrong frequently and act certain almost always:\n\nCalibration error on expert questions: 70-89% RMS error across all models (Phan et al. 2025)\nOn MATH, confidence is near 100% regardless of correctness (Hendrycks et al. 2021)\n29% of generated Python code contains bugs (Tambon et al. 2024)\n~40% of Copilot scenarios produced at least one vulnerable code suggestion (Pearce et al. 2022); 29.8% of snippets contain security vulnerabilities across 38 CWE categories (Zhou et al. 2024)\n\n\nIt gets worse: Users with AI assistants wrote significantly less secure code and were more confident in it (Perry et al. 2023). The overconfidence is contagious."
+    "section": "Buggy Context: Results",
+    "text": "Buggy Context: Results\n\n\n\n\nModel\nReference Prefix\nBuggy Prefix\n\n\n\n\nCodeGen-2B\n55%\n3%\n\n\nInCoder-6B\n51%\n1%\n\n\nCodeGen-350M\n43%\n0.7%\n\n\nInCoder-1B\n41%\n0.5%\n\n\n\n\nIn their analysis, the model fails to react to the potential bug in 90% of instances. (Dinh et al. 2023)\n\nTakeaway: Context quality &gt; model quality."
   },
   {
-    "objectID": "slides/01-foundations.html#benchmarks-lie",
-    "href": "slides/01-foundations.html#benchmarks-lie",
+    "objectID": "slides/01-foundations.html#overconfidence-the-numbers",
+    "href": "slides/01-foundations.html#overconfidence-the-numbers",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "Benchmarks Lie",
-    "text": "Benchmarks Lie\nWhen models have seen the test before, scores are ~3x too high:\nA code-generation model that had seen all the benchmark problems during training solved 68% of them. The same model, given new problems testing the same skills, solved only 22%. (Chen, Pusarla, and Ray 2025)\n\nEven uncontaminated benchmarks are too easy: Code that passes HumanEval often fails on more rigorous test suites — the benchmark rewards surface correctness, not robustness (Liu et al. 2023).\n\n\nBenchmark vs. real-world gap:\nGPT-4 code translation: 47.3% on benchmarks, 8.1% on real-world projects. (Pan et al. 2024)\n\n\nBe skeptical of headline numbers."
+    "section": "Overconfidence: The Numbers",
+    "text": "Overconfidence: The Numbers\nLLMs are wrong frequently and act certain almost always:\n\nCalibration error on expert questions: 70-89% RMS error across all models (Phan et al. 2025)\nOn MATH, confidence is near 100% regardless of correctness (Hendrycks et al. 2021)\nBugs are common in practice; one empirical study catalogs 10 recurring bug patterns from 333 collected bugs in LLM-generated code (Tambon et al. 2024)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#overconfidence-security",
+    "href": "slides/01-foundations.html#overconfidence-security",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Overconfidence: Security",
+    "text": "Overconfidence: Security\n\n~40% of Copilot scenarios produced at least one vulnerable code suggestion (Pearce et al. 2022)\n30% of snippets contain security vulnerabilities across 38 CWE categories (Zhou et al. 2024)\n\n\nIt gets worse: Users with AI assistants wrote significantly less secure code and were more confident in it (Perry et al. 2023)."
+  },
+  {
+    "objectID": "slides/01-foundations.html#benchmarks-lie-contamination",
+    "href": "slides/01-foundations.html#benchmarks-lie-contamination",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Benchmarks Lie: Contamination",
+    "text": "Benchmarks Lie: Contamination\nUnder data contamination, static benchmark scores can jump ~4x (e.g., 22% \\(\\rightarrow\\) 82% on Pass@K), creating a false sense of reasoning capability. (Chen, Pusarla, and Ray 2025)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#benchmarks-lie-too-easy-too-artificial",
+    "href": "slides/01-foundations.html#benchmarks-lie-too-easy-too-artificial",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Benchmarks Lie: Too Easy, Too Artificial",
+    "text": "Benchmarks Lie: Too Easy, Too Artificial\nEven uncontaminated benchmarks are too easy: Code that passes HumanEval often fails on more rigorous test suites. The benchmark rewards surface correctness, not robustness. (Liu et al. 2023)\n\nBenchmark vs. real-world gap:\nGPT-4 code translation: 47% overall, 8% on real-world projects. (Pan et al. 2024)\n\n\nBe skeptical of headline numbers."
   },
   {
     "objectID": "slides/01-foundations.html#the-models-have-changed",
     "href": "slides/01-foundations.html#the-models-have-changed",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Models Have Changed",
-    "text": "The Models Have Changed\nFrontier comparison. Literature-era best vs. February 2026:\n\n\n\n\n\n\n\n\n\nBenchmark\nBest in Papers\n2026 Frontier\nChange\n\n\n\n\nMATH (competition)\n42.5% (GPT-4) (Fu et al. 2023)\n~96% (GPT-5.3-Codex)\n+54 pts\n\n\nHLE (expert questions)\n13.4% (o3-mini) (Phan et al. 2025)\n53.1% (Opus 4.6, with tools)\n+40 pts\n\n\nHumanEval (code gen)\n80.5% (GPT-4) (Ni et al. 2024)\n~95% (Opus 4.6)\n+15 pts\n\n\nMMLU (academic)\n86.4% (GPT-4) (Fu et al. 2023)\n~93% (GPT-5.3-Codex)\n+7 pts\n\n\nSWE-bench Verified (Jimenez et al. 2024)\n–\n80.8% (Opus 4.6)\n–\n\n\n\nEnormous improvement in 2-3 years. But recall: benchmarks lie."
+    "text": "The Models Have Changed\nFrontier comparison. Literature-era best vs. February 2026:\n\n\n\n\n\n\n\n\n\n\nBenchmark\nBest in Papers\n2026 Frontier\nChange\n\n\n\n\nMATH (competition)\n43% (GPT-4) (Fu et al. 2023)\n~96% (GPT-5.3-Codex, reported)\n+53 pts\n\n\nHLE (expert questions)\n13% (o3-mini) (Phan et al. 2025)\n53% (Opus 4.6, with tools, reported)\n+40 pts\n\n\nHumanEval (code gen)\n80% (GPT-4) (Ni et al. 2024)\n~95% (Opus 4.6, reported)\n+15 pts\n\n\nMMLU (academic)\n86% (GPT-4) (Fu et al. 2023)\n~93% (GPT-5.3-Codex, reported)\n+7 pts\n\n\nSWE-bench Verified (Jimenez et al. 2024)\n–\n81% (Opus 4.6, reported)\n–\n\n\n\n\nEnormous improvement in 2-3 years. But consider Goodhart’s law: when a measure becomes a target, is it still a good measure?"
   },
   {
     "objectID": "slides/01-foundations.html#summary-what-the-research-shows",
     "href": "slides/01-foundations.html#summary-what-the-research-shows",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Summary: What the Research Shows",
-    "text": "Summary: What the Research Shows\n\n\nLLMs are tools, not experts. They excel at patterns; they can struggle with reasoning.\n\n\n\n\nContext quality is important. One upstream bug causes catastrophic failure.\n\n\n\n\nValidate everything. ~29% bugs, ~30% security vulnerabilities, terrible calibration."
+    "text": "Summary: What the Research Shows\n\n\nLLMs do best within their training data. They do well at things they “know about.”\n\n\n\n\nContext quality is important. Upstream bugs can propagate; LLMs excel at narrow tasks.\n\n\n\n\nValidate everything. Research shows LLMs create bugs, security vulnerabilities."
   },
   {
-    "objectID": "slides/01-foundations.html#summary-what-this-means-for-you",
-    "href": "slides/01-foundations.html#summary-what-this-means-for-you",
+    "objectID": "slides/01-foundations.html#summary-what-this-means-for-you-12",
+    "href": "slides/01-foundations.html#summary-what-this-means-for-you-12",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "Summary: What This Means for You",
-    "text": "Summary: What This Means for You\n\nPrompting matters. Few-shot examples, chain-of-thought (Wei et al. 2022), and explicit framing improve results 5-50 percentage points.\n\n\n\nModel selection matters. The gap between models is enormous (2.7% to 53.1% on expert questions; the high end is with tools).\n\n\n\n\nHuman expertise is essential. Developers who know code is AI-generated catch 13 percentage points more bugs (Tang et al. 2024)."
+    "section": "Summary: What This Means for You (1/2)",
+    "text": "Summary: What This Means for You (1/2)\n\nPrompting matters. How you ask changes what you get. For some reasoning tasks, chain-of-thought prompting yields gains ranging from ~0 to 40+ percentage points depending on the task/model. (Wei et al. 2022)\n\nFew-shot examples (show what good output looks like)\nChain-of-thought prompting (ask it to reason step-by-step) (Wei et al. 2022)\nExplicit framing (role, format constraints, and failure modes to avoid)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#summary-what-this-means-for-you-22",
+    "href": "slides/01-foundations.html#summary-what-this-means-for-you-22",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Summary: What This Means for You (2/2)",
+    "text": "Summary: What This Means for You (2/2)\n\nModel selection matters. The gap between models is enormous (3% to 53% on expert questions; the high end is with tools).\n\n\n\nHuman expertise is essential. Developers who know code is AI-generated catch 13 percentage points more bugs (Tang et al. 2024)."
   },
   {
     "objectID": "slides/01-foundations.html#section-4",
@@ -242,42 +361,63 @@
     "href": "slides/01-foundations.html#the-bull-case",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Bull Case",
-    "text": "The Bull Case\nThe optimists have real evidence:\n\nMATH benchmark: ~7% \\(\\rightarrow\\) ~96% in a few years\nSWE-bench Verified: 80.8% (Opus 4.6 fixing real GitHub issues)\nCosts dropped 10-20x in 2 years (GPT-4 at $30/M tokens \\(\\rightarrow\\) GPT-5.3-Codex at $1.75/M)\nMcKinsey: 60-70% of work activities could be automated\nGoldman Sachs: generative AI could raise global GDP by 7%"
+    "text": "The Bull Case\nThe optimists have real evidence:\n\nMATH benchmark: ~7% \\(\\rightarrow\\) ~96% in a few years\nSWE-bench Verified: 81% (Opus 4.6 fixing real GitHub issues)\nCosts dropped 10-20x in 2 years (GPT-4 at $30/M tokens \\(\\rightarrow\\) GPT-5.3-Codex at $1.75/M)\nMassive corporate investment; consultancies projecting sweeping automation\n\nMost of these are vendor- or leaderboard-reported rather than peer-reviewed results."
   },
   {
     "objectID": "slides/01-foundations.html#the-bear-case",
     "href": "slides/01-foundations.html#the-bear-case",
     "title": "AI Tools for Data Science and Statistics",
     "section": "The Bear Case",
-    "text": "The Bear Case\nThe skeptics also have real evidence:\n\nBenchmark contamination inflates scores ~3x (Chen, Pusarla, and Ray 2025)\n29% of generated code has bugs (Tambon et al. 2024)\n~40% of Copilot scenarios produced vulnerable suggestions (Pearce et al. 2022)\nBuggy context drops performance from 50% to 2% (Dinh et al. 2023)\nBest agent self-repair: 4% accuracy (Islam et al. 2026)\nReal-world code translation: 8.1% (vs. 47.3% on benchmarks) (Pan et al. 2024)"
+    "text": "The Bear Case\nThe skeptics also have real evidence:\n\nBenchmark contamination inflates scores ~3x (Chen, Pusarla, and Ray 2025)\nLLM-generated code contains bugs; ~40% of Copilot scenarios produced at least one vulnerable suggestion (Tambon et al. 2024; Pearce et al. 2022)\nBuggy context can drop pass@1 from ~41-55% to ~0.5-3% (Dinh et al. 2023)\n\n\n\nReal-world code translation: 8% (vs. 47% overall) (Pan et al. 2024)\nBest agent self-repair: 4% accuracy (Islam et al. 2026)"
   },
   {
-    "objectID": "slides/01-foundations.html#the-nuance",
-    "href": "slides/01-foundations.html#the-nuance",
+    "objectID": "slides/01-foundations.html#summary",
+    "href": "slides/01-foundations.html#summary",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "The Nuance",
-    "text": "The Nuance\n\n\nGood at:\n\nFirst drafts and boilerplate\nSyntax and API lookup\nStandard patterns\nExplaining code\nBrainstorming approaches\n\n\nPoor at:\n\nJudgment calls\nSecurity-sensitive code\nMessy or buggy contexts\nNovel algorithms\nKnowing when it’s wrong\n\n\n\n“High pattern matching, low judgment.”"
+    "section": "Summary",
+    "text": "Summary\n\n\nGood at:\n\nBoilerplate\nSyntax and API lookup\nStandard patterns\nExplaining code\nBrainstorming approaches\n\n\nPoor at:\n\nMessy or buggy contexts\nNovel algorithms\nKnowing when it’s wrong"
   },
   {
-    "objectID": "slides/01-foundations.html#biostatistics-and-the-job-market",
-    "href": "slides/01-foundations.html#biostatistics-and-the-job-market",
+    "objectID": "slides/01-foundations.html#biostatistics",
+    "href": "slides/01-foundations.html#biostatistics",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "Biostatistics and the Job Market",
-    "text": "Biostatistics and the Job Market\nWhat AI can do well in our field:\n\nWrite code for data cleaning, visualization, standard analyses\nGenerate boilerplate for reports and documentation\nTranslate between programming languages\nExplain unfamiliar code or statistical concepts\n\nIn practice, productivity gains are real but modest and uneven (Ziegler et al. 2024; Liang, Yang, and Myers 2024).\n\nWhat AI cannot do:\n\nDesign a study\nInterpret clinical context\nMake judgment calls about model assumptions\nNavigate IRB requirements and data use agreements\nExplain findings to a collaborator\n\n\n\nThe job changes. It doesn’t disappear."
+    "section": "Biostatistics",
+    "text": "Biostatistics\nIn my experience, AI tools can:\n\nWrite code for data cleaning, visualization, standard analyses (with supervision)\nGenerate boilerplate for reports and documentation\nTranslate between programming languages\nExplain unfamiliar code or statistical concepts"
   },
   {
-    "objectID": "slides/01-foundations.html#discussion-prompts",
-    "href": "slides/01-foundations.html#discussion-prompts",
+    "objectID": "slides/01-foundations.html#biostatistics-what-ai-can-do-prudently",
+    "href": "slides/01-foundations.html#biostatistics-what-ai-can-do-prudently",
     "title": "AI Tools for Data Science and Statistics",
-    "section": "Discussion Prompts",
-    "text": "Discussion Prompts\n\nWould you trust AI-generated code in a clinical trial analysis? Under what conditions?\nIf an LLM writes 70% of a methods section, who is the author?\nShould researchers be required to disclose AI tool use? At what level of detail? (see Hosseini, Resnik, and Holmes 2023; Liao and Vaughan 2024)\nLLMs are trained on public code and text, often without consent. Is this ethical? Does it matter if the model is open-source vs. proprietary? (see Weidinger et al. 2022)\nIf AI tools make data analysis faster and cheaper, what happens to the value of your degree?"
+    "section": "Biostatistics: What AI Can Do… Prudently?",
+    "text": "Biostatistics: What AI Can Do… Prudently?\nAI can attempt all of the following. The question is whether it does them well enough to trust:\n\nDesign a study\nInterpret clinical context\nMake judgment calls about model assumptions\nNavigate IRB requirements and data use agreements\nExplain findings to a collaborator\n\n\nAI cannot take responsibility. The analyst does."
+  },
+  {
+    "objectID": "slides/01-foundations.html#discussion-prompts-12",
+    "href": "slides/01-foundations.html#discussion-prompts-12",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Discussion Prompts (1/2)",
+    "text": "Discussion Prompts (1/2)\n\nWould you trust AI-generated code in a clinical trial analysis? Under what conditions?\n\n\n\nIf an LLM writes 70% of a methods section, who is the author?\n\n\n\n\nShould researchers be required to disclose AI tool use? At what level of detail? (see Hosseini, Resnik, and Holmes 2023; Liao and Vaughan 2024)"
+  },
+  {
+    "objectID": "slides/01-foundations.html#discussion-prompts-22",
+    "href": "slides/01-foundations.html#discussion-prompts-22",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Discussion Prompts (2/2)",
+    "text": "Discussion Prompts (2/2)\n\nLLMs are trained on public code and text, often without consent. Is this ethical? Does it matter if the model is open-source vs. proprietary? (see Weidinger et al. 2022)\n\n\n\nAs a student, what is the appropriate way to use AI Tools?"
+  },
+  {
+    "objectID": "slides/01-foundations.html#demo-ai-generated-eda",
+    "href": "slides/01-foundations.html#demo-ai-generated-eda",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Demo: AI-Generated EDA",
+    "text": "Demo: AI-Generated EDA\nBefore we wrap up, let’s look at a real example: a complete exploratory data analysis notebook written entirely by an LLM.\n\nStata auto dataset: distributions, correlations, Box-Cox transformations\nEvery line of code was AI-generated\nWe’ll walk through what it got right, what’s questionable, and what you’d want to verify\n\nThe notebook is in the course repo: demos/llm-generated-eda.qmd"
   },
   {
     "objectID": "slides/01-foundations.html#whats-next",
     "href": "slides/01-foundations.html#whats-next",
     "title": "AI Tools for Data Science and Statistics",
     "section": "What’s Next",
-    "text": "What’s Next\nToday’s hands-on exercise: Everyone gets the same statistical task. Use your own tool. We’ll compare results.\nMoonshot assignment: Brainstorm a task that feels beyond your current ability. We’ll work on it throughout the course.\nHomework:\n\nTry a second AI tool you haven’t used before for a small task\nNote the differences from your primary tool\nStart thinking about your moonshot\n\n\n\n\n\nChen, Simin, Pranav Pusarla, and Baishakhi Ray. 2025. “DyCodeEval: Dynamic Benchmarking of Reasoning Capabilities in Code Large Language Models Under Data Contamination.” In Proceedings of the 42nd International Conference on Machine Learning (ICML). Vol. 267. PMLR. https://arxiv.org/abs/2503.04149.\n\n\nDinh, Tuan, Jinman Zhao, Samson Tan, Renato Negrinho, Leonard Lausen, Sheng Zha, and George Karypis. 2023. “Large Language Models of Code Fail at Completing Code with Potential Bugs.” In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS). https://arxiv.org/abs/2306.03438.\n\n\nDreyfus, Hubert L. 1972. What Computers Can’t Do: A Critique of Artificial Reason. New York: Harper & Row.\n\n\n———. 1992. What Computers Still Can’t Do: A Critique of Artificial Reason. Cambridge, MA: MIT Press.\n\n\nFu, Yao, Litu Ou, Mingyu Chen, Yuhao Wan, Hao Peng, and Tushar Khot. 2023. “Chain-of-Thought Hub: A Continuous Effort to Measure Large Language Models’ Reasoning Performance.” https://arxiv.org/abs/2305.17306.\n\n\nHaugeland, John. 1985. Artificial Intelligence: The Very Idea. Cambridge, MA: MIT Press.\n\n\nHendrycks, Dan, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric Tang, Dawn Song, and Jacob Steinhardt. 2021. “Measuring Mathematical Problem Solving with the MATH Dataset.” In Proceedings of the 35th Conference on Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track. https://arxiv.org/abs/2103.03874.\n\n\nHosseini, Mohammad, David B. Resnik, and Kristi Holmes. 2023. “The Ethics of Disclosing the Use of Artificial Intelligence Tools in Writing Scholarly Manuscripts.” Research Ethics 19 (4): 449–65. https://doi.org/10.1177/17470161231180449.\n\n\nIslam, Niful, Ragib Shahariar Ayon, Deepak George Thomas, Shibbir Ahmed, and Mohammad Wardat. 2026. “When Agents Fail: A Comprehensive Study of Bugs in LLM Agents with Automated Labeling.” https://arxiv.org/abs/2601.15232.\n\n\nJimenez, Carlos E., John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik R. Narasimhan. 2024. “SWE-Bench: Can Language Models Resolve Real-World GitHub Issues?” In International Conference on Learning Representations (ICLR 2024). https://arxiv.org/abs/2310.06770.\n\n\nKambhampati, Subbarao, Karthik Valmeekam, Lin Guan, Mudit Verma, Kaya Stechly, Siddhant Siddarth, Anil Garg, and Raghav Mangla. 2024. “Position: LLMs Can’t Plan, but Can Help Planning in LLM-Modulo Frameworks.” In Proceedings of the 41st International Conference on Machine Learning (ICML 2024), 235:22895–907. PMLR. https://arxiv.org/abs/2402.01817.\n\n\nLai, Yuhang, Chengxi Li, Yiming Wang, Tianyi Zhang, Ruiqi Zhong, Luke Zettlemoyer, Wen-tau Yih, Daniel Fried, Sida Wang, and Tao Yu. 2023. “DS-1000: A Natural and Reliable Benchmark for Data Science Code Generation.” In Proceedings of the 40th International Conference on Machine Learning (ICML 2023), 202:18319–45. PMLR. https://arxiv.org/abs/2211.11501.\n\n\nLiang, Jenny T., Chenyang Yang, and Brad A. Myers. 2024. “A Large-Scale Survey on the Usability of AI Programming Assistants: Successes and Challenges.” In Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE ’24). https://doi.org/10.1145/3597503.3608128.\n\n\nLiao, Q. Vera, and Jennifer Wortman Vaughan. 2024. “AI Transparency in the Age of LLMs: A Human-Centered Research Roadmap.” Harvard Data Science Review, no. Special Issue 5. https://doi.org/10.1162/99608f92.8036d03b.\n\n\nLiu, Jiawei, Chunqiu Steven Xia, Yuyao Wang, and Lingming Zhang. 2023. “Is Your Code Generated by ChatGPT Really Correct? Rigorous Evaluation of Large Language Models for Code Generation.” In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS). https://arxiv.org/abs/2305.01210.\n\n\nLu, Yuchen, Run Yang, Yichen Zhang, Shuguang Yu, Runpeng Dai, Ziwei Wang, Jiayi Xiang, et al. 2025. “StatEval: A Comprehensive Benchmark for Large Language Models in Statistics.” https://arxiv.org/abs/2510.09517.\n\n\nNi, Ansong, Pengcheng Yin, Yilun Zhao, Martin Riddell, Troy Feng, Rui Shen, Stephen Yin, et al. 2024. “L2CEval: Evaluating Language-to-Code Generation Capabilities of Large Language Models.” https://arxiv.org/abs/2309.17446.\n\n\nPan, Rangeet, Ali Reza Ibrahimzada, Rahul Krishna, Divya Sankar, Lambert Pougeum Wassi, Michele Merler, Boris Sobolev, Raju Pavuluri, Saurabh Sinha, and Reyhaneh Jabbarvand. 2024. “Lost in Translation: A Study of Bugs Introduced by Large Language Models While Translating Code.” In Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE ’24). Lisbon, Portugal. https://doi.org/10.1145/3597503.3639226.\n\n\nPearce, Hammond, Baleegh Ahmad, Benjamin Tan, Brendan Dolan-Gavitt, and Ramesh Karri. 2022. “Asleep at the Keyboard? Assessing the Security of GitHub Copilot’s Code Contributions.” In IEEE Symposium on Security and Privacy (s&p 2022), 754–68. https://doi.org/10.1109/SP46214.2022.9833571.\n\n\nPerry, Neil, Megha Srivastava, Deepak Kumar, and Dan Boneh. 2023. “Do Users Write More Insecure Code with AI Assistants?” In ACM Conference on Computer and Communications Security (CCS 2023). https://doi.org/10.1145/3576915.3623157.\n\n\nPhan, Long, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, Hugh Zhang, Chen Bo Calvin Zhang, et al. 2025. “Humanity’s Last Exam.” Nature. https://doi.org/10.1038/s41586-025-09962-4.\n\n\nSearle, John R. 1980. “Minds, Brains, and Programs.” Behavioral and Brain Sciences 3 (3): 417–24. https://doi.org/10.1017/S0140525X00005756.\n\n\nTambon, Florian, Arghavan Moradi Dakhel, Amin Nikanjam, Foutse Khomh, Michel C. Desmarais, and Giuliano Antoniol. 2024. “Bugs in Large Language Models Generated Code: An Empirical Study.” https://arxiv.org/abs/2403.08937.\n\n\nTang, Ningzhi, Meng Chen, Zheng Ning, Aakash Bansal, Yu Huang, Collin McMillan, and Toby Jia-Jun Li. 2024. “A Study on Developer Behaviors for Validating and Repairing LLM-Generated Code Using Eye Tracking and IDE Actions.” https://arxiv.org/abs/2405.16081.\n\n\nValmeekam, Karthik, Matthew Marquez, Sarath Sreedharan, and Subbarao Kambhampati. 2023. “On the Planning Abilities of Large Language Models — a Critical Investigation.” In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS 2023). https://arxiv.org/abs/2305.15771.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. “Attention Is All You Need.” In Advances in Neural Information Processing Systems 30 (NeurIPS).\n\n\nWei, Jason, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed Chi, Quoc V. Le, and Denny Zhou. 2022. “Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.” In Proceedings of the 36th Conference on Neural Information Processing Systems (NeurIPS 2022). https://arxiv.org/abs/2201.11903.\n\n\nWeidinger, Laura, John Mellor, Maribeth Rauh, Conor Griffin, Jonathan Uesato, Po-Sen Huang, Myra Cheng, et al. 2022. “Taxonomy of Risks Posed by Language Models.” In ACM Conference on Fairness, Accountability, and Transparency (FAccT 2022). https://doi.org/10.1145/3531146.3533088.\n\n\nWittgenstein, Ludwig. 1953. Philosophical Investigations. Oxford: Blackwell.\n\n\nZhou, Xiyu, Peng Liang, Beiqi Zhang, Zengyang Li, Aakash Ahmad, Mojtaba Shahin, and Muhammad Waseem. 2024. “Exploring the Problems, Their Causes and Solutions of AI Pair Programming: A Study on GitHub and Stack Overflow.” Journal of Systems and Software 219: 112204. https://doi.org/10.1016/j.jss.2024.112204.\n\n\nZiegler, Albert, Eirini Kalliamvakou, X. Alice Li, Andrew Rice, Devon Rifkin, Shawn Simister, Ganesh Sittampalam, and Edward Aftandilian. 2024. “Measuring GitHub Copilot’s Impact on Productivity.” Communications of the ACM 67 (3): 54–63. https://doi.org/10.1145/3633453."
+    "text": "What’s Next\nCourse project: Brainstorm a task that feels beyond your current ability. Email your topic to ewestlund@jhu.edu before Session 2.\n\n\n\n\nChen, Simin, Pranav Pusarla, and Baishakhi Ray. 2025. “DyCodeEval: Dynamic Benchmarking of Reasoning Capabilities in Code Large Language Models Under Data Contamination.” In Proceedings of the 42nd International Conference on Machine Learning (ICML). Vol. 267. PMLR. https://arxiv.org/abs/2503.04149.\n\n\nDinh, Tuan, Jinman Zhao, Samson Tan, Renato Negrinho, Leonard Lausen, Sheng Zha, and George Karypis. 2023. “Large Language Models of Code Fail at Completing Code with Potential Bugs.” In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS). https://arxiv.org/abs/2306.03438.\n\n\nDreyfus, Hubert L. 1972. What Computers Can’t Do: A Critique of Artificial Reason. New York: Harper & Row.\n\n\n———. 1992. What Computers Still Can’t Do: A Critique of Artificial Reason. Cambridge, MA: MIT Press.\n\n\nFu, Yao, Litu Ou, Mingyu Chen, Yuhao Wan, Hao Peng, and Tushar Khot. 2023. “Chain-of-Thought Hub: A Continuous Effort to Measure Large Language Models’ Reasoning Performance.” https://arxiv.org/abs/2305.17306.\n\n\nHaugeland, John. 1985. Artificial Intelligence: The Very Idea. Cambridge, MA: MIT Press.\n\n\nHendrycks, Dan, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric Tang, Dawn Song, and Jacob Steinhardt. 2021. “Measuring Mathematical Problem Solving with the MATH Dataset.” In Proceedings of the 35th Conference on Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track. https://arxiv.org/abs/2103.03874.\n\n\nHosseini, Mohammad, David B. Resnik, and Kristi Holmes. 2023. “The Ethics of Disclosing the Use of Artificial Intelligence Tools in Writing Scholarly Manuscripts.” Research Ethics 19 (4): 449–65. https://doi.org/10.1177/17470161231180449.\n\n\nIslam, Niful, Ragib Shahariar Ayon, Deepak George Thomas, Shibbir Ahmed, and Mohammad Wardat. 2026. “When Agents Fail: A Comprehensive Study of Bugs in LLM Agents with Automated Labeling.” https://arxiv.org/abs/2601.15232.\n\n\nJimenez, Carlos E., John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik R. Narasimhan. 2024. “SWE-Bench: Can Language Models Resolve Real-World GitHub Issues?” In International Conference on Learning Representations (ICLR 2024). https://arxiv.org/abs/2310.06770.\n\n\nKambhampati, Subbarao, Karthik Valmeekam, Lin Guan, Mudit Verma, Kaya Stechly, Siddhant Siddarth, Anil Garg, and Raghav Mangla. 2024. “Position: LLMs Can’t Plan, but Can Help Planning in LLM-Modulo Frameworks.” In Proceedings of the 41st International Conference on Machine Learning (ICML 2024), 235:22895–907. PMLR. https://arxiv.org/abs/2402.01817.\n\n\nLai, Yuhang, Chengxi Li, Yiming Wang, Tianyi Zhang, Ruiqi Zhong, Luke Zettlemoyer, Wen-tau Yih, Daniel Fried, Sida Wang, and Tao Yu. 2023. “DS-1000: A Natural and Reliable Benchmark for Data Science Code Generation.” In Proceedings of the 40th International Conference on Machine Learning (ICML 2023), 202:18319–45. PMLR. https://arxiv.org/abs/2211.11501.\n\n\nLiao, Q. Vera, and Jennifer Wortman Vaughan. 2024. “AI Transparency in the Age of LLMs: A Human-Centered Research Roadmap.” Harvard Data Science Review, no. Special Issue 5. https://doi.org/10.1162/99608f92.8036d03b.\n\n\nLiu, Jiawei, Chunqiu Steven Xia, Yuyao Wang, and Lingming Zhang. 2023. “Is Your Code Generated by ChatGPT Really Correct? Rigorous Evaluation of Large Language Models for Code Generation.” In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS). https://arxiv.org/abs/2305.01210.\n\n\nLu, Yuchen, Run Yang, Yichen Zhang, Shuguang Yu, Runpeng Dai, Ziwei Wang, Jiayi Xiang, et al. 2025. “StatEval: A Comprehensive Benchmark for Large Language Models in Statistics.” https://arxiv.org/abs/2510.09517.\n\n\nNi, Ansong, Pengcheng Yin, Yilun Zhao, Martin Riddell, Troy Feng, Rui Shen, Stephen Yin, et al. 2024. “L2CEval: Evaluating Language-to-Code Generation Capabilities of Large Language Models.” https://arxiv.org/abs/2309.17446.\n\n\nPan, Rangeet, Ali Reza Ibrahimzada, Rahul Krishna, Divya Sankar, Lambert Pougeum Wassi, Michele Merler, Boris Sobolev, Raju Pavuluri, Saurabh Sinha, and Reyhaneh Jabbarvand. 2024. “Lost in Translation: A Study of Bugs Introduced by Large Language Models While Translating Code.” In Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE ’24). Lisbon, Portugal. https://doi.org/10.1145/3597503.3639226.\n\n\nPearce, Hammond, Baleegh Ahmad, Benjamin Tan, Brendan Dolan-Gavitt, and Ramesh Karri. 2022. “Asleep at the Keyboard? Assessing the Security of GitHub Copilot’s Code Contributions.” In IEEE Symposium on Security and Privacy (s&p 2022), 754–68. https://doi.org/10.1109/SP46214.2022.9833571.\n\n\nPerry, Neil, Megha Srivastava, Deepak Kumar, and Dan Boneh. 2023. “Do Users Write More Insecure Code with AI Assistants?” In ACM Conference on Computer and Communications Security (CCS 2023). https://doi.org/10.1145/3576915.3623157.\n\n\nPhan, Long, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, Hugh Zhang, Chen Bo Calvin Zhang, et al. 2025. “Humanity’s Last Exam.” Nature. https://doi.org/10.1038/s41586-025-09962-4.\n\n\nSearle, John R. 1980. “Minds, Brains, and Programs.” Behavioral and Brain Sciences 3 (3): 417–24. https://doi.org/10.1017/S0140525X00005756.\n\n\nTambon, Florian, Arghavan Moradi Dakhel, Amin Nikanjam, Foutse Khomh, Michel C. Desmarais, and Giuliano Antoniol. 2024. “Bugs in Large Language Models Generated Code: An Empirical Study.” https://arxiv.org/abs/2403.08937.\n\n\nTang, Ningzhi, Meng Chen, Zheng Ning, Aakash Bansal, Yu Huang, Collin McMillan, and Toby Jia-Jun Li. 2024. “A Study on Developer Behaviors for Validating and Repairing LLM-Generated Code Using Eye Tracking and IDE Actions.” https://arxiv.org/abs/2405.16081.\n\n\nValmeekam, Karthik, Matthew Marquez, Sarath Sreedharan, and Subbarao Kambhampati. 2023. “On the Planning Abilities of Large Language Models — a Critical Investigation.” In Proceedings of the 37th Conference on Neural Information Processing Systems (NeurIPS 2023). https://arxiv.org/abs/2305.15771.\n\n\nVaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. “Attention Is All You Need.” In Advances in Neural Information Processing Systems 30 (NeurIPS).\n\n\nWei, Jason, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed Chi, Quoc V. Le, and Denny Zhou. 2022. “Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.” In Proceedings of the 36th Conference on Neural Information Processing Systems (NeurIPS 2022). https://arxiv.org/abs/2201.11903.\n\n\nWeidinger, Laura, John Mellor, Maribeth Rauh, Conor Griffin, Jonathan Uesato, Po-Sen Huang, Myra Cheng, et al. 2022. “Taxonomy of Risks Posed by Language Models.” In ACM Conference on Fairness, Accountability, and Transparency (FAccT 2022). https://doi.org/10.1145/3531146.3533088.\n\n\nWittgenstein, Ludwig. 1953. Philosophical Investigations. Oxford: Blackwell.\n\n\nZhou, Xiyu, Peng Liang, Beiqi Zhang, Zengyang Li, Aakash Ahmad, Mojtaba Shahin, and Muhammad Waseem. 2024. “Exploring the Problems, Their Causes and Solutions of AI Pair Programming: A Study on GitHub and Stack Overflow.” Journal of Systems and Software 219: 112204. https://doi.org/10.1016/j.jss.2024.112204."
   },
   {
     "objectID": "course_docs/syllabus.html",
@@ -340,7 +480,7 @@
     "href": "course_docs/syllabus.html#course-materials",
     "title": "Advanced Topics in Biostatistics: AI Tools for Data Science and Statistics",
     "section": "Course Materials",
-    "text": "Course Materials\nThere is no required textbook. Course readings and further reading are listed on the course website."
+    "text": "Course Materials\nThere is no required textbook. Course readings and further reading are listed on the course website. All course materials are available on GitHub."
   },
   {
     "objectID": "course_docs/syllabus.html#methods-of-assessment",
@@ -417,7 +557,7 @@
     "href": "index.html",
     "title": "AI Tools for Data Science and Statistics",
     "section": "",
-    "text": "Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health\nInstructor: Erik Westlund, PhD (ewestlund@jhu.edu)\nDates: February 19, February 26, March 5, March 12, 2026\nTime: 9:00–10:20 AM ET"
+    "text": "Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health\nInstructor: Erik Westlund (ewestlund@jhu.edu)\nDates: February 19, February 26, March 5, March 12, 2026\nTime: 9:00–10:20 AM ET"
   },
   {
     "objectID": "index.html#sessions",

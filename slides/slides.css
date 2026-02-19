@@ -1,0 +1,31 @@
+.reveal section.small {
+  font-size: 0.85em;
+}
+
+.reveal .table-wide-first {
+  font-size: 0.95em;
+}
+
+.reveal .table-wide-first table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.reveal .table-wide-first th:nth-child(1),
+.reveal .table-wide-first td:nth-child(1) {
+  width: 55%;
+}
+
+.reveal .table-wide-first th:nth-child(2),
+.reveal .table-wide-first td:nth-child(2) {
+  width: 20%;
+}
+
+.reveal .table-wide-first th:nth-child(3),
+.reveal .table-wide-first td:nth-child(3) {
+  width: 25%;
+}
+
+.reveal .table-wide-first td {
+  vertical-align: top;
+}

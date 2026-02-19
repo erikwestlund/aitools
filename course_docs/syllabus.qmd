@@ -98,7 +98,7 @@ Students should also ensure that Git is installed and a GitHub account is regist
 
 ## Course Materials
 
-There is no required textbook. Course readings and further reading are listed on the [course website](../index.html).
+There is no required textbook. Course readings and further reading are listed on the [course website](../index.html). All course materials are available on [GitHub](https://github.com/erikwestlund/aitools).
 
 ## Methods of Assessment
 

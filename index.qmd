@@ -9,7 +9,7 @@ format:
 
 Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
 
-**Instructor:** Erik Westlund, PhD ([ewestlund@jhu.edu](mailto:ewestlund@jhu.edu))
+**Instructor:** Erik Westlund ([ewestlund@jhu.edu](mailto:ewestlund@jhu.edu))
 
 **Dates:** February 19, February 26, March 5, March 12, 2026
 
@@ -17,6 +17,7 @@ Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health
 
 * [Syllabus](course_docs/syllabus.html)
 * [Course Project](course_docs/course-project.html)
+* [GitHub Repository](https://github.com/erikwestlund/aitools)
 
 ## Sessions
 
