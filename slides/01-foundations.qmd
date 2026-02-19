@@ -702,11 +702,11 @@ AI *can* attempt all of the following. The question is whether it does them well
 
 Before we wrap up, let's look at a real example: a complete exploratory data analysis notebook written entirely by an LLM.
 
-- Stata `auto` dataset: distributions, correlations, Box-Cox transformations
-- Every line of code was AI-generated
-- We'll walk through what it got right, what's questionable, and what you'd want to verify
+- Palmer Penguins data
+- Five different model-harnesses
+- Lets run the same prompt, examine results.
 
-The notebook is in the course repo: `demos/llm-generated-eda.qmd`
+The notebook stems (all the same to start) are in the course repo: `demos/1-eda`
 
 
 ## What's Next

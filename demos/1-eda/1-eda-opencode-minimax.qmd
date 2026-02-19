@@ -1,0 +1,13 @@
+---
+title: "EDA Example: Palmer Penguins"
+---
+
+```{r setup}
+#| message: false
+
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+
+data(penguins)
+```
