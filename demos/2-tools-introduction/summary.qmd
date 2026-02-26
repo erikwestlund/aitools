@@ -91,7 +91,7 @@ Three prompt types were used:
 - **Detailed**: A structured prompt specifying the outcome variable (`comorbidity_count`), required visualizations, and modeling approach (count regression)
 - **Simple**: A minimal prompt asking the model to explore the data and build a model, with no guidance on outcome or method
 
-Each prompt was run across multiple CLI tool/harness + model combinations. CLI tools were **Claude Code**, **Codex CLI**, and **OpenCode** (plus browser agents for the chat prompt). Models were Opus 4.6, Sonnet 4.6, GPT-5.2, GPT-5.3, Gemini 3.1 Pro, Haiku 4.5, Kimi K2.5, and GLM-5.
+Each prompt was run across multiple CLI tool/harness + model combinations. CLI tools were **Claude Code**, **Codex CLI**, and **OpenCode** (plus browser chat interfaces for the chat prompt). Models were Opus 4.6, Sonnet 4.6, GPT-5.2, GPT-5.3, Gemini 3.1 Pro, Haiku 4.5, Kimi K2.5, and GLM-5.
 
 ### Runs With Failures
 
@@ -115,11 +115,11 @@ A **harness** (here, essentially an agent CLI tool) is the software layer betwee
 | **Claude Code** | CLI agent | Anthropic's official CLI for Claude. Runs in the terminal, can read/write files, execute shell commands, and manage project context via `CLAUDE.md` files. Operates agentic loops where the model plans and executes multi-step tasks. | [claude.ai/claude-code](https://claude.ai/claude-code) |
 | **Codex CLI** | CLI agent | OpenAI's open-source CLI agent for Codex/GPT models. Similar to Claude Code: reads files, runs commands, edits code. Uses a sandboxed execution environment. | [github.com/openai/codex](https://github.com/openai/codex) |
 | **OpenCode** | CLI agent | An open-source, model-agnostic CLI agent that supports many providers (Anthropic, OpenAI, Google, Moonshot, Zhipu, etc.) through a unified interface. Provides file editing, shell access, and LSP integration. | [opencode.ai](https://opencode.ai) |
-| **Browser Agent** | Chat interface | Standard browser chat interfaces (ChatGPT at chat.openai.com, Claude at claude.ai). The user pastes prompt and data context manually; the model responds in a single turn without file system access. | -- |
+| **Browser/Chat Interface** | Chat interface | Standard browser-based chat interfaces (ChatGPT at chat.openai.com, Claude at claude.ai). The user pastes prompt and data context manually; the model responds in a single turn without file system access. | -- |
 
 ### Models Used
 
-All prices are per 1M tokens (input/output) via [OpenCode Zen](https://opencode.ai/docs/zen/) (proxy/router). Browser pricing differs (typically subscription-based).
+All prices are per 1M tokens (input/output) via [OpenCode Zen](https://opencode.ai/docs/zen/) (proxy/router). Chat interface pricing differs (typically subscription-based).
 
 | Model | Provider | Input / Output | Description |
 |---|---|---|---|
@@ -144,8 +144,8 @@ All notebooks are available as rendered HTML. Each used the same synthetic mater
 
 ### Chat Prompt
 
-- [Browser Agent + ChatGPT](rendered_notebooks/02-tools-chat-browser-agent-chatgpt.html)
-- [Browser Agent + Claude](rendered_notebooks/02-tools-chat-browser-agent-claude.html)
+- [ChatGPT (chat interface)](rendered_notebooks/02-tools-chat-browser-agent-chatgpt.html)
+- [Claude (chat interface)](rendered_notebooks/02-tools-chat-browser-agent-claude.html)
 
 ### Detailed Prompt
 
@@ -186,7 +186,7 @@ Each model was evaluated on the same set of features. A check (&#10003;) indicat
 
 ::: {.comparison-table}
 
-| Feature | Browser ChatGPT | Browser Claude | CC Opus | CC Sonnet | Codex GPT-5.2 | Codex GPT-5.3 | OC Opus | OC Haiku | OC GLM-5 | OC Gemini | OC Codex 5.3 | OC Kimi |
+| Feature | ChatGPT (chat) | Claude (chat) | CC Opus | CC Sonnet | Codex GPT-5.2 | Codex GPT-5.3 | OC Opus | OC Haiku | OC GLM-5 | OC Gemini | OC Codex 5.3 | OC Kimi |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **janitor::clean_names()** | &#10003; | &#10003; | | | | | | | &#10003; | &#10003; | | &#10003; |
 | **Ordered factors** | &#10003; | &#10003; | &#10003; | &#10003; | | &#10003; | &#10003; | | | | | &#10003; |
@@ -251,16 +251,16 @@ Data-cleaning approaches varied considerably:
 
 - **Column naming**: Most used `janitor::clean_names()`; Claude Code and Codex variants used manual transformations or custom `normalize_names()` functions
 - **Factor ordering**: Claude Code (Opus/Sonnet), OpenCode Opus, and OpenCode Kimi created ordered income/education factors with explicit levels; others used unordered factors or levels that sometimes mismatched data values
-- **Binary variables**: Most converted comorbidities to integer (0/1); Gemini 3.1 Pro and Kimi K2.5 used logical (TRUE/FALSE); Haiku 4.5 used labeled factors ("No"/"Yes"); Browser Claude used robust `case_when()` logic for mixed string/logical inputs
+- **Binary variables**: Most converted comorbidities to integer (0/1); Gemini 3.1 Pro and Kimi K2.5 used logical (TRUE/FALSE); Haiku 4.5 used labeled factors ("No"/"Yes"); Claude (chat) used robust `case_when()` logic for mixed string/logical inputs
 - **Scaling**: Haiku 4.5 was the only notebook that centered and scaled continuous predictors (age, distance) before modeling
-- **Derived variables**: Browser Claude created `log1p_distance` and `distance_10`; OpenCode Codex GPT-5.3 created `distance_to_provider_10` (distance/10)
+- **Derived variables**: Claude (chat) created `log1p_distance` and `distance_10`; OpenCode Codex GPT-5.3 created `distance_to_provider_10` (distance/10)
 
 ### Visualizations
 
 All notebooks were asked to visualize relationships among postnatal care receipt, insurance, race/ethnicity, and distance to provider. Quality varied:
 
 - **Most comprehensive visualization set**: OpenCode + Opus 4.6 produced 10+ plots, including a coefficient forest plot and observed-vs-expected rootogram, formatted with `kableExtra` and `patchwork`
-- **Unique approaches**: Codex CLI GPT-5.3 created a race/ethnicity-by-insurance heatmap; Browser ChatGPT compared observed vs Poisson-expected comorbidity distributions; Kimi K2.5 included an insurance-by-race/ethnicity interaction plot
+- **Unique approaches**: Codex CLI GPT-5.3 created a race/ethnicity-by-insurance heatmap; ChatGPT (chat) compared observed vs Poisson-expected comorbidity distributions; Kimi K2.5 included an insurance-by-race/ethnicity interaction plot
 - **Most limited visualization scope**: Codex CLI GPT-5.2 produced only univariate bar charts/histograms, with no cross-variable relationships
 
 ### Modeling Decisions
@@ -268,26 +268,26 @@ All notebooks were asked to visualize relationships among postnatal care receipt
 All completed notebooks used negative binomial models, but the path differed:
 
 - **Overdispersion thresholds**: Codex variants used explicit thresholds (1.2 or 1.5 Pearson/df); others used AIC comparisons or variance/mean ratios without explicit cutoffs
-- **Test methods**: OpenCode Opus 4.6 and Haiku 4.5 used formal likelihood ratio tests; Browser ChatGPT used DHARMa `testDispersion()`; most others used informal AIC comparisons
-- **Mixed effects**: Browser ChatGPT was the only notebook to use a GLMM (`lme4::glmer` with `provider_id` as random intercept) -- all others used standard GLMs
-- **Zero-inflation**: Browser Claude was the only notebook to formally test zero-inflation, fitting a ZINB model via `pscl::zeroinfl()` and comparing with a Vuong test; Codex CLI GPT-5.3 checked observed vs predicted zero rates
+- **Test methods**: OpenCode Opus 4.6 and Haiku 4.5 used formal likelihood ratio tests; ChatGPT (chat) used DHARMa `testDispersion()`; most others used informal AIC comparisons
+- **Mixed effects**: ChatGPT (chat) was the only notebook to use a GLMM (`lme4::glmer` with `provider_id` as random intercept) -- all others used standard GLMs
+- **Zero-inflation**: Claude (chat) was the only notebook to formally test zero-inflation, fitting a ZINB model via `pscl::zeroinfl()` and comparing with a Vuong test; Codex CLI GPT-5.3 checked observed vs predicted zero rates
 - **No Poisson comparison**: GLM-5, Gemini 3.1 Pro, and Kimi K2.5 skipped Poisson and fit only NB models
 
 ### Model Specifications
 
 Predictor sets ranged from 4 to 9 variables:
 
-- **Largest predictor set** (9 predictors): OpenCode Opus 4.6 and Browser Claude included age, income, education, race/ethnicity, insurance, job type, dependents, distance, and postnatal care receipt
+- **Largest predictor set** (9 predictors): OpenCode Opus 4.6 and Claude (chat) included age, income, education, race/ethnicity, insurance, job type, dependents, distance, and postnatal care receipt
 - **Smallest predictor set** (4 predictors): GLM-5 and Gemini 3.1 Pro used only age, insurance, distance, and race/ethnicity
-- **Postnatal care as predictor**: Browser Claude, OpenCode Opus 4.6, Haiku 4.5, and OpenCode Codex GPT-5.3 included `received_comprehensive_postnatal_care` as a predictor of comorbidity count
-- **Distance scaling**: OpenCode Codex GPT-5.3 divided distance by 10; Browser Claude used log1p transformation; Browser ChatGPT used `scale()`; Haiku centered and scaled
+- **Postnatal care as predictor**: Claude (chat), OpenCode Opus 4.6, Haiku 4.5, and OpenCode Codex GPT-5.3 included `received_comprehensive_postnatal_care` as a predictor of comorbidity count
+- **Distance scaling**: OpenCode Codex GPT-5.3 divided distance by 10; Claude (chat) used log1p transformation; ChatGPT (chat) used `scale()`; Haiku centered and scaled
 - **State**: No chat/detailed notebook included state as a predictor (though several noted this as a limitation)
 
 ### Diagnostics Quality
 
 Diagnostic sophistication varied widely:
 
-- **Highest diagnostic depth**: OpenCode Opus 4.6 (formal LR test, rootogram, residuals-vs-fitted with loess, deviance residual histogram, coefficient forest plot); Browser Claude (full DHARMa suite: `testDispersion()`, `testZeroInflation()`, `testUniformity()`, plus Vuong test and AIC/BIC table)
+- **Highest diagnostic depth**: OpenCode Opus 4.6 (formal LR test, rootogram, residuals-vs-fitted with loess, deviance residual histogram, coefficient forest plot); Claude (chat) (full DHARMa suite: `testDispersion()`, `testZeroInflation()`, `testUniformity()`, plus Vuong test and AIC/BIC table)
 - **Good**: Haiku 4.5 (Pearson residuals vs fitted, histogram, Q-Q, index plots, formal LR test); Claude Code variants and Codex CLI GPT-5.3 (standard base R `plot()` residual panels plus AIC comparisons); Kimi K2.5 (Cook's distance and influence diagnostics)
 - **Minimal**: Gemini 3.1 Pro produced no residual diagnostics at all; GLM-5 had only a Q-Q plot
 
@@ -299,7 +299,7 @@ All completed notebooks noted that associations should not be interpreted causal
 - **OpenCode Opus 4.6** provided the most detailed prose discussion of model assumptions and their implications
 - **Kimi K2.5** included a thorough limitations section covering causality, data quality, generalizability, clustering, missing data, and unmeasured confounding, plus 5 future research recommendations
 - **Haiku 4.5** addressed causality, synthetic data, clustering, race as social construct, and unmeasured confounders
-- **Browser agents**: ChatGPT had no explicit limitations section; Claude had minimal discussion
+- **Chat interfaces**: ChatGPT had no explicit limitations section; Claude had minimal discussion
 - **Most limited limitations coverage**: GLM-5 and Codex CLI GPT-5.2 mentioned limitations only briefly
 
 
@@ -462,7 +462,7 @@ Notebooks used different modeling choices, and those choices changed coefficient
 
 | Run | Model | Age coef (SE) | Distance coef (SE) | Insurance: Private coef (SE) | Insurance: State-provided coef (SE) |
 |---|---|---:|---:|---:|---:|
-| Browser ChatGPT | GLMM | 0.0155 (0.00086) | -0.00210 (0.00528) [a] | -0.00008 (0.01249) | -0.0164 (0.01381) |
+| ChatGPT (chat) | GLMM | 0.0155 (0.00086) | -0.00210 (0.00528) [a] | -0.00008 (0.01249) | -0.0164 (0.01381) |
 | Claude Code + Opus 4.6 | NB | 0.0159 (0.00093) | -0.00014 (0.00038) | -0.0030 (0.01326) | -0.0166 (0.01443) |
 | OpenCode + Opus 4.6 | NB | 0.0164 (0.00083) | -0.00022 (0.00034) | -0.0140 (0.01287) | -0.0282 (0.01308) |
 | OpenCode + Codex GPT-5.3 | NB | 0.016 (0.001) [b] | -0.001 (0.004) [c] | -0.005 (0.013) | -0.017 (0.014) |

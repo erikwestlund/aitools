@@ -3967,7 +3967,7 @@ padding: 4px 6px;
 <li><strong>Detailed</strong>: A structured prompt specifying the outcome variable (<code>comorbidity_count</code>), required visualizations, and modeling approach (count regression)</li>
 <li><strong>Simple</strong>: A minimal prompt asking the model to explore the data and build a model, with no guidance on outcome or method</li>
 </ul>
-<p>Each prompt was run across multiple CLI tool/harness + model combinations. CLI tools were <strong>Claude Code</strong>, <strong>Codex CLI</strong>, and <strong>OpenCode</strong> (plus browser agents for the chat prompt). Models were Opus 4.6, Sonnet 4.6, GPT-5.2, GPT-5.3, Gemini 3.1 Pro, Haiku 4.5, Kimi K2.5, and GLM-5.</p>
+<p>Each prompt was run across multiple CLI tool/harness + model combinations. CLI tools were <strong>Claude Code</strong>, <strong>Codex CLI</strong>, and <strong>OpenCode</strong> (plus browser chat interfaces for the chat prompt). Models were Opus 4.6, Sonnet 4.6, GPT-5.2, GPT-5.3, Gemini 3.1 Pro, Haiku 4.5, Kimi K2.5, and GLM-5.</p>
 </section>
 </section>
 <section id="runs-with-failures" class="level3">
@@ -4037,9 +4037,9 @@ padding: 4px 6px;
 <td><a href="https://opencode.ai">opencode.ai</a></td>
 </tr>
 <tr class="even">
-<td><strong>Browser Agent</strong></td>
+<td><strong>Browser/Chat Interface</strong></td>
 <td>Chat interface</td>
-<td>Standard browser chat interfaces (ChatGPT at chat.openai.com, Claude at claude.ai). The user pastes prompt and data context manually; the model responds in a single turn without file system access.</td>
+<td>Standard browser-based chat interfaces (ChatGPT at chat.openai.com, Claude at claude.ai). The user pastes prompt and data context manually; the model responds in a single turn without file system access.</td>
 <td>–</td>
 </tr>
 </tbody>
@@ -4047,7 +4047,7 @@ padding: 4px 6px;
 </section>
 <section id="models-used" class="level3">
 <h3 class="anchored" data-anchor-id="models-used">Models Used</h3>
-<p>All prices are per 1M tokens (input/output) via <a href="https://opencode.ai/docs/zen/">OpenCode Zen</a> (proxy/router). Browser pricing differs (typically subscription-based).</p>
+<p>All prices are per 1M tokens (input/output) via <a href="https://opencode.ai/docs/zen/">OpenCode Zen</a> (proxy/router). Chat interface pricing differs (typically subscription-based).</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -4131,8 +4131,8 @@ padding: 4px 6px;
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <ul>
-<li><a href="rendered_notebooks/02-tools-chat-browser-agent-chatgpt.html">Browser Agent + ChatGPT</a></li>
-<li><a href="rendered_notebooks/02-tools-chat-browser-agent-claude.html">Browser Agent + Claude</a></li>
+<li><a href="rendered_notebooks/02-tools-chat-browser-agent-chatgpt.html">ChatGPT (chat interface)</a></li>
+<li><a href="rendered_notebooks/02-tools-chat-browser-agent-claude.html">Claude (chat interface)</a></li>
 </ul>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
@@ -4193,8 +4193,8 @@ padding: 4px 6px;
 <thead>
 <tr class="header">
 <th>Feature</th>
-<th style="text-align: center;">Browser ChatGPT</th>
-<th style="text-align: center;">Browser Claude</th>
+<th style="text-align: center;">ChatGPT (chat)</th>
+<th style="text-align: center;">Claude (chat)</th>
 <th style="text-align: center;">CC Opus</th>
 <th style="text-align: center;">CC Sonnet</th>
 <th style="text-align: center;">Codex GPT-5.2</th>
@@ -4753,9 +4753,9 @@ padding: 4px 6px;
 <ul>
 <li><strong>Column naming</strong>: Most used <code>janitor::clean_names()</code>; Claude Code and Codex variants used manual transformations or custom <code>normalize_names()</code> functions</li>
 <li><strong>Factor ordering</strong>: Claude Code (Opus/Sonnet), OpenCode Opus, and OpenCode Kimi created ordered income/education factors with explicit levels; others used unordered factors or levels that sometimes mismatched data values</li>
-<li><strong>Binary variables</strong>: Most converted comorbidities to integer (0/1); Gemini 3.1 Pro and Kimi K2.5 used logical (TRUE/FALSE); Haiku 4.5 used labeled factors (“No”/“Yes”); Browser Claude used robust <code>case_when()</code> logic for mixed string/logical inputs</li>
+<li><strong>Binary variables</strong>: Most converted comorbidities to integer (0/1); Gemini 3.1 Pro and Kimi K2.5 used logical (TRUE/FALSE); Haiku 4.5 used labeled factors (“No”/“Yes”); Claude (chat) used robust <code>case_when()</code> logic for mixed string/logical inputs</li>
 <li><strong>Scaling</strong>: Haiku 4.5 was the only notebook that centered and scaled continuous predictors (age, distance) before modeling</li>
-<li><strong>Derived variables</strong>: Browser Claude created <code>log1p_distance</code> and <code>distance_10</code>; OpenCode Codex GPT-5.3 created <code>distance_to_provider_10</code> (distance/10)</li>
+<li><strong>Derived variables</strong>: Claude (chat) created <code>log1p_distance</code> and <code>distance_10</code>; OpenCode Codex GPT-5.3 created <code>distance_to_provider_10</code> (distance/10)</li>
 </ul>
 </section>
 <section id="visualizations" class="level3">
@@ -4763,7 +4763,7 @@ padding: 4px 6px;
 <p>All notebooks were asked to visualize relationships among postnatal care receipt, insurance, race/ethnicity, and distance to provider. Quality varied:</p>
 <ul>
 <li><strong>Most comprehensive visualization set</strong>: OpenCode + Opus 4.6 produced 10+ plots, including a coefficient forest plot and observed-vs-expected rootogram, formatted with <code>kableExtra</code> and <code>patchwork</code></li>
-<li><strong>Unique approaches</strong>: Codex CLI GPT-5.3 created a race/ethnicity-by-insurance heatmap; Browser ChatGPT compared observed vs Poisson-expected comorbidity distributions; Kimi K2.5 included an insurance-by-race/ethnicity interaction plot</li>
+<li><strong>Unique approaches</strong>: Codex CLI GPT-5.3 created a race/ethnicity-by-insurance heatmap; ChatGPT (chat) compared observed vs Poisson-expected comorbidity distributions; Kimi K2.5 included an insurance-by-race/ethnicity interaction plot</li>
 <li><strong>Most limited visualization scope</strong>: Codex CLI GPT-5.2 produced only univariate bar charts/histograms, with no cross-variable relationships</li>
 </ul>
 </section>
@@ -4772,9 +4772,9 @@ padding: 4px 6px;
 <p>All completed notebooks used negative binomial models, but the path differed:</p>
 <ul>
 <li><strong>Overdispersion thresholds</strong>: Codex variants used explicit thresholds (1.2 or 1.5 Pearson/df); others used AIC comparisons or variance/mean ratios without explicit cutoffs</li>
-<li><strong>Test methods</strong>: OpenCode Opus 4.6 and Haiku 4.5 used formal likelihood ratio tests; Browser ChatGPT used DHARMa <code>testDispersion()</code>; most others used informal AIC comparisons</li>
-<li><strong>Mixed effects</strong>: Browser ChatGPT was the only notebook to use a GLMM (<code>lme4::glmer</code> with <code>provider_id</code> as random intercept) – all others used standard GLMs</li>
-<li><strong>Zero-inflation</strong>: Browser Claude was the only notebook to formally test zero-inflation, fitting a ZINB model via <code>pscl::zeroinfl()</code> and comparing with a Vuong test; Codex CLI GPT-5.3 checked observed vs predicted zero rates</li>
+<li><strong>Test methods</strong>: OpenCode Opus 4.6 and Haiku 4.5 used formal likelihood ratio tests; ChatGPT (chat) used DHARMa <code>testDispersion()</code>; most others used informal AIC comparisons</li>
+<li><strong>Mixed effects</strong>: ChatGPT (chat) was the only notebook to use a GLMM (<code>lme4::glmer</code> with <code>provider_id</code> as random intercept) – all others used standard GLMs</li>
+<li><strong>Zero-inflation</strong>: Claude (chat) was the only notebook to formally test zero-inflation, fitting a ZINB model via <code>pscl::zeroinfl()</code> and comparing with a Vuong test; Codex CLI GPT-5.3 checked observed vs predicted zero rates</li>
 <li><strong>No Poisson comparison</strong>: GLM-5, Gemini 3.1 Pro, and Kimi K2.5 skipped Poisson and fit only NB models</li>
 </ul>
 </section>
@@ -4782,10 +4782,10 @@ padding: 4px 6px;
 <h3 class="anchored" data-anchor-id="model-specifications">Model Specifications</h3>
 <p>Predictor sets ranged from 4 to 9 variables:</p>
 <ul>
-<li><strong>Largest predictor set</strong> (9 predictors): OpenCode Opus 4.6 and Browser Claude included age, income, education, race/ethnicity, insurance, job type, dependents, distance, and postnatal care receipt</li>
+<li><strong>Largest predictor set</strong> (9 predictors): OpenCode Opus 4.6 and Claude (chat) included age, income, education, race/ethnicity, insurance, job type, dependents, distance, and postnatal care receipt</li>
 <li><strong>Smallest predictor set</strong> (4 predictors): GLM-5 and Gemini 3.1 Pro used only age, insurance, distance, and race/ethnicity</li>
-<li><strong>Postnatal care as predictor</strong>: Browser Claude, OpenCode Opus 4.6, Haiku 4.5, and OpenCode Codex GPT-5.3 included <code>received_comprehensive_postnatal_care</code> as a predictor of comorbidity count</li>
-<li><strong>Distance scaling</strong>: OpenCode Codex GPT-5.3 divided distance by 10; Browser Claude used log1p transformation; Browser ChatGPT used <code>scale()</code>; Haiku centered and scaled</li>
+<li><strong>Postnatal care as predictor</strong>: Claude (chat), OpenCode Opus 4.6, Haiku 4.5, and OpenCode Codex GPT-5.3 included <code>received_comprehensive_postnatal_care</code> as a predictor of comorbidity count</li>
+<li><strong>Distance scaling</strong>: OpenCode Codex GPT-5.3 divided distance by 10; Claude (chat) used log1p transformation; ChatGPT (chat) used <code>scale()</code>; Haiku centered and scaled</li>
 <li><strong>State</strong>: No chat/detailed notebook included state as a predictor (though several noted this as a limitation)</li>
 </ul>
 </section>
@@ -4793,7 +4793,7 @@ padding: 4px 6px;
 <h3 class="anchored" data-anchor-id="diagnostics-quality">Diagnostics Quality</h3>
 <p>Diagnostic sophistication varied widely:</p>
 <ul>
-<li><strong>Highest diagnostic depth</strong>: OpenCode Opus 4.6 (formal LR test, rootogram, residuals-vs-fitted with loess, deviance residual histogram, coefficient forest plot); Browser Claude (full DHARMa suite: <code>testDispersion()</code>, <code>testZeroInflation()</code>, <code>testUniformity()</code>, plus Vuong test and AIC/BIC table)</li>
+<li><strong>Highest diagnostic depth</strong>: OpenCode Opus 4.6 (formal LR test, rootogram, residuals-vs-fitted with loess, deviance residual histogram, coefficient forest plot); Claude (chat) (full DHARMa suite: <code>testDispersion()</code>, <code>testZeroInflation()</code>, <code>testUniformity()</code>, plus Vuong test and AIC/BIC table)</li>
 <li><strong>Good</strong>: Haiku 4.5 (Pearson residuals vs fitted, histogram, Q-Q, index plots, formal LR test); Claude Code variants and Codex CLI GPT-5.3 (standard base R <code>plot()</code> residual panels plus AIC comparisons); Kimi K2.5 (Cook’s distance and influence diagnostics)</li>
 <li><strong>Minimal</strong>: Gemini 3.1 Pro produced no residual diagnostics at all; GLM-5 had only a Q-Q plot</li>
 </ul>
@@ -4806,7 +4806,7 @@ padding: 4px 6px;
 <li><strong>OpenCode Opus 4.6</strong> provided the most detailed prose discussion of model assumptions and their implications</li>
 <li><strong>Kimi K2.5</strong> included a thorough limitations section covering causality, data quality, generalizability, clustering, missing data, and unmeasured confounding, plus 5 future research recommendations</li>
 <li><strong>Haiku 4.5</strong> addressed causality, synthetic data, clustering, race as social construct, and unmeasured confounders</li>
-<li><strong>Browser agents</strong>: ChatGPT had no explicit limitations section; Claude had minimal discussion</li>
+<li><strong>Chat interfaces</strong>: ChatGPT had no explicit limitations section; Claude had minimal discussion</li>
 <li><strong>Most limited limitations coverage</strong>: GLM-5 and Codex CLI GPT-5.2 mentioned limitations only briefly</li>
 </ul>
 </section>
@@ -5141,7 +5141,7 @@ padding: 4px 6px;
 </thead>
 <tbody>
 <tr class="odd">
-<td>Browser ChatGPT</td>
+<td>ChatGPT (chat)</td>
 <td>GLMM</td>
 <td style="text-align: right;">0.0155 (0.00086)</td>
 <td style="text-align: right;">-0.00210 (0.00528) [a]</td>
