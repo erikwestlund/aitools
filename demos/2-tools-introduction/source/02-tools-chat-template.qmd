@@ -1,10 +1,13 @@
 ---
 title: "Tools Comparison (Chat): {{HARNESS_LABEL}} + {{MODEL_LABEL}}"
+format:
+  html:
+    embed-resources: true
 ---
 
 ```{r}
 #| include: false
-scaffold()
+
 ```
 
 ## Run Metadata
@@ -66,4 +69,6 @@ Give me code, labeled by bullet number below to:
 Constraints:
 - Prefer readable, modular, reproducible code that follows R community idioms.
 - Report back a summary of what you changed.
+
+Please give me a single codeblock back I can cut and paste back into a quarto notebook.
 ```

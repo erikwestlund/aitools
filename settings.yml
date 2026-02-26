@@ -65,6 +65,9 @@ default:
     - name: here
       source: cran
       auto_attach: no
+    - name: nnet
+      source: cran
+      auto_attach: no
   git:
     enabled: yes
     user_name: Erik Westlund

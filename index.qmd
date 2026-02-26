@@ -37,6 +37,11 @@ We will focus on practical tool use for biostatistics, with an emphasis on respo
 * Safety guardrails: no PHI in external tools, context boundaries, and verify-before-trust
 
 - [Slides](slides/02-tools-introduction.html)
+- [Experiment: Comparing AI Tool Outputs on Maternal Health Data](demos/2-tools-introduction/summary.html)
+- [Rendered Notebooks (all runs)](demos/2-tools-introduction/summary.html#rendered-notebooks)
+- [Prompt Template: Chat](demos/2-tools-introduction/source/02-tools-chat-template.html)
+- [Prompt Template: Detailed](demos/2-tools-introduction/source/02-tools-detailed-template.html)
+- [Prompt Template: Simple](demos/2-tools-introduction/source/02-tools-simple-template.html)
 - **Due before class:** Email course project topic to [ewestlund@jhu.edu](mailto:ewestlund@jhu.edu)
 
 ### Session 3 (March 5): AI-Assisted Statistical Workflows
