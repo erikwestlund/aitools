@@ -1,7 +1,7 @@
 ---
 title: "AI Tools for Data Science and Statistics"
 subtitle: "Tools Introduction"
-author: "Erik Westlund, PhD"
+author: "Erik Westlund"
 date: "February 26, 2026"
 bibliography: references.bib
 format:
