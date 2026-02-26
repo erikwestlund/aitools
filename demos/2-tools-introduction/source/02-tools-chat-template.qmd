@@ -1,0 +1,69 @@
+---
+title: "Tools Comparison (Chat): {{HARNESS_LABEL}} + {{MODEL_LABEL}}"
+---
+
+```{r}
+#| include: false
+scaffold()
+```
+
+## Run Metadata
+
+- Harness: `{{HARNESS}}`
+- Model: `{{MODEL}}`
+- Prompt type: `chat`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+
+df |> glimpse()
+```
+
+## Prompt 
+
+```text
+I want you to help me analyze a dataset on maternal health.
+
+My goal is to produce a thorough analysis that is statistically sound and lays out all steps of the analysis.
+
+I've pasted below the results of the `glimpse` function from dplyr, which shows you variable names, types, and some example values.
+
+Give me code, labeled by bullet number below to:
+
+1. Help me ensure variable names are standardized and that they're correctly typed in the R dataframe.
+
+2. Summarize the data:
+   - Report row count, column count, missingness, and key descriptive summaries.
+   - Flag suspicious values or quality concerns.
+
+3. Create key visualizations.
+   - Show relationships for:
+     - `received_comprehensive_postnatal_care`
+     - `distance_to_provider`
+     - `insurance`
+     - `race_ethnicity`
+
+4. Help me build a count outcome and model it.
+   - Define `comorbidity_count` as the row-wise sum of:
+     - `obesity`,
+     - `multiple_gestation`,
+     - `diabetes`,
+     - `heart_disease`,
+     - `placenta_previa`,
+     - `hypertension`,
+     - `gest_hypertension`,
+     - `preeclampsia`.
+   - Give me diagnostics to help me determine if I've picked an appropriate model given the data.
+   - Fit the model and report interpretable results.
+
+Constraints:
+- Prefer readable, modular, reproducible code that follows R community idioms.
+- Report back a summary of what you changed.
+```

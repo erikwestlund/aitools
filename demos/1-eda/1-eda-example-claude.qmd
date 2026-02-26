@@ -10,4 +10,101 @@ library(dplyr)
 library(ggplot2)
 
 data(penguins)
+penguins <- penguins |> filter(!is.na(sex))
+```
+
+## Distributions of Key Variables
+
+```{r}
+#| label: fig-distributions
+#| fig-height: 8
+#| fig-width: 10
+#| message: false
+
+library(patchwork)
+
+p1 <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_histogram(alpha = 0.7, position = "identity", bins = 30) +
+  labs(x = "Bill Length (mm)", y = "Count")
+
+p2 <- ggplot(penguins, aes(x = bill_depth_mm, fill = species)) +
+  geom_histogram(alpha = 0.7, position = "identity", bins = 30) +
+  labs(x = "Bill Depth (mm)", y = "Count")
+
+p3 <- ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(alpha = 0.7, position = "identity", bins = 30) +
+  labs(x = "Flipper Length (mm)", y = "Count")
+
+p4 <- ggplot(penguins, aes(x = body_mass_g, fill = species)) +
+  geom_histogram(alpha = 0.7, position = "identity", bins = 30) +
+  labs(x = "Body Mass (g)", y = "Count")
+
+(p1 + p2) / (p3 + p4) +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+```
+
+## Relationships Between Variables
+
+```{r}
+#| label: fig-pairs
+#| fig-height: 8
+#| fig-width: 10
+#| message: false
+
+library(GGally)
+
+penguins |>
+  select(species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, sex) |>
+  ggpairs(
+    columns = 2:5,
+    aes(color = species, alpha = 0.6),
+    upper = list(continuous = wrap("cor", size = 3)),
+    lower = list(continuous = wrap("points", size = 1)),
+    diag = list(continuous = wrap("densityDiag", alpha = 0.5))
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+#| label: fig-bill-scatter
+#| fig-width: 8
+#| fig-height: 5
+
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, color = species, shape = sex)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(x = "Bill Length (mm)", y = "Bill Depth (mm)",
+       title = "Bill Length vs. Depth by Species and Sex")
+```
+
+## Table 1: Summary Statistics
+
+```{r}
+#| label: tbl-one
+#| tbl-cap: "Characteristics of Palmer Penguins by Species"
+
+library(gtsummary)
+
+penguins |>
+  select(species, sex, island, bill_length_mm, bill_depth_mm,
+         flipper_length_mm, body_mass_g) |>
+  tbl_summary(
+    by = species,
+    label = list(
+      sex ~ "Sex",
+      island ~ "Island",
+      bill_length_mm ~ "Bill Length (mm)",
+      bill_depth_mm ~ "Bill Depth (mm)",
+      flipper_length_mm ~ "Flipper Length (mm)",
+      body_mass_g ~ "Body Mass (g)"
+    ),
+    statistic = list(
+      all_continuous() ~ "{mean} ({sd})",
+      all_categorical() ~ "{n} ({p}%)"
+    ),
+    digits = all_continuous() ~ 1
+  ) |>
+  add_overall() |>
+  add_p() |>
+  bold_labels()
 ```

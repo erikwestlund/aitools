@@ -1,5 +1,103 @@
 [
   {
+    "objectID": "slides/03-context-management.html#follow-along-on-github",
+    "href": "slides/03-context-management.html#follow-along-on-github",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Follow Along on GitHub",
+    "text": "Follow Along on GitHub\nAll the code, datasets, and examples for this session are available on GitHub.\n\nFollow along: You can clone or pull down the repository to run the examples yourself.\nReproducible: All workflows and agent tasks shown today are in the repo.\nExperiment: Feel free to run the agent prompts on your own machine."
+  },
+  {
+    "objectID": "slides/03-context-management.html#section",
+    "href": "slides/03-context-management.html#section",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "Context Management\n\n\nStructuring Prompts and Context Files"
+  },
+  {
+    "objectID": "slides/03-context-management.html#the-importance-of-context",
+    "href": "slides/03-context-management.html#the-importance-of-context",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Importance of Context",
+    "text": "The Importance of Context\nAn LLM is a reasoning engine, but without context, it operates in a vacuum.\n\nUnder-contextualized: “Clean this data and run a model.” (Model guesses what clean means, guesses the model).\nOver-contextualized: “Here is 50 pages of our entire codebase and every README we have.” (Model loses focus, token costs explode).\n\nGoal: Provide exactly enough context to frame the problem and set constraints, and no more."
+  },
+  {
+    "objectID": "slides/03-context-management.html#what-is-a-context-file",
+    "href": "slides/03-context-management.html#what-is-a-context-file",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "What is a Context File?",
+    "text": "What is a Context File?\nContext files (AGENTS.md, CLAUDE.md, .cursorrules) are markdown files placed in the root of your project directory.\nThey provide “always-on” instructions to AI agents about: - Your coding style and conventions (e.g., “Use snake_case and dplyr”). - How to run tests or build the project. - Specific domain constraints (e.g., “Do not interpret correlations as causal”).\nWhen an agent loads your repository, it automatically reads these rules."
+  },
+  {
+    "objectID": "slides/03-context-management.html#do-context-files-actually-work",
+    "href": "slides/03-context-management.html#do-context-files-actually-work",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Do Context Files Actually Work?",
+    "text": "Do Context Files Actually Work?\nGloaguen et al. (2025): “Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?”\nTested AI agents on 138 real-world GitHub issues using popular LLMs with and without context files.\nThe Findings: - LLM-generated context files reduced task success rates. - Developer-provided context files only marginally improved performance (+4%). - Context files increased inference costs by over 20%."
+  },
+  {
+    "objectID": "slides/03-context-management.html#why-do-they-backfire",
+    "href": "slides/03-context-management.html#why-do-they-backfire",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Why Do They Backfire?",
+    "text": "Why Do They Backfire?\nWhy does giving the agent more instructions make it perform worse?\n\nOver-exploration: Agents followed context file instructions to test and search extensively, spending more steps traversing files instead of solving the problem.\nIncreased Reasoning Burden: Adding complex instructions required the LLMs to spend 10-22% more “reasoning tokens” per task.\nRedundancy: LLM-generated context files often repeated existing documentation, adding noise without signal."
+  },
+  {
+    "objectID": "slides/03-context-management.html#summary",
+    "href": "slides/03-context-management.html#summary",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Summary",
+    "text": "Summary\nIf context files make tasks harder, how should we use them?\nKeep them minimal and constraint-focused: 1. State your primary toolchain (“Use R, tidyverse, and ggplot2”). 2. State absolute constraints (“Never run git commit without asking”). 3. State interpretation rules (“Default to descriptive language; do not make causal claims”).\nDo not try to explain your entire data pipeline in CLAUDE.md. Let the agent read the specific code it needs."
+  },
+  {
+    "objectID": "slides/03-context-management.html#good-vs.-bad-prompts-for-stats",
+    "href": "slides/03-context-management.html#good-vs.-bad-prompts-for-stats",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Good vs. Bad Prompts for Stats",
+    "text": "Good vs. Bad Prompts for Stats\nBad Prompt: “Look at my dataset and tell me what the relationship is between age and blood pressure.”\nGood Prompt: “Using data/clinical.csv, fit a linear regression of systolic blood pressure on age, controlling for BMI. Check for heteroskedasticity. Return the model summary table using gtsummary and describe the age coefficient descriptively without causal language.”\nSpecificity prevents hallucinations."
+  },
+  {
+    "objectID": "slides/03-context-management.html#section-1",
+    "href": "slides/03-context-management.html#section-1",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "The Code-Not-Data Principle\n\n\nBridging AI and Secure Environments"
+  },
+  {
+    "objectID": "slides/03-context-management.html#the-phi-problem",
+    "href": "slides/03-context-management.html#the-phi-problem",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The PHI Problem",
+    "text": "The PHI Problem\nIn biostatistics and clinical research, Protected Health Information (PHI) is heavily restricted.\n\nYou cannot upload PHI to ChatGPT.\nYou cannot let Claude Code read a folder containing identifiable patient data.\nLocal models are safer, but often lack the reasoning capability of frontier cloud models for complex logic.\n\nHow do we use frontier AI tools without leaking data?"
+  },
+  {
+    "objectID": "slides/03-context-management.html#the-code-not-data-principle",
+    "href": "slides/03-context-management.html#the-code-not-data-principle",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Code-Not-Data Principle",
+    "text": "The Code-Not-Data Principle\nSend the schema, not the rows.\nIf the AI knows the structure of the data, it can write the code to analyze it, without ever seeing the actual observations.\n\nExport a codebook or synthetic schema.\nUse the AI in a safe environment to build the analytical pipeline.\nMove the code back into the restricted environment to run on the real data."
+  },
+  {
+    "objectID": "slides/03-context-management.html#synthetic-data-as-a-strategy",
+    "href": "slides/03-context-management.html#synthetic-data-as-a-strategy",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Synthetic Data as a Strategy",
+    "text": "Synthetic Data as a Strategy\nSynthetic data accelerates the Code-Not-Data loop:\n\nLook at your real data (inside the secure enclave).\nGenerate a synthetic dataset with the exact same column names, types, and rough distributions.\nMove the synthetic dataset to your laptop.\nLet the AI agent freely write cleaning, EDA, and modeling scripts against the synthetic data.\nReview the code.\nPush the code to Git, pull it inside the secure enclave, and run it on the real data."
+  },
+  {
+    "objectID": "slides/03-context-management.html#git-as-a-bridge",
+    "href": "slides/03-context-management.html#git-as-a-bridge",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Git as a Bridge",
+    "text": "Git as a Bridge\nGit is the perfect transport mechanism for this workflow.\n\nIt tracks provenance (who wrote this code?).\nIt provides a clear audit trail (what did the AI change?).\nIt enforces a strict boundary: you commit and push .R scripts, while data/ is strictly .gitignore’d.\n\nThis cleanly separates the untrusted reasoning environment from the secure execution environment."
+  },
+  {
+    "objectID": "slides/03-context-management.html#hands-on-secure-workflow-demo",
+    "href": "slides/03-context-management.html#hands-on-secure-workflow-demo",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Hands-On: Secure Workflow Demo",
+    "text": "Hands-On: Secure Workflow Demo\nWe will now demonstrate this loop:\n\nWe have a synthetic dataset: data/synthetic/simulated_maternal_health_data.csv.\nWe will use an AI agent to build a data cleaning and visualization pipeline.\nWe will enforce strict context rules and iterate.\nWe will audit the output to catch where the AI confidently misleads."
+  },
+  {
     "objectID": "slides/01-foundations.html#section",
     "href": "slides/01-foundations.html#section",
     "title": "AI Tools for Data Science and Statistics",
@@ -564,7 +662,7 @@
     "href": "index.html#sessions",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Sessions",
-    "text": "Sessions\n\nSession 1 (February 19): Foundations: History, Today, and Ethics\nWe will share our experiences using AI and study the foundations of AI tools. We will discuss ethics/concerns people have with using the tools.\n\nSlides\n\n\n\nSession 2 (February 26): The Toolbox\nWe will introduce and demonstrate various tools available to us, including:\n\nMajor models: Claude Opus/Sonnet, Open AI ChatGPT/Codex, Google Gemini\nOpen source models: there are many\nTools: Chat tools (Claude, ChatGPT, Gemini), IDEs (e.g., VS Code, Positron, Cursor, etc.), CLI tools/harnesses (e.g., Claude Code, OpenAI Codex, OpenCode), and software utilities to improve your workflow (tmux, git)\nSlides [coming soon]\nDue before class: Email course project topic to ewestlund@jhu.edu\n\n\n\nSession 3 (March 5): AI-Assisted Statistical Workflows\nWe will discuss how to use these tools to:\n\nSummarize datasets\nGenerate synthetic/simulated data\nBuild models\n\nWe will pay special attention to how to work with PHI using these tools\n\nSlides [coming soon]\nDue: Make progress on moonshot; prepare for check-in\n\n\n\nSession 4 (March 12): Synthesis and Looking Forward\nWe will spend most of this session sharing our experiences with our projects, but will leave it open to address lingering questions.\n\nSlides [coming soon]\nDue: Course project: project materials and 2–3 page reflection; in-class share"
+    "text": "Sessions\n\nSession 1 (February 19): Foundations: History, Today, and Ethics\nWe will share our experiences using AI and study the foundations of AI tools. We will discuss ethics/concerns people have with using the tools.\n\nSlides\n\n\n\nSession 2 (February 26): Tools Introduction\nWe will focus on practical tool use for biostatistics, with an emphasis on responsible use and verification.\n\nModel selection basics: model size, reasoning vs instruct behavior, local vs cloud, and cost/access tradeoffs\nInterfaces and harnesses: chat tools, browser/IDE agents, and CLI agents (Claude Code, Codex, OpenCode)\nOne standardized workflow: compare chat/simple/detailed prompts across harnesses and models on synthetic maternal health data\nSafety guardrails: no PHI in external tools, context boundaries, and verify-before-trust\nSlides\nDue before class: Email course project topic to ewestlund@jhu.edu\n\n\n\nSession 3 (March 5): AI-Assisted Statistical Workflows\nWe will discuss how to use these tools to:\n\nSummarize datasets\nGenerate synthetic/simulated data\nBuild models\n\nWe will pay special attention to how to work with PHI using these tools\n\nSlides [coming soon]\nDue: Make progress on moonshot; prepare for check-in\n\n\n\nSession 4 (March 12): Synthesis and Looking Forward\nWe will spend most of this session sharing our experiences with our projects, but will leave it open to address lingering questions.\n\nSlides [coming soon]\nDue: Course project: project materials and 2–3 page reflection; in-class share"
   },
   {
     "objectID": "index.html#course-readings",
@@ -579,5 +677,215 @@
     "title": "AI Tools for Data Science and Statistics",
     "section": "Further Reading",
     "text": "Further Reading\n\nCode Quality, Bugs, and Security\n\nPearce, H., Ahmad, B., Tan, B., Dolan-Gavitt, B., & Karri, R. (2022). Asleep at the keyboard? Assessing the security of GitHub Copilot’s code contributions. IEEE Symposium on Security and Privacy (S&P 2022), 754–768. doi:10.1109/SP46214.2022.9833571\nPerry, N., Srivastava, M., Kumar, D., & Boneh, D. (2023). Do users write more insecure code with AI assistants? ACM Conference on Computer and Communications Security (CCS 2023). doi:10.1145/3576915.3623157\nSandoval, G., Pearce, H., Nys, T., Karri, R., Garg, S., & Dolan-Gavitt, B. (2023). Lost at C: A user study on the security implications of large language model code assistants. USENIX Security Symposium 2023, 2205–2222. usenix.org\nJesse, K., Ahmed, T., Devanbu, P., & Morgan, E. (2023). Large language models and simple, stupid bugs. IEEE/ACM 20th International Conference on Mining Software Repositories (MSR 2023), 563–575. doi:10.1109/MSR59073.2023.00082\nAsare, O., Nagappan, M., & Asokan, N. (2023). Is GitHub’s Copilot as bad as humans at introducing vulnerabilities in code? Empirical Software Engineering, 28, 129. doi:10.1007/s10664-023-10380-1\nLiu, J., Xia, C. S., Wang, Y., & Zhang, L. (2023). Is your code generated by ChatGPT really correct? Rigorous evaluation of large language models for code generation. Proceedings of NeurIPS 2023. proceedings.neurips.cc\nDu, X., Liu, M., Wang, K., Wang, H., et al. (2024). Evaluating large language models in class-level code generation. Proceedings of ICSE 2024. doi:10.1145/3597503.3639219\n\n\n\nAI-Assisted Programming\n\nVaithilingam, P., Zhang, T., & Glassman, E. L. (2022). Expectation vs. experience: Evaluating the usability of code generation tools powered by large language models. CHI Conference on Human Factors in Computing Systems Extended Abstracts (CHI EA ’22). doi:10.1145/3491101.3519665\nNguyen, N. & Nadi, S. (2022). An empirical evaluation of GitHub Copilot’s code suggestions. 19th International Conference on Mining Software Repositories (MSR ’22). doi:10.1145/3524842.3528470\nDakhel, A. M., Majdinasab, V., Nikanjam, A., Khomh, F., Desmarais, M. C., & Jiang, Z. M. J. (2023). GitHub Copilot AI pair programmer: Asset or liability? Journal of Systems and Software, 203, 111734. doi:10.1016/j.jss.2023.111734\nBarke, S., James, M. B., & Polikarpova, N. (2023). Grounded Copilot: How programmers interact with code-generating models. Proceedings of the ACM on Programming Languages (OOPSLA), 7(OOPSLA1), 85–111. doi:10.1145/3586030\nZiegler, A., Kalliamvakou, E., Li, X. A., Rice, A., et al. (2024). Measuring GitHub Copilot’s impact on productivity. Communications of the ACM, 67(3), 54–63. doi:10.1145/3633453\nLiang, J. T., Yang, C., & Myers, B. A. (2024). A large-scale survey on the usability of AI programming assistants: Successes and challenges. Proceedings of ICSE 2024. doi:10.1145/3597503.3608128\nMurali, V., Maddila, C., Ahmad, I., Bolin, M., et al. (2024). AI-assisted code authoring at scale: Fine-tuning, deploying, and mixed methods evaluation. Proceedings of the ACM on Software Engineering (PACMSE/FSE), 1(FSE), 1066–1085. doi:10.1145/3643774\n\n\n\nBenchmarks and Evaluation\n\nJimenez, C. E., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., & Narasimhan, K. R. (2024). SWE-bench: Can language models resolve real-world GitHub issues? ICLR 2024 (Oral). openreview.net\nLai, Y., Li, C., Wang, Y., Zhang, T., Zhong, R., Zettlemoyer, L., Yih, W., Fried, D., Wang, S., & Yu, T. (2023). DS-1000: A natural and reliable benchmark for data science code generation. Proceedings of ICML 2023, PMLR 202, 18319–18345. proceedings.mlr.press\n\n\n\nReasoning Capabilities and Limitations\n\nWei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E., Le, Q. V., & Zhou, D. (2022). Chain-of-thought prompting elicits reasoning in large language models. Proceedings of NeurIPS 2022. proceedings.neurips.cc\nValmeekam, K., Marquez, M., Sreedharan, S., & Kambhampati, S. (2023). On the planning abilities of large language models — a critical investigation. Proceedings of NeurIPS 2023 (Spotlight). proceedings.neurips.cc\nKambhampati, S., Valmeekam, K., Guan, L., Verma, M., Stechly, K., et al. (2024). Position: LLMs can’t plan, but can help planning in LLM-Modulo frameworks. Proceedings of ICML 2024 (Spotlight), PMLR 235, 22895–22907. proceedings.mlr.press\n\n\n\nEthics and Responsible AI\n\nWeidinger, L., Mellor, J., Rauh, M., Griffin, C., et al. (2022). Taxonomy of risks posed by language models. ACM Conference on Fairness, Accountability, and Transparency (FAccT 2022). doi:10.1145/3531146.3533088\nHosseini, M., Resnik, D. B., & Holmes, K. (2023). The ethics of disclosing the use of artificial intelligence tools in writing scholarly manuscripts. Research Ethics, 19(4), 449–465. doi:10.1177/17470161231180449\nLiao, Q. V. & Vaughan, J. W. (2024). AI transparency in the age of LLMs: A human-centered research roadmap. Harvard Data Science Review, Special Issue 5. doi:10.1162/99608f92.8036d03b\n\n\n\nHuman Factors in AI-Assisted Coding\n\nMozannar, H., Bansal, G., Fourney, A., & Horvitz, E. (2024). Reading between the lines: Modeling user behavior and costs in AI-assisted programming. CHI 2024 (Honorable Mention). doi:10.1145/3613904.3641936\nFerdowsi, K., Huang, R., James, M. B., Polikarpova, N., & Lerner, S. (2024). Validating AI-generated code with live programming. CHI 2024. doi:10.1145/3613904.3642495"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#section",
+    "href": "slides/02-tools-introduction.html#section",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "Session 1 Wrap-Up"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#model-improvement-over-time",
+    "href": "slides/02-tools-introduction.html#model-improvement-over-time",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Model Improvement Over Time",
+    "text": "Model Improvement Over Time\n\nModels have become better on many benchmarks: coding, math, and factual recall\nLarger context windows and stronger instruction-following\nBetter tooling integration (agents, code execution, retrieval)"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#model-improvement-limitations",
+    "href": "slides/02-tools-introduction.html#model-improvement-limitations",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Model Improvement: Limitations",
+    "text": "Model Improvement: Limitations\n\nOften still brittle with noisy context\nOften still overconfident when wrong\nOften still sensitive to prompt and evaluation setup"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#improvement-vs.-reliability",
+    "href": "slides/02-tools-introduction.html#improvement-vs.-reliability",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Improvement vs. Reliability",
+    "text": "Improvement vs. Reliability\nWorking distinction for class discussion:\n\nImprovement = higher average performance on selected tasks\nReliability = dependable behavior in your real workflow\n\n\nProgress can be real without being enough for high-stakes trust."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#goodharts-law",
+    "href": "slides/02-tools-introduction.html#goodharts-law",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Goodhart’s Law",
+    "text": "Goodhart’s Law\n“When a measure becomes a target, it ceases to be a good measure.”\n\nApplied here:\n\nIf leaderboard scores become the target, model behavior can optimize for tests\nReported gains may overstate real-world usefulness\nContamination, narrow tasks, and benchmark gaming can hide weakness"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#goodhart-style-questions",
+    "href": "slides/02-tools-introduction.html#goodhart-style-questions",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Goodhart-style Questions",
+    "text": "Goodhart-style Questions\n\nAsk: What is being measured?\nAsk: What is being optimized?\nAsk: What is left out?\n\n\nFor statistical work, does the benchmark capture context quality, uncertainty, and auditability?"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#discussion",
+    "href": "slides/02-tools-introduction.html#discussion",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Discussion",
+    "text": "Discussion\n\nIs there any area you would not use an LLM today, even if accuracy improved?\n\n\n\nIs it ethical to use LLMs that trained on data they did not acquire through legal and/or ethical means?\n\n\n\n\nOther comments/questions?"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#section-1",
+    "href": "slides/02-tools-introduction.html#section-1",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "Model Choice\n\n\nNavigating the landscape of language models"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#follow-along-on-github",
+    "href": "slides/02-tools-introduction.html#follow-along-on-github",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Follow Along on GitHub",
+    "text": "Follow Along on GitHub\nAll the code, datasets, and examples for this session are available on GitHub.\n\nFollow along: You can clone or pull down the repository to run the examples yourself.\nReproducible: All workflows and agent tasks shown today are in the repo.\nExperiment: Feel free to run the agent prompts on your own machine."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#model-dimensions-size-vs.-cost",
+    "href": "slides/02-tools-introduction.html#model-dimensions-size-vs.-cost",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Model Dimensions: Size vs. Cost",
+    "text": "Model Dimensions: Size vs. Cost\nModels are categorized loosely by their parameter size:\n\nFrontier/Heavy (e.g., Opus 4.6, GPT-5.3): Maximum capability. Highest latency/cost. Best for complex logic.\nMid-weight (e.g., Sonnet 4.6): The “daily drivers”. Good balance of speed, cost, and capability.\nLight/Fast (e.g., Haiku 4.5, Gemini Flash): Very fast, cheap. Great for simple tasks and repetitive agent use."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#access-and-cost-management",
+    "href": "slides/02-tools-introduction.html#access-and-cost-management",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Access and Cost Management",
+    "text": "Access and Cost Management\nHow you access models dictates how much you pay. There are three main ways to buy access:\n\nFirst-Party Subscriptions\nDirect APIs (Pay-per-token)\nThird-Party Aggregators"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#first-party-subscriptions",
+    "href": "slides/02-tools-introduction.html#first-party-subscriptions",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "1. First-Party Subscriptions",
+    "text": "1. First-Party Subscriptions\n(e.g., ChatGPT Plus, Claude Pro, GitHub Copilot)\n\nCost: Usually ~$20/month flat rate.\nLimits: Usage caps (e.g., “50 messages every 3 hours”).\nBest for: Chat interfaces, daily general use, browser-based coding.\nData Policy: Often heavily subsidized because your inputs are used for model training (unless you explicitly opt out).\nCatch: You don’t have API keys, so you cannot always plug these into custom CLI tools or scripts."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#direct-apis-pay-per-token",
+    "href": "slides/02-tools-introduction.html#direct-apis-pay-per-token",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "2. Direct APIs (Pay-per-token)",
+    "text": "2. Direct APIs (Pay-per-token)\n\nCost: You pay exactly for what you use (input + output tokens).\nLimits: Determined by your monthly spending limit or prepaid balance.\nBest for: CLI agents (Claude Code, Codex CLI), automated scripts, large batch jobs.\nData Policy: Providers typically do not use API data for training (good for personal privacy). HOWEVER: Paying for API access does not make it safe or legal to send PHI over the wire!\nCatch: Can get expensive quickly, especially with large context windows and/or extensive agent workflows."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#third-party-aggregators",
+    "href": "slides/02-tools-introduction.html#third-party-aggregators",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "3. Third-Party Aggregators",
+    "text": "3. Third-Party Aggregators\n(e.g., OpenRouter, OpenCode Zen)\n\nCost: Buy prepaid credits to access any provider’s models through a single interface. Often pay close to full API rates.\nLimits: Flexible; allows switching between Anthropic, OpenAI, Google, and open-source models seamlessly.\nBest for: Testing multiple models without managing 5 different API accounts.\nCatch: You must trust a middleman with your data. You may end up relying on models you haven’t fully vetted."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#cloud-models-api-web",
+    "href": "slides/02-tools-introduction.html#cloud-models-api-web",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Cloud Models (API / Web)",
+    "text": "Cloud Models (API / Web)\n\nManaged by providers (Anthropic, OpenAI, Google)\nRequires sending your data to external servers\nHighest performance ceiling"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#local-models-ollama-llama.cpp",
+    "href": "slides/02-tools-introduction.html#local-models-ollama-llama.cpp",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Local Models (Ollama / Llama.cpp)",
+    "text": "Local Models (Ollama / Llama.cpp)\n\nRun entirely on your machine\nTotal data privacy (safe for some PHI under right conditions)\nPerformance limited by your computer’s RAM and GPU"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#quantization-running-locally",
+    "href": "slides/02-tools-introduction.html#quantization-running-locally",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Quantization (Running Locally)",
+    "text": "Quantization (Running Locally)\nHow do you fit a 70-billion parameter model on a laptop? Quantization.\n\nCompresses the precision of the model’s weights (e.g., from 16-bit to 4-bit)\nDramatically reduces memory usage and increases speed\nTradeoff: Lowers capability and reasoning precision"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#instruct-models",
+    "href": "slides/02-tools-introduction.html#instruct-models",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Instruct Models",
+    "text": "Instruct Models\n\nRespond immediately based on context\nFast and cheap\nMore prone to hallucination on complex logic"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#reasoning-models",
+    "href": "slides/02-tools-introduction.html#reasoning-models",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Reasoning Models",
+    "text": "Reasoning Models\n(e.g., OpenAI o1, DeepSeek-R1)\n\nSpend extra compute to generate internal “thought” chains\nThink before outputting text\nBetter at math and coding logic\nSlower and more expensive"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#section-2",
+    "href": "slides/02-tools-introduction.html#section-2",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "",
+    "text": "Chat vs. Agents"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#chat-interfaces",
+    "href": "slides/02-tools-introduction.html#chat-interfaces",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Chat Interfaces",
+    "text": "Chat Interfaces\nThe standard way most people use AI:\n\nPaste in some context and a question\nGet an answer back\nPaste the answer into your editor, wire it up, test.\nRepeat"
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#the-chat-limit",
+    "href": "slides/02-tools-introduction.html#the-chat-limit",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Chat Limit",
+    "text": "The Chat Limit\nYou act as a middleman.\n\nThe model has no persistent context of your files.\nIt cannot test the code it writes.\nIt relies entirely on your prompt clarity."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#agents",
+    "href": "slides/02-tools-introduction.html#agents",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Agents",
+    "text": "Agents\nAn Agent is not a different AI model. It is a harness around a model.\nHarness = Model + Tools + Permissions + Context + Workflow\nRather than just returning text, the model can:\n\nread a file in your project\ngrep (search) for a variable name\nedit files directly\nbash (run) the script to see if it throws an error\n\nThis process iterates between calling tools, editing files, querying models, to achieve a task."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#the-agent-workflow",
+    "href": "slides/02-tools-introduction.html#the-agent-workflow",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "The Agent Workflow",
+    "text": "The Agent Workflow\n\nYou give a high-level goal (“Create a summary stats table for my dataset”).\nThe agent explores the directory.\nIt writes the code and saves it.\nIt runs the code, reads the error log, and fixes its own mistake.\nIt presents the final result."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#command-line-cli-agents",
+    "href": "slides/02-tools-introduction.html#command-line-cli-agents",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Command Line (CLI) Agents",
+    "text": "Command Line (CLI) Agents\n\nClaude Code: Anthropic’s CLI agent.\nCodex: OpenAI’s CLI agent.\nGemini CLI: Google’s CLI agent.\n\nThere are other harnesses/agents like OpenCode (CLI) that can connect to model providers and perform similar tasks."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#browser-ide-agents",
+    "href": "slides/02-tools-introduction.html#browser-ide-agents",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Browser / IDE Agents",
+    "text": "Browser / IDE Agents\n\nVS Code: Install Copilot extension and use agents to edit within your project.\nCursor / Windsurf: Entire code editors built around agentic loops.\nWeb interfaces with “Advanced Data Analysis” (e.g., ChatGPT data execution)."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#security-data-privacy",
+    "href": "slides/02-tools-introduction.html#security-data-privacy",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Security: Data Privacy",
+    "text": "Security: Data Privacy\n\nNo PHI in external tools. If you allow the LLM access to directories with PHI, it will send them over the wire.\nData Boundaries: Agents can read anything in the folder you give them access to."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#security-system-risks",
+    "href": "slides/02-tools-introduction.html#security-system-risks",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Security: System Risks",
+    "text": "Security: System Risks\nGiving an AI the ability to run commands carries risk.\n\nLeast Privilege: Don’t run agents as “root” or give them access to sensitive system paths.\nAudit Trails: Good agents ask for permission before running destructive commands (rm, git push)."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#verify-before-trust",
+    "href": "slides/02-tools-introduction.html#verify-before-trust",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Verify Before Trust",
+    "text": "Verify Before Trust\nAgents can still fail. They might force code to run by ignoring a statistical assumption, rather than fixing the logic.\n\nSyntatically valid != Statistically correct\nCheck tables and plots for accuracy.\nUse other agents to review the work of your first agent."
+  },
+  {
+    "objectID": "slides/02-tools-introduction.html#live-demo-harness-comparison",
+    "href": "slides/02-tools-introduction.html#live-demo-harness-comparison",
+    "title": "AI Tools for Data Science and Statistics",
+    "section": "Live Demo: Harness Comparison",
+    "text": "Live Demo: Harness Comparison\nWe will run the exact same prompt across different agents and models.\nThe Task: Take data/synthetic/simulated_maternal_health_data.csv. Normalize it, summarize missingness, create key plots, and fit a count model (comorbidity_count).\nWe will evaluate: Code quality, statistical judgment, and prompt adherence."
   }
 ]

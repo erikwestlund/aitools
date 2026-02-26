@@ -1,0 +1,275 @@
+---
+title: "AI Tools for Data Science and Statistics"
+subtitle: "Tools Introduction"
+author: "Erik Westlund, PhD"
+date: "February 26, 2026"
+bibliography: references.bib
+format:
+  revealjs:
+    slide-number: true
+    transition: slide
+    background-transition: fade
+    self-contained: true
+    css: slides.css
+---
+
+```{r}
+#| include: false
+if (requireNamespace("framework", quietly = TRUE)) {
+  framework::scaffold()
+} else {
+  if(file.exists("../scaffold.R")) source("../scaffold.R")
+}
+```
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Session 1 Wrap-Up
+:::
+
+
+## Model Improvement Over Time
+
+- Models have become better on many benchmarks: coding, math, and factual recall
+- Larger context windows and stronger instruction-following
+- Better tooling integration (agents, code execution, retrieval)
+
+## Model Improvement: Limitations
+
+- Often still brittle with noisy context
+- Often still overconfident when wrong
+- Often still sensitive to prompt and evaluation setup
+
+## Improvement vs. Reliability
+
+**Working distinction for class discussion:**
+
+- Improvement = higher average performance on selected tasks
+- Reliability = dependable behavior in your real workflow
+
+. . .
+
+Progress can be real without being enough for high-stakes trust. 
+
+## Goodhart's Law
+
+"When a measure becomes a target, it ceases to be a good measure."
+
+. . .
+
+Applied here:
+
+- If leaderboard scores become the target, model behavior can optimize for tests
+- Reported gains may overstate real-world usefulness
+- Contamination, narrow tasks, and benchmark gaming can hide weakness
+
+## Goodhart-style Questions
+
+- Ask: What is being measured?
+- Ask: What is being optimized?
+- Ask: What is left out?
+
+. . .
+
+For statistical work, does the benchmark capture context quality, uncertainty, and auditability?
+
+## Discussion
+
+1. Is there any area you would not use an LLM today, even if accuracy improved?
+
+. . .
+
+2. Is it ethical to use LLMs that trained on data they did not acquire through legal and/or ethical means?
+
+. . .
+
+3. Other comments/questions?
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Model Choice
+:::
+
+::: {style="color: #ecf0f1; font-size: 0.9em; text-align: center;"}
+Navigating the landscape of language models
+:::
+
+
+## Follow Along on GitHub
+
+All the code, datasets, and examples for this session are available on GitHub.
+
+- **Follow along:** You can clone or pull down the repository to run the examples yourself.
+- **Reproducible:** All workflows and agent tasks shown today are in the repo.
+- **Experiment:** Feel free to run the agent prompts on your own machine.
+
+
+## Model Dimensions: Size vs. Cost
+
+Models are categorized loosely by their parameter size:
+
+- **Frontier/Heavy** (e.g., Opus 4.6, GPT-5.3): Maximum capability. Highest latency/cost. Best for complex logic.
+- **Mid-weight** (e.g., Sonnet 4.6): The "daily drivers". Good balance of speed, cost, and capability.
+- **Light/Fast** (e.g., Haiku 4.5, Gemini Flash): Very fast, cheap. Great for simple tasks and repetitive agent use.
+
+## Access and Cost Management
+
+How you access models dictates how much you pay. There are three main ways to buy access:
+
+1. **First-Party Subscriptions**
+2. **Direct APIs (Pay-per-token)**
+3. **Third-Party Aggregators**
+
+## 1. First-Party Subscriptions
+
+*(e.g., ChatGPT Plus, Claude Pro, GitHub Copilot)*
+
+- **Cost:** Usually ~$20/month flat rate.
+- **Limits:** Usage caps (e.g., "50 messages every 3 hours").
+- **Best for:** Chat interfaces, daily general use, browser-based coding.
+- **Data Policy:** Often heavily subsidized because your inputs are used for model training (unless you explicitly opt out).
+- **Catch:** You don't have API keys, so you cannot always plug these into custom CLI tools or scripts.
+
+## 2. Direct APIs (Pay-per-token)
+
+- **Cost:** You pay exactly for what you use (input + output tokens).
+- **Limits:** Determined by your monthly spending limit or prepaid balance.
+- **Best for:** CLI agents (Claude Code, Codex CLI), automated scripts, large batch jobs.
+- **Data Policy:** Providers typically do *not* use API data for training (good for personal privacy). **HOWEVER:** Paying for API access does *not* make it safe or legal to send PHI over the wire!
+- **Catch:** Can get expensive quickly, especially with large context windows and/or extensive agent workflows.
+
+## 3. Third-Party Aggregators
+
+*(e.g., OpenRouter, OpenCode Zen)*
+
+- **Cost:** Buy prepaid credits to access *any* provider's models through a single interface. Often pay close to full API rates.
+- **Limits:** Flexible; allows switching between Anthropic, OpenAI, Google, and open-source models seamlessly.
+- **Best for:** Testing multiple models without managing 5 different API accounts.
+- **Catch:** You must trust a middleman with your data. You may end up relying on models you haven't fully vetted.
+
+## Cloud Models (API / Web)
+
+- Managed by providers (Anthropic, OpenAI, Google)
+- Requires sending your data to external servers
+- Highest performance ceiling
+
+## Local Models (Ollama / Llama.cpp)
+
+- Run entirely on your machine
+- Total data privacy (safe for some PHI under right conditions)
+- Performance limited by your computer's RAM and GPU
+
+## Quantization (Running Locally)
+
+How do you fit a 70-billion parameter model on a laptop? **Quantization**.
+
+- Compresses the precision of the model's weights (e.g., from 16-bit to 4-bit)
+- Dramatically reduces memory usage and increases speed
+- *Tradeoff:* Lowers capability and reasoning precision
+
+## Instruct Models
+
+- Respond immediately based on context
+- Fast and cheap
+- More prone to hallucination on complex logic
+
+## Reasoning Models
+
+*(e.g., OpenAI o1, DeepSeek-R1)*
+
+- Spend extra compute to generate internal "thought" chains
+- Think before outputting text
+- Better at math and coding logic
+- Slower and more expensive
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Chat vs. Agents
+:::
+
+## Chat Interfaces
+
+**The standard way most people use AI:**
+
+- Paste in some context and a question
+- Get an answer back
+- Paste the answer into your editor, wire it up, test.
+- Repeat
+
+## The Chat Limit
+
+**You act as a middleman.**
+
+- The model has no persistent context of your files.
+- It cannot test the code it writes.
+- It relies entirely on your prompt clarity.
+
+## Agents
+
+An **Agent** is not a different AI model. It is a **harness** around a model.
+
+**Harness = Model + Tools + Permissions + Context + Workflow**
+
+Rather than just returning text, the model can:
+
+- `read` a file in your project
+- `grep` (search) for a variable name
+- `edit` files directly
+- `bash` (run) the script to see if it throws an error
+
+This process iterates between calling tools, editing files, querying models, to achieve a task.
+
+## The Agent Workflow
+
+1. You give a high-level goal ("Create a summary stats table for my dataset").
+2. The agent explores the directory.
+3. It writes the code and saves it.
+4. It runs the code, reads the error log, and fixes its own mistake.
+5. It presents the final result.
+
+## Command Line (CLI) Agents
+
+- **Claude Code:** Anthropic's CLI agent.
+- **Codex:** OpenAI's CLI agent.
+- **Gemini CLI:** Google's CLI agent.
+
+There are other harnesses/agents like **OpenCode** (CLI) that can connect to model providers and perform similar tasks.
+
+## Browser / IDE Agents
+
+- **VS Code**: Install Copilot extension and use agents to edit within your project.
+- **Cursor / Windsurf:** Entire code editors built around agentic loops.
+- Web interfaces with "Advanced Data Analysis" (e.g., ChatGPT data execution).
+
+## Security: Data Privacy
+
+- **No PHI in external tools.** If you allow the LLM access to directories with PHI, it will send them over the wire.
+- **Data Boundaries:** Agents can read anything in the folder you give them access to.
+
+## Security: System Risks
+
+Giving an AI the ability to run commands carries risk.
+
+- **Least Privilege:** Don't run agents as "root" or give them access to sensitive system paths.
+- **Audit Trails:** Good agents ask for permission before running destructive commands (`rm`, `git push`).
+
+## Verify Before Trust
+
+Agents can still fail. They might force code to run by ignoring a statistical assumption, rather than fixing the logic.
+
+- Syntatically valid != Statistically correct
+- Check tables and plots for accuracy.
+- Use other agents to review the work of your first agent.
+
+## Live Demo: Harness Comparison
+
+We will run the **exact same prompt** across different agents and models.
+
+**The Task:**
+Take `data/synthetic/simulated_maternal_health_data.csv`. Normalize it, summarize missingness, create key plots, and fit a count model (`comorbidity_count`).
+
+**We will evaluate:**
+Code quality, statistical judgment, and prompt adherence.

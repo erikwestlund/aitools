@@ -1,0 +1,71 @@
+---
+title: "Tools Comparison (Detailed): {{HARNESS_LABEL}} + {{MODEL_LABEL}}"
+---
+
+```{r}
+#| include: false
+scaffold()
+```
+
+## Run Metadata
+
+- Harness: `{{HARNESS}}`
+- Model: `{{MODEL}}`
+- Prompt type: `detailed`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+I want you to help me analyze this dataset: `data/synthetic/simulated_maternal_health_data.csv`
+
+My goal is to produce a thorough analysis that is statistically sound and lays out all steps of the analysis.
+
+Please do the following:
+
+1. Load the dataset and normalize columns/types.
+   - Use clear snake_case names.
+   - Ensure categorical vs numeric types are explicit.
+
+2. Summarize the data.
+   - Report row count, column count, missingness, and key descriptive summaries.
+   - Flag suspicious values or quality concerns.
+
+3. Create key visualizations.
+   - Show relationships for:
+     - `received_comprehensive_postnatal_care`
+     - `distance_to_provider`
+     - `insurance`
+     - `race_ethnicity`
+
+4. Build a count outcome and model it.
+   - Define `comorbidity_count` as the row-wise sum of:
+     - `obesity`,
+     - `multiple_gestation`,
+     - `diabetes`,
+     - `heart_disease`,
+     - `placenta_previa`,
+     - `hypertension`,
+     - `gest_hypertension`,
+     - `preeclampsia`.
+   - Select an appropriate count-model strategy (Poisson vs negative binomial, with justification).
+   - Fit the model and report interpretable results.
+
+5. Report results responsibly.
+   - Do not overstate causality.
+   - Include model assumptions, diagnostics, and limitations.
+
+Constraints:
+- Prefer readable, modular, reproducible code that follows R community idioms.
+- Report back a summary of what you changed.
+```

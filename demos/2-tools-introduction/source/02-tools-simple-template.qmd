@@ -1,0 +1,31 @@
+---
+title: "Tools Comparison (Simple): {{HARNESS_LABEL}} + {{MODEL_LABEL}}"
+---
+
+```{r}
+#| include: false
+scaffold()
+```
+
+## Run Metadata
+
+- Harness: `{{HARNESS}}`
+- Model: `{{MODEL}}`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
