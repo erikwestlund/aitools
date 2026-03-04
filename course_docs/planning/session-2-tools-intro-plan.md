@@ -61,8 +61,8 @@ Use one dataset and one task structure across all runs:
 ## Deliverables Prepared in This Repo
 
 - Prompt file for standardized runs
-- Scripted `.qmd` generation workflow (`source/` has template, script generates to `worked/`)
-- Combination-specific `.qmd` stubs (harness x model; generated from one template into `worked/`)
+- Scripted `.qmd` generation workflow (`source/` has template, script generates to `demos/3-tools-introduction-worked/`)
+- Combination-specific `.qmd` stubs (harness x model; generated from one template into `demos/3-tools-introduction-worked/`)
 - Session notes and comparison matrix template
 
 ## What Session 2 Produces

@@ -1,0 +1,330 @@
+---
+title: "AI Tools for Data Science and Statistics"
+subtitle: "Tools and Workflow"
+author: "Erik Westlund"
+date: "March 5, 2026"
+bibliography: references.bib
+format:
+  revealjs:
+    slide-number: true
+    transition: slide
+    background-transition: fade
+    self-contained: true
+    css: slides.css
+---
+
+```{r}
+#| include: false
+if (requireNamespace("framework", quietly = TRUE)) {
+  framework::scaffold()
+} else {
+  if (file.exists("../scaffold.R")) source("../scaffold.R")
+}
+```
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Session 3: Tools and Workflow
+:::
+
+## Review
+
+We ran the same task across multiple harnesses and models.
+
+- Same model, different harness, different outputs
+- Most variation appeared in diagnostics depth, visualization quality, and limitations reporting
+
+## GUI (vs. CLI) Agent Example (VS Code)
+
+- Quick walkthrough of VS Code Copilot agent mode
+- Same agent loop (read, edit, run, fix) but driven through the editor GUI
+
+## Requirements for Biostatistical Work
+
+For biostat work, we need a repeatable workflow that is:
+
+- Safe for PHI constraints
+- Reproducible with audit trails
+
+## Git Makes It Easy To Switch Environments
+
+Simple pattern for restricted workflows:
+
+1. Work locally on synthetic/public data
+2. Commit and push code
+3. Pull code in restricted environment
+4. Run on real data inside restricted environment
+
+Code can move across environments and into models; sensitive data cannot.
+
+## `.gitignore`
+
+1. **Data safety:** prevent accidental commits of data, secrets, and logs
+2. **Agent hygiene:** reduce irrelevant directories so agents search less noise
+
+```
+data/
+*.csv
+.env
+.Renviron
+.claude/
+.cursor/
+```
+
+Agents can traverse files aggressively, so `.gitignore` can reduce noise but cannot enforce access control. Different agents/harnesses will respect `.gitignore` differently.
+
+## What Is tmux?
+
+`tmux` is a terminal multiplexer: it lets you run and manage multiple terminal workflows inside one persistent session.
+
+- **Session:** named workspace for a project
+- **Window:** tab inside a session (agent, git, REPL)
+- **Pane:** split view inside a window
+
+Why it's useful:
+
+- Persist work when local terminals close or SSH disconnects
+- Run multiple agents and tools in parallel layouts
+
+## tmux Workflow Pattern
+
+Use one launcher script per project to bootstrap a consistent session layout, plus lightweight aliases:
+
+- `tm<project>`: runs your project launcher alias (example: `tmstats`)
+- `tma <session>`: attach to an existing session (example: `tma biostat`)
+- `tmk <session>`: kill an existing session (example: `tmk biostat`)
+
+This keeps daily startup repeatable across local and remote environments. See the tmux example.
+
+## Use Agents to Learn These Tools
+
+- Have agents write your tmux launcher scripts; this is high ROI to use, low ROI to learn
+- Agents are very good at git and shell tooling, use them for advice
+- Use agents to teach you *why* they do what they do
+- Studying what LLMs is a great way to learn some tricks of the trade
+
+## Context Files: What to Standardize
+
+Use concise, durable rules in context files:
+
+| File | Read by | Scope |
+|:-----|:--------|:------|
+| `CLAUDE.md` | Claude Code, OpenCode | Per-directory, stacks |
+| `AGENTS.md` | Codex, OpenCode, emerging standard | Per-directory |
+| `.cursorrules` | Cursor | Project root |
+
+Many modern agents already know to look for common context files.
+
+## Context Scope and Stacking
+
+- Start directory controls which context files are in scope
+- Context can stack from nested paths
+- More context increases token/time cost
+
+Agents can often infer a lot by reading project files directly, so context files should constrain behavior, not duplicate documentation.
+
+## Context Files: Evidence and Balance
+
+An ETH Zurich study found that AI-generated `AGENTS.md` files reduced agent success rates and increased cost on SWE-bench tasks [@gloaguen2026agentsmd]. However, hand-written context files performed better.
+
+- Write your own context files
+- Keep context files minimal and high-signal
+- Even if there's a "SWE-bench" penalty, these files are still useful to guide agents on project-specific logic, compliance rules, and hard constraints
+- Avoid large auto-generated boilerplate blocks
+
+## Warning
+
+Just because a context file says not to do something doesn't mean the agen't wont do it.
+
+## MCP: Model Context Protocol
+
+Model Context Protocol (MCP) is a standard way to connect agents to tools, data sources, and services.
+
+- Gives agents a structured interface instead of ad hoc shell/API glue
+- Supports discoverable tool definitions, inputs, and outputs
+- Helps teams govern how agent access is exposed
+
+## MCP Goals
+
+- **Control:** approved systems can be exposed intentionally, not implicitly
+- **Safety:** permissioned connectors can limit what an agent can reach
+- **Portability:** the same MCP tool can be reused across different agent harnesses
+
+For this course context, MCP is useful when code can move but sensitive data cannot.
+
+## MCP Example: EHR Query Gateway
+
+One practical use case is controlled cohort discovery from EHR systems.
+
+- Agent calls an MCP tool like `ehr_cohort_counts`
+- Tool accepts structured inputs (ICD codes, date window, age filters, site)
+- MCP server runs approved parameterized queries inside the restricted network
+- Tool returns aggregates or summary tables, not row-level PHI
+
+Result: the analyst can iterate quickly on feasibility questions while keeping direct database access tightly governed.
+
+## MCP Adoption Has Mixed Momentum
+
+MCP remains valuable for governed access, but some teams report overhead outweighs benefits for routine coding tasks.
+
+- **Overhead:** tool schemas and capability manifests can add context bloat
+- **Latency/cost:** repeated tool negotiation and calls can increase token/time cost
+- **Redundancy:** many modern agents can use native tools directly (for example `psql`) when schema/context are clear
+
+Practical takeaway: use MCP where governance and boundary control are essential; use simpler direct tool paths where they are sufficient and safe.
+
+## Skills 
+
+Skills are reusable, task-specific instruction bundles for agents.
+
+- Package best-practice prompts and constraints in one place
+- Reduce per-run setup overhead for recurring tasks
+- Improve consistency across users and sessions
+
+## Anatomy of a Skill
+
+Reference: [anthropics/skills](https://github.com/anthropics/skills)
+
+Typical structure:
+
+- `SKILL.md` with frontmatter (`name`, `description`) plus operating instructions
+- Optional `scripts/` for reusable helper commands
+- Optional `examples/` and reference resources (templates, assets, docs)
+- Optional `LICENSE.txt` when sharing skill code/content
+
+Minimal template from the repo:
+
+```markdown
+---
+name: my-skill-name
+description: what this skill does and when to use it
+---
+```
+
+It's just text.
+
+## Skills: Caution
+
+- Agents are hit-or-miss for when they invoke skills
+- Skills have not been studied, so like with AGENTS/CLAUDE.md files, use caution
+- Consider the token cost -- these skills will be sent along with your prompts when invoked
+
+## Context File Anatomy (Portable Pattern)
+
+Adapted from the Laravel Skills docs structure:
+
+- **Context:** scope, assumptions, and environment boundaries
+- **Rules:** explicit requirements the agent should follow
+- **Examples:** concrete snippets showing correct behavior
+- **Anti-patterns:** known failure modes to avoid
+- **References:** source docs and internal standards
+
+Reference: [skills.laravel.cloud/docs](https://skills.laravel.cloud/docs)
+
+## Example: ggplot2 Style Context File
+
+```markdown
+## Context
+- All plots use a shared ggplot2 theme for publication.
+
+## Rules
+- Use `theme_minimal(base_size = 12)` as the base theme.
+- Color palettes: `scale_color_brewer(palette = "Set2")` for categorical,
+  `scale_fill_viridis_c()` for continuous.
+- Always label axes with units: `labs(x = "Age (years)")`.
+- Add `caption = "Source: NHANES 2017–2020"` (or relevant source).
+
+## Examples
+- `geom_point(alpha = 0.6, size = 2)` for scatter plots.
+- `geom_bar(stat = "identity") + coord_flip()` for ranked bars.
+- Facets: `facet_wrap(~ group, scales = "free_y")`.
+
+## Anti-patterns
+- Rainbow color scales or default R palette.
+- Unlabeled axes or missing units.
+- Dual y-axes (use facets instead).
+
+## References
+- Project style guide in `docs/plot-standards.md`
+```
+
+## Context Anti-Patterns to Avoid
+
+- Rule lists that are vague ("be rigorous", "use best practices")
+- Conflicting constraints across multiple context files
+- Large style boilerplate that increases token cost without guidance value
+- Missing references that force the agent to guess standards
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Workflow Tips
+:::
+
+## Give the Agent a Place to Write
+
+- Keep a `docs/` or `notes/` directory for plans, prompts, and analysis notes
+- Tell the agent to write there: summaries, decision logs, intermediate findings
+- Creates a paper trail you can review, share, or pick up later
+- Also useful as context for future sessions: the agent can read its own prior notes
+
+## Practical Workflow Tips
+
+- **Checkpoint with commits**: commit after each meaningful step so you have rollback points when the agent goes sideways
+- **Ask for explanation**: tell the agent to explain its reasoning, not just produce code; catches misunderstandings before they compound
+- **Play agents against each other**: use multiple agents with different strengths to review each other's outputs and catch errors
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Security & Risks
+:::
+
+## Prompt Injection & Data Risks
+
+- **Prompt injection**: malicious instructions hidden in data, web pages, or tool outputs can hijack agent behavior
+- **Data exfiltration**: agents with tool access (MCP, shell) can be tricked into sending data to external services
+- **Context poisoning**: untrusted content in context files or pasted text can alter agent behavior silently
+- Mitigation: review agent actions, limit tool permissions, don't paste untrusted content
+
+## Practical Security Habits
+
+- **Never feed PHI/PII to cloud-hosted models**: use local/institutionally-hosted models or simulated data for sensitive work
+- **Review before you run**: read generated shell commands and API calls before approving; agents can hallucinate destructive operations
+- **Scope tool access**: give agents the minimum permissions they need; avoid "yolo" mode on sensitive projects
+- **Treat agent output as untrusted**: validate results the same way you'd review a colleague's code
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Demo Sequence
+:::
+
+## Demo 1: Git Push/Pull Workflow (`demos/5-git-push-pull`)
+
+- Work locally on synthetic/public data with agents
+- Commit and push code; pull into restricted environment
+- Restricted side: run on real data, inspect schema and aggregates only
+- Emphasize audit trail and boundary discipline throughout
+
+## Demo 2: tmux for Agent Workflows (`demos/6-tmux-workflow`)
+
+- Show session/window/pane structure
+- Show launcher script pattern
+- Show attach/kill alias flow (`tma`, `tmk`)
+
+## Demo 3: Two-Machine PHI Workflow (`demos/7-phi-two-machine`)
+
+- Synthetic/simulated development on unrestricted machine
+- Push code to restricted machine for real data runs
+- Agents never touch PHI directly
+
+## Demo 4: Context A/B Exercise (`demos/8-context-comparison`)
+
+- Palmer Penguins scatter plot: bill length vs body mass by species
+- Same notebook and prompt in both directories
+- `with-context/` has an `AGENTS.md` specifying theme, colors, axis labels, captions
+- `without-context/` has no style guidance
+
+Run an agent in each directory and compare the output styling.

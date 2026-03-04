@@ -1,0 +1,43 @@
+---
+title: "Context A/B: Penguin Visualization (With Context File)"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+```{r}
+#| include: false
+library(dplyr)
+library(ggplot2)
+library(palmerpenguins)
+```
+
+## Goal
+
+Create a polished scatter plot exploring the relationship between bill length and body mass across penguin species.
+
+## Data
+
+```{r}
+glimpse(penguins)
+```
+
+## Task
+
+1. Remove rows with missing values.
+2. Create a scatter plot of bill length (x) vs body mass (y), colored by species.
+3. Style the plot for publication quality.
+4. Write 2-3 sentences of descriptive interpretation.
+
+## Starter Code
+
+```{r}
+#| eval: false
+
+# TODO: clean the data
+
+# TODO: build the scatter plot
+
+# TODO: interpretation (as a comment or markdown text)
+```

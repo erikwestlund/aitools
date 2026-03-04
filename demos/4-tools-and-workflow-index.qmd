@@ -1,0 +1,28 @@
+---
+title: "Session 3 Demos: Tools and Workflow"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+This demo set supports the Session 3 lecture and hands-on workflow examples. Each notebook can be run live or assigned for at-home replication when time is limited.
+
+## Notebook Sequence
+
+1. [VS Code GUI Agent Quickstart](4-vscode-gui-agent/vscode-gui-agent-quickstart.html)
+2. [Git Push/Pull Bridge for PHI-Constrained Work](5-git-push-pull/git-push-pull-bridge.html)
+3. [tmux Session/Window/Pane Workflow](6-tmux-workflow/tmux-launchers-and-aliases.html)
+4. [Two-Machine PHI Workflow (Synthetic/Simulated Development)](7-phi-two-machine/phi-two-machine-synthetic-simulated.html)
+
+## Context A/B Exercise (Palmer Penguins)
+
+Run an agent in each directory with the same prompt. Compare whether the agent follows the styling rules when an `AGENTS.md` is present.
+
+- [With context file (`AGENTS.md`)](8-context-comparison/with-context/visualization-task.html)
+- [Without context file](8-context-comparison/without-context/visualization-task.html)
+
+## Suggested Use
+
+- In class: run 2-3 notebooks end-to-end
+- At home: complete the remaining notebooks and keep verification notes

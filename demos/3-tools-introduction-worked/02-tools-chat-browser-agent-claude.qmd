@@ -1,0 +1,412 @@
+---
+title: "Tools Comparison (Chat): Browser Agent + Claude"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `browser-agent`
+- Model: `claude`
+- Prompt type: `chat`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+
+df |> glimpse()
+```
+
+```{r}
+# Maternal health analysis scaffold (Quarto-ready)
+# Assumes your data frame is named `df`
+
+# --- packages ---
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(stringr)
+  library(janitor)
+  library(forcats)
+  library(ggplot2)
+  library(skimr)
+  library(naniar)
+  library(broom)
+  library(MASS)   # glm.nb
+  library(pscl)   # zeroinfl, Vuong test
+  library(DHARMa) # residual diagnostics
+})
+
+# ------------------------------------------------------------------------------
+# 1) STANDARDIZE NAMES + COERCE TYPES
+# ------------------------------------------------------------------------------
+
+df_raw <- df
+
+# Columns we expect (based on your glimpse)
+expected_cols <- c(
+  "id","provider_id","state","received_comprehensive_postnatal_care","self_report_income","age","edu",
+  "race_ethnicity","insurance","job_type","dependents","distance_to_provider",
+  "obesity","multiple_gestation","diabetes","heart_disease","placenta_previa","hypertension","gest_hypertension","preeclampsia"
+)
+
+# Standardize names to snake_case; keep a rename map for reporting
+rename_map <- tibble::tibble(
+  original = names(df),
+  standardized = janitor::make_clean_names(names(df))
+)
+
+df <- df |>
+  janitor::clean_names() |>
+  # Coerce / clean values; treat "" as NA; trim whitespace
+  mutate(across(where(is.character), ~na_if(str_squish(.x), ""))) |>
+  # IDs as integer-ish (but safe as character if you later join); here: integer64 not needed, 50k rows
+  mutate(
+    id = as.integer(id),
+    provider_id = as.integer(provider_id)
+  ) |>
+  # Key numeric fields
+  mutate(
+    age = as.numeric(age),
+    dependents = as.integer(dependents),
+    distance_to_provider = as.numeric(distance_to_provider),
+    received_comprehensive_postnatal_care = as.integer(received_comprehensive_postnatal_care)
+  ) |>
+  # Binary comorbidity flags -> 0/1 integers; tolerate TRUE/FALSE or "0"/"1"
+  mutate(across(
+    c(obesity, multiple_gestation, diabetes, heart_disease, placenta_previa, hypertension, gest_hypertension, preeclampsia),
+    ~case_when(
+      is.na(.x) ~ NA_integer_,
+      .x %in% c(0, 1) ~ as.integer(.x),
+      .x %in% c(TRUE, FALSE) ~ as.integer(.x),
+      as.character(.x) %in% c("0","1") ~ as.integer(as.character(.x)),
+      TRUE ~ NA_integer_
+    )
+  )) |>
+  # Clean/standardize categorical text (lowercase)
+  mutate(
+    state = str_to_upper(state),
+    self_report_income = str_to_lower(self_report_income),
+    edu = str_to_lower(edu),
+    race_ethnicity = str_to_lower(race_ethnicity),
+    insurance = str_to_lower(insurance),
+    job_type = str_to_lower(job_type)
+  ) |>
+  # Factors with sensible ordering where possible (edit if you have a preferred order)
+  mutate(
+    state = factor(state),
+    edu = factor(edu, levels = c("less_than_hs","hs","some_college","college","post_grad"), ordered = TRUE),
+    insurance = factor(insurance),
+    race_ethnicity = factor(race_ethnicity),
+    job_type = factor(job_type),
+    received_comprehensive_postnatal_care = factor(
+      received_comprehensive_postnatal_care,
+      levels = c(0, 1),
+      labels = c("No", "Yes")
+    )
+  )
+
+# Quick check: expected columns present?
+missing_expected <- setdiff(expected_cols, names(df))
+if (length(missing_expected) > 0) {
+  message("WARNING: Missing expected columns after cleaning: ", paste(missing_expected, collapse = ", "))
+}
+
+# ------------------------------------------------------------------------------
+# 2) SUMMARIZE DATA + FLAG QUALITY CONCERNS
+# ------------------------------------------------------------------------------
+
+cat("\n\n====================\n2) DATA SUMMARY\n====================\n")
+cat("Rows:", nrow(df), "\n")
+cat("Columns:", ncol(df), "\n\n")
+
+cat("---- Missingness by column (top 20) ----\n")
+miss_tbl <- naniar::miss_var_summary(df) |>
+  arrange(desc(pct_miss))
+print(head(miss_tbl, 20))
+
+cat("\n---- skimr overview ----\n")
+print(skimr::skim(df))
+
+cat("\n---- Suspicious value checks ----\n")
+
+# Define reasonable ranges (adjust if needed)
+qc_flags <- list(
+  age_out_of_range = df |>
+    filter(!is.na(age) & (age < 10 | age > 55)) |>
+    summarize(n = n()),
+  dependents_out_of_range = df |>
+    filter(!is.na(dependents) & (dependents < 0 | dependents > 20)) |>
+    summarize(n = n()),
+  distance_negative = df |>
+    filter(!is.na(distance_to_provider) & distance_to_provider < 0) |>
+    summarize(n = n()),
+  distance_extreme = df |>
+    filter(!is.na(distance_to_provider) & distance_to_provider > 500) |>
+    summarize(n = n()),
+  received_not_binary = df_raw |>
+    janitor::clean_names() |>
+    mutate(received_comprehensive_postnatal_care = as.character(received_comprehensive_postnatal_care)) |>
+    filter(!is.na(received_comprehensive_postnatal_care) & !received_comprehensive_postnatal_care %in% c("0","1")) |>
+    summarize(n = n())
+)
+
+print(dplyr::bind_rows(lapply(names(qc_flags), \(nm) qc_flags[[nm]] |> mutate(check = nm))) |>
+        dplyr::select(check, n))
+
+cat("\n---- Category levels (counts) ----\n")
+cat("\nstate (top 10):\n"); print(df |> count(state, sort = TRUE) |> head(10))
+cat("\nrace_ethnicity:\n"); print(df |> count(race_ethnicity, sort = TRUE))
+cat("\ninsurance:\n"); print(df |> count(insurance, sort = TRUE))
+cat("\nedu:\n"); print(df |> count(edu, sort = TRUE))
+cat("\njob_type:\n"); print(df |> count(job_type, sort = TRUE))
+cat("\nself_report_income:\n"); print(df |> count(self_report_income, sort = TRUE))
+
+# ------------------------------------------------------------------------------
+# 3) KEY VISUALIZATIONS (relationships for requested variables)
+# ------------------------------------------------------------------------------
+
+cat("\n\n====================\n3) VISUALIZATIONS\n====================\n")
+
+# Helpful derived variables for plots
+df_plot <- df |>
+  mutate(
+    # log1p to handle zeros; keep original too
+    log1p_distance = log1p(distance_to_provider),
+    # common for interpretability: 10-mile increments
+    distance_10 = distance_to_provider / 10
+  )
+
+# 3a) Outcome prevalence by insurance
+p1 <- ggplot(df_plot, aes(x = insurance, fill = received_comprehensive_postnatal_care)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Comprehensive postnatal care by insurance",
+    x = "Insurance",
+    y = "Proportion within insurance group",
+    fill = "Received comprehensive\npostnatal care"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+print(p1)
+
+# 3b) Outcome prevalence by race/ethnicity
+p2 <- ggplot(df_plot, aes(x = race_ethnicity, fill = received_comprehensive_postnatal_care)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Comprehensive postnatal care by race/ethnicity",
+    x = "Race/ethnicity",
+    y = "Proportion within race/ethnicity group",
+    fill = "Received comprehensive\npostnatal care"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+print(p2)
+
+# 3c) Distance distributions by outcome (raw)
+p3 <- ggplot(df_plot, aes(x = distance_to_provider, fill = received_comprehensive_postnatal_care)) +
+  geom_histogram(bins = 60, position = "identity", alpha = 0.5) +
+  labs(
+    title = "Distance to provider distribution by postnatal care status",
+    x = "Distance to provider",
+    y = "Count",
+    fill = "Received comprehensive\npostnatal care"
+  ) +
+  theme_minimal()
+print(p3)
+
+# 3d) Distance distributions by outcome (log scale view)
+p4 <- ggplot(df_plot, aes(x = log1p_distance, fill = received_comprehensive_postnatal_care)) +
+  geom_histogram(bins = 60, position = "identity", alpha = 0.5) +
+  labs(
+    title = "Distance to provider (log1p) by postnatal care status",
+    x = "log(1 + distance_to_provider)",
+    y = "Count",
+    fill = "Received comprehensive\npostnatal care"
+  ) +
+  theme_minimal()
+print(p4)
+
+# 3e) Outcome vs distance (binned)
+p5 <- df_plot |>
+  filter(!is.na(distance_to_provider)) |>
+  mutate(distance_bin = cut(distance_to_provider, breaks = quantile(distance_to_provider, probs = seq(0, 1, 0.1), na.rm = TRUE), include.lowest = TRUE)) |>
+  count(distance_bin, received_comprehensive_postnatal_care) |>
+  group_by(distance_bin) |>
+  mutate(pct = n / sum(n)) |>
+  ungroup() |>
+  ggplot(aes(x = distance_bin, y = pct, group = received_comprehensive_postnatal_care, color = received_comprehensive_postnatal_care)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Postnatal care by deciles of distance to provider",
+    x = "Distance decile bin",
+    y = "Percent",
+    color = "Received comprehensive\npostnatal care"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+print(p5)
+
+# ------------------------------------------------------------------------------
+# 4) BUILD COUNT OUTCOME + MODEL + DIAGNOSTICS + INTERPRETABLE RESULTS
+# ------------------------------------------------------------------------------
+
+cat("\n\n====================\n4) COUNT OUTCOME + MODEL\n====================\n")
+
+comorbidity_vars <- c(
+  "obesity","multiple_gestation","diabetes","heart_disease",
+  "placenta_previa","hypertension","gest_hypertension","preeclampsia"
+)
+
+# Define comorbidity_count (row-wise sum); if any component missing, you can choose:
+# - strict: NA if any missing
+# - permissive: treat missing as 0
+# Here: strict by default to avoid silently undercounting.
+df_model <- df_plot |>
+  mutate(
+    comorbidity_count = if_else(
+      if_any(all_of(comorbidity_vars), is.na),
+      NA_integer_,
+      rowSums(across(all_of(comorbidity_vars)))
+    )
+  )
+
+cat("comorbidity_count summary:\n")
+print(summary(df_model$comorbidity_count))
+cat("\nProportion zeros:\n")
+print(mean(df_model$comorbidity_count == 0, na.rm = TRUE))
+
+# Basic mean/variance check (overdispersion hint)
+mean_cc <- mean(df_model$comorbidity_count, na.rm = TRUE)
+var_cc  <- var(df_model$comorbidity_count, na.rm = TRUE)
+cat("\nMean(comorbidity_count) =", round(mean_cc, 3), "\n")
+cat("Var(comorbidity_count)  =", round(var_cc, 3), "\n")
+cat("Var/Mean               =", round(var_cc / mean_cc, 3), "\n")
+
+# Model formula: pick plausible covariates; edit freely
+# NOTE: received_comprehensive_postnatal_care is a *predictor* here (your request focuses on it),
+# not the outcome. If you meant the reverse, swap outcome/predictor.
+model_formula <- comorbidity_count ~ received_comprehensive_postnatal_care +
+  age + distance_10 + insurance + race_ethnicity + edu + job_type + dependents + state
+
+# Fit Poisson
+m_pois <- glm(model_formula, data = df_model, family = poisson())
+
+# Fit Negative Binomial (handles overdispersion)
+m_nb <- MASS::glm.nb(model_formula, data = df_model)
+
+cat("\n---- Model fit comparison ----\n")
+cmp <- tibble::tibble(
+  model = c("Poisson", "NegBin"),
+  AIC = c(AIC(m_pois), AIC(m_nb)),
+  BIC = c(BIC(m_pois), BIC(m_nb)),
+  logLik = c(as.numeric(logLik(m_pois)), as.numeric(logLik(m_nb)))
+)
+print(cmp)
+
+# Overdispersion check for Poisson using Pearson chi-square / df
+overdisp <- sum(residuals(m_pois, type = "pearson")^2, na.rm = TRUE) / df.residual(m_pois)
+cat("\nPoisson overdispersion (Pearson chi-square / df):", round(overdisp, 3), "\n")
+if (overdisp > 1.2) cat("-> Suggests overdispersion; NegBin likely more appropriate.\n")
+
+# Zero inflation check (optional): compare NB vs Zero-Inflated NB with Vuong test
+# This can be slow on 50k rows but usually OK; comment out if needed.
+m_zinb <- pscl::zeroinfl(model_formula, data = df_model, dist = "negbin")
+cat("\nVuong test (ZINB vs NB):\n")
+print(pscl::vuong(m_zinb, m_nb))
+
+# Residual diagnostics via DHARMa (works for NB; for large n, simulate fewer times)
+set.seed(1)
+dh_nb <- DHARMa::simulateResiduals(m_nb, n = 500, plot = FALSE)
+cat("\nDHARMa NB residual tests:\n")
+print(DHARMa::testDispersion(dh_nb))
+print(DHARMa::testZeroInflation(dh_nb))
+print(DHARMa::testUniformity(dh_nb))
+plot(dh_nb)
+
+# Interpretable results: incidence rate ratios (IRR) with 95% CI
+irr <- broom::tidy(m_nb, conf.int = TRUE, exponentiate = TRUE) |>
+  mutate(
+    term = case_when(
+      term == "(Intercept)" ~ "(Intercept)",
+      term == "received_comprehensive_postnatal_careYes" ~ "Received comprehensive postnatal care (Yes vs No)",
+      term == "age" ~ "Age (per 1 year)",
+      term == "distance_10" ~ "Distance to provider (per 10 units)",
+      TRUE ~ term
+    ),
+    IRR = estimate,
+    IRR_low = conf.low,
+    IRR_high = conf.high
+  ) |>
+  dplyr::select(term, IRR, IRR_low, IRR_high, p.value) |>
+  arrange(p.value)
+
+cat("\n---- Negative Binomial IRRs (primary) ----\n")
+print(irr)
+
+# Predicted mean comorbidity_count across distance by postnatal care status (marginal curve)
+# (Keeps other vars at reference/median-like values via model.matrix defaults)
+newdat <- df_model |>
+  filter(!is.na(distance_10), !is.na(comorbidity_count)) |>
+  reframe(
+    distance_10 = seq(min(distance_10), max(distance_10), length.out = 60),
+    age = median(age, na.rm = TRUE),
+    dependents = median(dependents, na.rm = TRUE),
+    state = levels(state)[1],
+    insurance = levels(insurance)[1],
+    race_ethnicity = levels(race_ethnicity)[1],
+    edu = levels(edu)[1],
+    job_type = levels(job_type)[1]
+  ) |>
+  tidyr::crossing(received_comprehensive_postnatal_care = levels(df_model$received_comprehensive_postnatal_care))
+
+newdat$pred_mean <- predict(m_nb, newdata = newdat, type = "response")
+
+p_pred <- ggplot(newdat, aes(x = distance_10 * 10, y = pred_mean, color = received_comprehensive_postnatal_care)) +
+  geom_line() +
+  labs(
+    title = "Predicted comorbidity count vs distance (Negative Binomial)",
+    x = "Distance to provider",
+    y = "Predicted mean comorbidity count",
+    color = "Received comprehensive\npostnatal care"
+  ) +
+  theme_minimal()
+print(p_pred)
+
+# ------------------------------------------------------------------------------
+# SUMMARY OF WHAT CHANGED (printed)
+# ------------------------------------------------------------------------------
+
+cat("\n\n====================\nSUMMARY OF CHANGES\n====================\n")
+cat("1) Standardized column names using janitor::clean_names() (snake_case).\n")
+cat("   Rename map (first 20 rows):\n")
+print(head(rename_map, 20))
+
+cat("\n2) Coerced types:\n")
+cat("   - id, provider_id -> integer\n")
+cat("   - age, distance_to_provider -> numeric\n")
+cat("   - dependents -> integer\n")
+cat("   - comorbidity flags -> 0/1 integer with NA for unexpected values\n")
+cat("   - received_comprehensive_postnatal_care -> factor {No, Yes}\n")
+cat("   - key character fields standardized to lowercase (state uppercased)\n")
+cat("\n3) Created derived fields for modeling/plots:\n")
+cat("   - log1p_distance, distance_10\n")
+cat("4) Built comorbidity_count as strict row-wise sum across specified flags (NA if any component missing).\n")
+cat("5) Fit Poisson and Negative Binomial models; compared AIC/BIC; checked overdispersion, zero-inflation; ran DHARMa diagnostics.\n")
+cat("6) Reported IRRs (exp(beta)) with 95% CI from the Negative Binomial model and plotted predicted mean vs distance.\n")
+```

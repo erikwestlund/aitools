@@ -1,11 +1,13 @@
-# Session 3: AI-Assisted Statistical Workflows — March 5
+# Session 3: Tools and Workflow — March 5
 
-*Doing real work: from prompting to pipelines*
+*One lecture block, then demo-heavy execution*
 
-- 15 min: Lecture + demo — Context and prompting: structuring prompts for statistical work, project context files, system prompts, good prompt vs. bad prompt
-- 15 min: Lecture + demo — The code-not-data principle in practice. Synthetic data as a development strategy. Git as a bridge between AI-assisted and secure data environments
-- 10 min: Lecture — AI for statistical thinking: data cleaning, EDA, visualization, modeling, DAGs and causal assumptions, simulation, model validation — where AI is a thought partner and where it confidently misleads
-- 30 min: Hands-on — Build an analysis pipeline on synthetic data using AI tools: cleaning, summary statistics, visualization, a simple model. Audit the output — catch the mistakes.
-- 10 min: Wrap-up — Moonshot progress reports. Prepare a 3-minute informal share for next week.
+- 10 min: Debrief — recap agent/harness experiment from Session 2
+- 5 min: Demo — quick GUI-based agent example in VS Code
+- 20 min: Single lecture block — Git boundaries, tmux concepts, context management (`CLAUDE.md` and `AGENTS.md`), context A/B directory setup, MCP and skills
+- 15 min: Demo — Git push/pull branch workflow for PHI-safe handoff
+- 12 min: Demo — tmux session/window/pane workflow with launcher scripts and aliases (`tm<project>`, `tma`, `tmk`)
+- 15 min: Demo — simulated two-machine PHI workflow using synthetic/simulated development and restricted execution
+- 3 min: Wrap-up — assign remaining demo notebooks for at-home replication
 
-**Homework:** Finish your moonshot attempt. Prepare to share what you tried, what worked, and what didn't (3 minutes, informal, no slides required).
+**Homework:** Finish moonshot attempt. Prepare a 3-minute informal share on what you tried, what worked, and what failed.

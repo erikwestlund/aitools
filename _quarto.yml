@@ -8,7 +8,7 @@ project:
   render:
     - "**/*.qmd"
     - "!util_docs/"
-    - "!demos/2-tools-introduction/worked/*.qmd"
+    - "!demos/3-tools-introduction-worked/*.qmd"
   resources:
     - "demos/2-tools-introduction/rendered_notebooks/*.html"
 

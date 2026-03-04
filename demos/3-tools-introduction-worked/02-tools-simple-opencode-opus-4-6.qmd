@@ -1,0 +1,431 @@
+---
+title: "Tools Comparison (Simple): OpenCode + Opus 4.6"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `opencode`
+- Model: `opus-4-6`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(MASS)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(scales)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Analysis
+
+### Data Overview
+
+```{r}
+#| label: dimensions
+
+tibble(
+  Metric = c("Rows", "Columns", "Missing cells"),
+  Value = c(
+    format(nrow(df), big.mark = ","),
+    ncol(df),
+    sum(is.na(df))
+  )
+) |>
+  kable(align = "lr") |>
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+```{r}
+#| label: structure
+
+glimpse(df)
+```
+
+The dataset contains maternal health records with:
+
+- **Identifiers:** `id`, `provider_id`, `state`
+- **Outcome:** `received_comprehensive_postnatal_care` (binary 0/1)
+- **Demographics:** `age`, `race_ethnicity`, `edu`, `self_report_income`, `dependents`
+- **Access:** `insurance`, `job_type`, `distance_to_provider`
+- **Comorbidities (binary):** `obesity`, `multiple_gestation`, `diabetes`, `heart_disease`, `placenta_previa`, `hypertension`, `gest_hypertension`, `preeclampsia`
+
+### Data Preparation
+
+```{r}
+#| label: prepare-data
+
+income_levels <- c(
+  "$0–$24,999", "$25,000–$49,999", "$50,000–$74,999", "$75,000–$99,999",
+  "$100,000–$124,999", "$125,000–$149,999", "$150,000–$174,999", "$175,000+"
+)
+
+edu_levels <- c("less_than_hs", "hs", "some_college", "college", "post_grad")
+edu_labels <- c("Less than HS", "High School", "Some College", "College", "Post-Grad")
+
+df <- df |>
+  mutate(
+    postnatal_care = factor(received_comprehensive_postnatal_care,
+                            levels = c(0, 1), labels = c("No", "Yes")),
+    self_report_income = factor(self_report_income, levels = income_levels, ordered = TRUE),
+    edu = factor(edu, levels = edu_levels, labels = edu_labels, ordered = TRUE),
+    race_ethnicity = factor(race_ethnicity),
+    insurance = factor(insurance, levels = c("no_insurance", "state_provided", "private")),
+    job_type = factor(job_type),
+    across(c(obesity, multiple_gestation, diabetes, heart_disease,
+             placenta_previa, hypertension, gest_hypertension, preeclampsia),
+           as.integer)
+  )
+```
+
+### Descriptive Statistics
+
+#### Numeric Variables
+
+```{r}
+#| label: numeric-desc
+
+df |>
+  select(age, dependents, distance_to_provider) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  group_by(variable) |>
+  summarise(
+    n     = n(),
+    mean  = mean(value),
+    sd    = sd(value),
+    min   = min(value),
+    q25   = quantile(value, 0.25),
+    median = median(value),
+    q75   = quantile(value, 0.75),
+    max   = max(value),
+    .groups = "drop"
+  ) |>
+  kable(digits = 2) |>
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+#### Categorical Variables
+
+```{r}
+#| label: categorical-desc
+
+cat_vars <- c("postnatal_care", "self_report_income", "edu",
+              "race_ethnicity", "insurance", "job_type")
+
+df |>
+  select(all_of(cat_vars)) |>
+  mutate(across(everything(), as.character)) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "level") |>
+  count(variable, level) |>
+  group_by(variable) |>
+  mutate(pct = n / sum(n) * 100) |>
+  ungroup() |>
+  kable(digits = 1, col.names = c("Variable", "Level", "N", "%")) |>
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) |>
+  collapse_rows(columns = 1, valign = "top")
+```
+
+#### Comorbidity Prevalence
+
+```{r}
+#| label: comorbidity-prevalence
+
+comorbidity_vars <- c("obesity", "multiple_gestation", "diabetes", "heart_disease",
+                      "placenta_previa", "hypertension", "gest_hypertension", "preeclampsia")
+
+df |>
+  select(all_of(comorbidity_vars)) |>
+  pivot_longer(everything(), names_to = "condition", values_to = "present") |>
+  group_by(condition) |>
+  summarise(n = sum(present), prevalence = mean(present) * 100, .groups = "drop") |>
+  arrange(desc(prevalence)) |>
+  kable(digits = 1, col.names = c("Condition", "N", "Prevalence (%)")) |>
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+### Exploratory Visualizations
+
+```{r}
+#| label: fig-outcome
+#| fig-width: 7
+#| fig-height: 4
+#| fig-cap: "Postnatal care receipt rate overall and by insurance"
+
+p1 <- ggplot(df, aes(x = postnatal_care)) +
+  geom_bar(fill = "steelblue") +
+  labs(x = "Postnatal Care", y = "Count", title = "Overall") +
+  theme_minimal(base_size = 13)
+
+p2 <- df |>
+  count(insurance, postnatal_care) |>
+  group_by(insurance) |>
+  mutate(pct = n / sum(n)) |>
+  ggplot(aes(x = insurance, y = pct, fill = postnatal_care)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_brewer(palette = "Set2", name = "Care") +
+  labs(x = "Insurance", y = "Proportion", title = "By Insurance") +
+  theme_minimal(base_size = 13)
+
+p1 + p2
+```
+
+```{r}
+#| label: fig-distance-age
+#| fig-width: 9
+#| fig-height: 4
+#| fig-cap: "Distributions of distance to provider and age by postnatal care receipt"
+
+p3 <- ggplot(df, aes(x = postnatal_care, y = distance_to_provider)) +
+  geom_boxplot(fill = "#a6cee3", outlier.alpha = 0.05) +
+  scale_y_log10() +
+  labs(x = "Postnatal Care", y = "Distance (log scale)") +
+  theme_minimal(base_size = 13)
+
+p4 <- ggplot(df, aes(x = age, fill = postnatal_care)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  scale_fill_brewer(palette = "Set2", name = "Care") +
+  labs(x = "Age", y = "Count") +
+  theme_minimal(base_size = 13)
+
+p3 + p4
+```
+
+```{r}
+#| label: fig-race-care
+#| fig-width: 8
+#| fig-height: 5
+#| fig-cap: "Postnatal care receipt by race/ethnicity"
+
+df |>
+  count(race_ethnicity, postnatal_care) |>
+  group_by(race_ethnicity) |>
+  mutate(pct = n / sum(n)) |>
+  filter(postnatal_care == "Yes") |>
+  ggplot(aes(x = reorder(race_ethnicity, pct), y = pct)) +
+  geom_col(fill = "steelblue") +
+  geom_text(aes(label = percent(pct, accuracy = 0.1)), hjust = -0.1, size = 3.5) +
+  scale_y_continuous(labels = percent_format(), limits = c(0, NA), expand = expansion(mult = c(0, 0.15))) +
+  coord_flip() +
+  labs(x = NULL, y = "% Receiving Postnatal Care",
+       title = "Postnatal Care Rate by Race/Ethnicity") +
+  theme_minimal(base_size = 13)
+```
+
+### Modeling Strategy
+
+The primary outcome — `received_comprehensive_postnatal_care` — is binary (0/1).
+This calls for **logistic regression**, the standard approach for binary outcomes.
+Logistic regression models the log-odds of the outcome as a linear function of
+predictors and produces odds ratios that are straightforward to interpret.
+
+We include demographic, socioeconomic, access, and comorbidity predictors. We
+also create a composite `comorbidity_count` variable (sum of the 8 binary
+indicators) as a parsimonious way to capture overall health burden.
+
+```{r}
+#| label: build-model-data
+
+df <- df |>
+  mutate(
+    comorbidity_count = obesity + multiple_gestation + diabetes + heart_disease +
+      placenta_previa + hypertension + gest_hypertension + preeclampsia
+  )
+```
+
+#### Fit the Logistic Regression
+
+```{r}
+#| label: fit-logistic
+
+fit <- glm(
+  received_comprehensive_postnatal_care ~ age + self_report_income + edu +
+    race_ethnicity + insurance + job_type + dependents +
+    distance_to_provider + comorbidity_count,
+  data = df,
+  family = binomial(link = "logit")
+)
+
+summary(fit)
+```
+
+#### Odds Ratios
+
+```{r}
+#| label: odds-ratios
+
+or_table <- tidy(fit, conf.int = TRUE, exponentiate = TRUE) |>
+  filter(term != "(Intercept)") |>
+  mutate(
+    sig = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01  ~ "**",
+      p.value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  ) |>
+  select(Term = term, OR = estimate, `2.5%` = conf.low, `97.5%` = conf.high,
+         p.value, sig)
+
+or_table |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+#### Odds Ratio Plot
+
+```{r}
+#| label: fig-or-plot
+#| fig-width: 9
+#| fig-height: 8
+#| fig-cap: "Odds ratios with 95% confidence intervals from logistic regression"
+
+or_plot_data <- tidy(fit, conf.int = TRUE, exponentiate = TRUE) |>
+  filter(term != "(Intercept)") |>
+  mutate(term = reorder(term, estimate))
+
+ggplot(or_plot_data, aes(x = estimate, y = term)) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
+  labs(x = "Odds Ratio (95% CI)", y = NULL,
+       title = "Logistic Regression: Odds Ratios for Postnatal Care Receipt") +
+  theme_minimal(base_size = 13)
+```
+
+### Model Diagnostics
+
+#### Goodness of Fit
+
+```{r}
+#| label: gof
+
+cat("Null deviance:    ", round(fit$null.deviance, 1),
+    " on", fit$df.null, "df\n")
+cat("Residual deviance:", round(fit$deviance, 1),
+    " on", fit$df.residual, "df\n")
+cat("AIC:", round(AIC(fit), 1), "\n")
+
+# McFadden's pseudo-R²
+null_ll <- logLik(update(fit, . ~ 1))
+full_ll <- logLik(fit)
+pseudo_r2 <- 1 - as.numeric(full_ll) / as.numeric(null_ll)
+cat("McFadden pseudo-R²:", round(pseudo_r2, 4), "\n")
+```
+
+#### Residual Diagnostics
+
+```{r}
+#| label: fig-residuals
+#| fig-width: 9
+#| fig-height: 5
+#| fig-cap: "Residual diagnostics for logistic regression"
+
+diag_df <- tibble(
+  fitted_prob = fitted(fit),
+  deviance_resid = residuals(fit, type = "deviance"),
+  pearson_resid = residuals(fit, type = "pearson")
+)
+
+p_dev <- ggplot(diag_df, aes(x = fitted_prob, y = deviance_resid)) +
+  geom_point(alpha = 0.02, size = 0.5) +
+  geom_smooth(method = "loess", se = FALSE, color = "red", linewidth = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(x = "Fitted Probability", y = "Deviance Residuals",
+       title = "Deviance Residuals vs Fitted") +
+  theme_minimal(base_size = 12)
+
+p_hist <- ggplot(diag_df, aes(x = pearson_resid)) +
+  geom_histogram(bins = 50, fill = "steelblue", alpha = 0.7) +
+  labs(x = "Pearson Residuals", y = "Count",
+       title = "Pearson Residual Distribution") +
+  theme_minimal(base_size = 12)
+
+p_dev + p_hist
+```
+
+#### Binned Residual Plot
+
+A more informative diagnostic for binary outcomes — average residuals within
+bins of fitted values should hover near zero.
+
+```{r}
+#| label: fig-binned-resid
+#| fig-width: 7
+#| fig-height: 5
+#| fig-cap: "Binned residual plot: average residuals within bins of fitted probabilities"
+
+n_bins <- 40
+binned <- diag_df |>
+  mutate(bin = ntile(fitted_prob, n_bins)) |>
+  group_by(bin) |>
+  summarise(
+    avg_fitted = mean(fitted_prob),
+    avg_resid = mean(pearson_resid),
+    se = sd(pearson_resid) / sqrt(n()),
+    .groups = "drop"
+  )
+
+ggplot(binned, aes(x = avg_fitted, y = avg_resid)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  geom_ribbon(aes(ymin = -2 * se, ymax = 2 * se), alpha = 0.15, fill = "steelblue") +
+  geom_point() +
+  geom_line(alpha = 0.5) +
+  labs(x = "Average Fitted Probability", y = "Average Pearson Residual",
+       title = "Binned Residual Plot") +
+  theme_minimal(base_size = 13)
+```
+
+### Interpretation and Caveats
+
+**Key findings** (associational, not causal):
+
+- **Insurance:** Compared to uninsured individuals, those with state-provided or
+  private insurance show different odds of receiving postnatal care.
+- **Distance:** Greater distance to provider is associated with lower odds of
+  receiving care.
+- **Race/ethnicity:** Differences across groups are observed, reflecting
+  structural disparities documented in maternal health literature.
+- **Comorbidity burden:** The composite count captures the cumulative association
+  of health conditions with postnatal care receipt.
+- **Income and education:** Higher levels of both tend to be associated with
+  higher odds of care receipt.
+
+**Limitations:**
+
+1. **Observational data** — associations do not imply causation. Unmeasured
+   confounders (health literacy, transportation access, provider quality) are
+   likely present.
+2. **Clustering** — patients are nested within providers and states. Standard
+   errors may be underestimated. A multilevel model (e.g., `glmer()`) would be
+   more appropriate but was not fit here for simplicity.
+3. **Self-reported income** — subject to measurement error and reporting bias.
+4. **Synthetic data** — this dataset is simulated. Findings reflect the
+   data-generating process, not real-world patterns.
+5. **No interaction terms** — the model assumes additive effects on the log-odds
+   scale. Important interactions (e.g., race × insurance) were not explored.
+6. **Multiple comparisons** — with many predictor levels, some nominally
+   significant results may be spurious.

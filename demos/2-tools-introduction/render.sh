@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Render worked notebooks for the tools-introduction demo.
-# Renders each .qmd, then moves the HTML into rendered_notebooks/.
+# Renders each .qmd from demos/3-tools-introduction-worked, then moves HTML into rendered_notebooks/.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKED_DIR="$SCRIPT_DIR/worked"
+WORKED_DIR="$SCRIPT_DIR/../3-tools-introduction-worked"
 OUT_DIR="$SCRIPT_DIR/rendered_notebooks"
 
 mkdir -p "$OUT_DIR"
 
-# Accept specific files or default to all .qmd in worked/
+# Accept specific files or default to all .qmd in the worked directory
 if [ $# -gt 0 ]; then
   files=("$@")
 else

@@ -1,0 +1,280 @@
+---
+title: "Tools Comparison (Simple): Codex CLI + Codex GPT-5.2"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `codex-cli`
+- Model: `codex-gpt-5-2`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Descriptive Statistics
+
+### Data Overview
+
+```{r}
+#| label: overview
+
+library(tidyr)
+library(knitr)
+
+overview <- tibble::tibble(
+  n = nrow(df),
+  providers = dplyr::n_distinct(df$provider_id),
+  states = dplyr::n_distinct(df$state),
+  outcome_rate = mean(df$received_comprehensive_postnatal_care)
+)
+
+knitr::kable(overview, digits = 3)
+```
+
+### Missingness
+
+```{r}
+#| label: missingness
+
+missingness <- tibble::tibble(
+  variable = names(df),
+  missing_n = sapply(df, function(x) sum(is.na(x)))
+)
+
+knitr::kable(missingness)
+```
+
+### Numeric Summaries
+
+```{r}
+#| label: numeric-summaries
+
+num_vars <- c("age", "dependents", "distance_to_provider")
+
+num_summary <- df |>
+  dplyr::select(dplyr::all_of(num_vars)) |>
+  dplyr::summarise(
+    dplyr::across(
+      .cols = dplyr::everything(),
+      .fns = list(
+        min = min,
+        q1 = ~quantile(.x, 0.25),
+        median = median,
+        mean = mean,
+        q3 = ~quantile(.x, 0.75),
+        max = max
+      )
+    )
+  ) |>
+  tidyr::pivot_longer(cols = dplyr::everything()) |>
+  tidyr::separate(name, into = c("variable", "stat"), sep = "_") |>
+  tidyr::pivot_wider(names_from = stat, values_from = value)
+
+knitr::kable(num_summary, digits = 3)
+```
+
+### Categorical Distributions
+
+```{r}
+#| label: categorical-distributions
+
+cat_vars <- c(
+  "state",
+  "self_report_income",
+  "edu",
+  "race_ethnicity",
+  "insurance",
+  "job_type"
+)
+
+cat_table <- function(var) {
+  df |>
+    dplyr::count(.data[[var]]) |>
+    dplyr::mutate(pct = n / sum(n)) |>
+    dplyr::arrange(dplyr::desc(n)) |>
+    dplyr::rename(level = 1) |>
+    dplyr::mutate(variable = var) |>
+    dplyr::select(variable, level, n, pct)
+}
+
+cat_dist <- dplyr::bind_rows(lapply(cat_vars, cat_table))
+
+knitr::kable(cat_dist, digits = 3)
+```
+
+### Outcome Rates by Category
+
+```{r}
+#| label: outcome-by-category
+
+outcome_by <- function(var) {
+  df |>
+    dplyr::group_by(.data[[var]]) |>
+    dplyr::summarise(
+      n = dplyr::n(),
+      outcome_rate = mean(received_comprehensive_postnatal_care),
+      .groups = "drop"
+    ) |>
+    dplyr::arrange(dplyr::desc(outcome_rate)) |>
+    dplyr::rename(level = 1) |>
+    dplyr::mutate(variable = var) |>
+    dplyr::select(variable, level, n, outcome_rate)
+}
+
+outcome_rates <- dplyr::bind_rows(lapply(cat_vars, outcome_by))
+
+knitr::kable(outcome_rates, digits = 3)
+```
+
+### Clinical Prevalence
+
+```{r}
+#| label: clinical-prevalence
+
+binary_vars <- c(
+  "obesity",
+  "multiple_gestation",
+  "diabetes",
+  "heart_disease",
+  "placenta_previa",
+  "hypertension",
+  "gest_hypertension",
+  "preeclampsia"
+)
+
+binary_prev <- tibble::tibble(
+  variable = binary_vars,
+  prevalence = sapply(df[binary_vars], mean)
+)
+
+knitr::kable(binary_prev, digits = 3)
+```
+
+## Modeling Strategy
+
+The outcome is binary, so I fit a multivariable logistic regression with:
+age (and age-squared for nonlinearity), dependents, log-transformed distance to provider,
+clinical risk factors, socioeconomic variables, insurance, job type, race/ethnicity, and
+state fixed effects. This provides an interpretable baseline model for inference and
+adjusted associations.
+
+## Model Results
+
+```{r}
+#| label: model
+
+df_model <- df |>
+  dplyr::mutate(
+    state = factor(state),
+    self_report_income = factor(self_report_income),
+    edu = factor(edu),
+    race_ethnicity = factor(race_ethnicity),
+    insurance = factor(insurance),
+    job_type = factor(job_type),
+    log_distance = log1p(distance_to_provider)
+  ) |>
+  dplyr::mutate(
+    self_report_income = relevel(self_report_income, ref = "$50,000–$74,999"),
+    edu = relevel(edu, ref = "hs"),
+    race_ethnicity = relevel(race_ethnicity, ref = "white"),
+    insurance = relevel(insurance, ref = "no_insurance"),
+    job_type = relevel(job_type, ref = "unskilled")
+  )
+
+model <- glm(
+  received_comprehensive_postnatal_care ~
+    age + I(age^2) + dependents + log_distance +
+    obesity + multiple_gestation + diabetes + heart_disease +
+    placenta_previa + hypertension + gest_hypertension + preeclampsia +
+    self_report_income + edu + race_ethnicity + insurance + job_type +
+    state,
+  data = df_model,
+  family = binomial()
+)
+
+coefs <- coef(model)
+ses <- sqrt(diag(vcov(model)))
+or <- exp(coefs)
+lcl <- exp(coefs - 1.96 * ses)
+ucl <- exp(coefs + 1.96 * ses)
+
+terms_keep <- c(
+  "age", "I(age^2)", "dependents", "log_distance",
+  "obesity", "multiple_gestation", "diabetes", "heart_disease",
+  "placenta_previa", "hypertension", "gest_hypertension", "preeclampsia",
+  "self_report_income$25,000–$49,999", "self_report_income$0–$24,999",
+  "self_report_income$75,000–$99,999", "self_report_income$100,000–$124,999",
+  "self_report_income$125,000–$149,999", "self_report_income$150,000–$174,999",
+  "self_report_income$175,000+",
+  "educollege", "edupost_grad", "edusome_college",
+  "race_ethnicityblack", "race_ethnicityhispanic", "race_ethnicityasian",
+  "race_ethnicityaian", "race_ethnicityother", "race_ethnicitynhpi",
+  "insuranceprivate", "insurancestate_provided",
+  "job_typeprofessional", "job_typetrade", "job_typeunemployed"
+)
+
+terms_keep <- terms_keep[terms_keep %in% names(coefs)]
+
+or_table <- tibble::tibble(
+  term = terms_keep,
+  OR = or[terms_keep],
+  LCL = lcl[terms_keep],
+  UCL = ucl[terms_keep]
+)
+
+knitr::kable(or_table, digits = 3)
+```
+
+### Model Fit
+
+```{r}
+#| label: model-fit
+
+pred <- predict(model, type = "response")
+brier <- mean((pred - df_model$received_comprehensive_postnatal_care)^2)
+acc <- mean(ifelse(pred >= 0.5, 1, 0) == df_model$received_comprehensive_postnatal_care)
+baseline_acc <- max(
+  mean(df_model$received_comprehensive_postnatal_care == 1),
+  mean(df_model$received_comprehensive_postnatal_care == 0)
+)
+
+fit <- tibble::tibble(
+  AIC = AIC(model),
+  McFadden_R2 = 1 - (model$deviance / model$null.deviance),
+  Brier = brier,
+  Accuracy_0_5 = acc,
+  Baseline_Accuracy = baseline_acc
+)
+
+knitr::kable(fit, digits = 4)
+```
+
+## Summary
+
+The model shows modest associations between the outcome and access (distance), socioeconomic
+factors (income, insurance, job type), and some clinical conditions, with notable differences
+by race/ethnicity and state. Overall fit is limited, suggesting additional variables or
+modeling strategies (provider-level effects, interactions, or non-linear models) would be
+needed for strong predictive performance.

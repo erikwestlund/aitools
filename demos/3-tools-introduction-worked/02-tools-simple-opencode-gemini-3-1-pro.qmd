@@ -1,0 +1,89 @@
+---
+title: "Tools Comparison (Simple): OpenCode + Gemini 3.1 Pro"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `opencode`
+- Model: `gemini-3-1-pro`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(framework)
+scaffold()
+df <- data_read("data/synthetic/simulated_maternal_health_data.csv")
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Descriptive Statistics
+
+```{r}
+#| label: descriptive-stats
+#| message: false
+#| warning: false
+
+# Overview of variables
+glimpse(df)
+
+# Summary of numeric and categorical variables
+summary(df)
+
+# Look at the distribution of the outcome variable (Postnatal Care)
+table(df$received_comprehensive_postnatal_care, useNA = "always")
+
+# Cross-tabulate with insurance type
+table(df$insurance, df$received_comprehensive_postnatal_care)
+
+# Look at age and distance to provider by outcome
+df %>%
+  group_by(received_comprehensive_postnatal_care) %>%
+  summarize(
+    n = n(),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_distance = mean(distance_to_provider, na.rm = TRUE),
+    prop_obesity = mean(obesity, na.rm = TRUE),
+    prop_hypertension = mean(hypertension, na.rm = TRUE)
+  )
+```
+
+## Modeling Strategy
+
+We will use a logistic regression model (General Linear Model with binomial family) to predict the likelihood of receiving comprehensive postnatal care (`received_comprehensive_postnatal_care`) based on demographic and health factors. This allows us to estimate the odds ratios associated with different levels of education, insurance, distance to a provider, and pre-existing health conditions.
+
+```{r}
+#| label: modeling
+#| message: false
+
+# Convert target variable to binary numeric if it's not already
+# It appears to be 0/1 from the glimpse
+# Define the logistic regression model
+model_care <- glm(
+  received_comprehensive_postnatal_care ~ age + edu + insurance + distance_to_provider + obesity + hypertension,
+  data = df,
+  family = binomial(link = "logit")
+)
+
+# Display the summary of the model
+summary(model_care)
+
+# Display odds ratios
+exp(coef(model_care))
+```

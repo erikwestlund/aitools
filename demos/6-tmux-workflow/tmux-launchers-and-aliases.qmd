@@ -1,0 +1,107 @@
+---
+title: "tmux Workflow: Sessions, Windows, Panes, and Launchers"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+```{r}
+#| include: false
+if (requireNamespace("framework", quietly = TRUE)) {
+  framework::scaffold()
+} else {
+  if (file.exists("../../scaffold.R")) source("../../scaffold.R")
+}
+```
+
+## Why bother with tmux
+
+tmux keeps your terminal sessions alive when your laptop closes, your SSH drops, or you just need to context-switch. For agent-heavy work, it lets you keep a CLI agent, a git window, and a REPL open side by side without juggling tabs.
+
+Three concepts: **sessions** (a named workspace), **windows** (tabs within it), and **panes** (splits within a window). That's all you need.
+
+## A practical layout
+
+- Window 1: agent CLI (Claude Code, OpenCode, Codex)
+- Window 2: git / status / log
+- Window 3: R or Python REPL
+
+## Launcher script
+
+Write a small bash script that creates this layout for you. If the session already exists, it just attaches. Save this as `~/bin/tm-launch`:
+
+```bash
+#!/usr/bin/env bash
+
+session_name="${1:-biostat}"
+
+tmux has-session -t "$session_name" 2>/dev/null
+if [ $? -ne 0 ]; then
+  tmux new-session -d -s "$session_name" -n opencode
+  tmux new-window -t "$session_name" -n git
+  tmux new-window -t "$session_name" -n repl
+fi
+
+tmux attach -t "$session_name"
+```
+
+### Making the script executable
+
+After saving the file, you need to mark it as executable so your shell can run it directly:
+
+```bash
+chmod +x ~/bin/tm-launch
+```
+
+Without this step, you'll get a "permission denied" error when you try to run `~/bin/tm-launch`. The `chmod +x` command adds execute permission to the file. You only need to do this once per script.
+
+Make sure `~/bin` exists (`mkdir -p ~/bin`) and is on your `PATH`. Most shells include it by default; if not, add `export PATH="$HOME/bin:$PATH"` to your `~/.bashrc` or `~/.zshrc`.
+
+## Aliases
+
+Aliases are shortcuts you define in your shell config file (`~/.bashrc` for bash, `~/.zshrc` for zsh). They replace long or hard-to-remember commands with short names.
+
+Add these to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+# project launch — calls the tm-launch script with a default session name
+alias tmstats="$HOME/bin/tm-launch biostat"
+alias tmproj="$HOME/bin/tm-launch"
+
+# lifecycle — shortcuts for tmux attach and kill
+alias tma='tmux attach -t'
+alias tmk='tmux kill-session -t'
+```
+
+After adding aliases, either restart your terminal or run `source ~/.bashrc` (or `source ~/.zshrc`) to load them.
+
+Then it's just:
+
+- `tmstats` — start your biostat workspace (or reattach if it's already running)
+- `tmproj myproject` — start a workspace with a custom session name
+- `tma biostat` — reattach to an existing session
+- `tmk biostat` — tear down a session when you're done
+
+### General rule: if you type it a lot, alias it
+
+Anytime you find yourself typing a complicated shell command repeatedly, make it an alias. This applies well beyond tmux:
+
+```bash
+# examples
+alias gs='git status'
+alias gd='git diff'
+alias rr='Rscript -e'
+```
+
+Aliases are cheap, easy to change, and save real time across a workday. You can also ask an agent to suggest aliases based on your shell history.
+
+## Putting it all together
+
+1. Create `~/bin/tm-launch` with the launcher script above
+2. Run `chmod +x ~/bin/tm-launch`
+3. Add aliases to your `~/.bashrc` or `~/.zshrc`
+4. Restart your terminal or `source` the config file
+5. Type `tmstats` — you're in
+
+You can also just ask an agent to write a launcher script tailored to your setup and tweak from there. This is high ROI to *use*, low ROI to *learn from scratch* — let agents do the shell plumbing.

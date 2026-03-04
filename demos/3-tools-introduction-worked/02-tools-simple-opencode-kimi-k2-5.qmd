@@ -1,0 +1,213 @@
+---
+title: "Tools Comparison (Simple): OpenCode + Kimi K2.5"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+scaffold()
+```
+
+## Run Metadata
+
+- Harness: `opencode`
+- Model: `kimi-k2-5`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+df <- data_read("data/synthetic/simulated_maternal_health_data.csv")
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Data Overview
+
+```{r}
+#| label: data-overview
+# Basic structure
+dim(df)
+names(df)
+str(df)
+head(df, 10)
+```
+
+## Descriptive Statistics
+
+### Numeric Variables
+
+```{r}
+#| label: numeric-summary
+df %>% 
+  select(where(is.numeric)) %>%
+  summary()
+```
+
+### Categorical Variables
+
+```{r}
+#| label: categorical-summary
+df %>%
+  select(RiskLevel) %>%
+  count(RiskLevel) %>%
+  mutate(pct = n / sum(n) * 100)
+```
+
+### Distributions by Risk Level
+
+```{r}
+#| label: distributions-by-risk
+#| fig-width: 10
+#| fig-height: 12
+#| layout: [[1], [1], [1]]
+
+p1 <- ggplot(df, aes(x = Age, fill = RiskLevel)) + 
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~RiskLevel) +
+  theme_minimal() +
+  ggtitle("Age Distribution by Risk Level")
+
+p2 <- ggplot(df, aes(x = SystolicBP, fill = RiskLevel)) + 
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~RiskLevel) +
+  theme_minimal() +
+  ggtitle("Systolic BP by Risk Level")
+
+p3 <- ggplot(df, aes(x = DiastolicBP, fill = RiskLevel)) + 
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~RiskLevel) +
+  theme_minimal() +
+  ggtitle("Diastolic BP by Risk Level")
+
+p4 <- ggplot(df, aes(x = BS, fill = RiskLevel)) + 
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~RiskLevel) +
+  theme_minimal() +
+  ggtitle("Blood Sugar by Risk Level")
+
+p5 <- ggplot(df, aes(x = BodyTemp, fill = RiskLevel)) + 
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~RiskLevel) +
+  theme_minimal() +
+  ggtitle("Body Temperature by Risk Level")
+
+p6 <- ggplot(df, aes(x = HeartRate, fill = RiskLevel)) + 
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~RiskLevel) +
+  theme_minimal() +
+  ggtitle("Heart Rate by Risk Level")
+
+# Display plots
+p1
+p2
+p3
+p4
+p5
+p6
+```
+
+### Correlation Analysis
+
+```{r}
+#| label: correlations
+df %>%
+  select(where(is.numeric)) %>%
+  cor() %>%
+  round(2)
+```
+
+## Modeling Strategy
+
+Based on the data characteristics:
+
+- **Outcome**: RiskLevel (3-level categorical: low risk, mid risk, high risk)
+- **Predictors**: 6 numeric health indicators
+- **Sample size**: 1014 observations
+
+**Selected Strategy**: Multinomial logistic regression to predict risk level from health indicators. This handles the 3-class outcome appropriately and provides interpretable coefficients.
+
+## Model Fitting
+
+```{r}
+#| label: model-fitting
+#| warning: false
+
+library(nnet)
+
+# Fit multinomial logistic regression
+# Using low risk as reference category
+df$RiskLevel <- factor(df$RiskLevel, 
+                       levels = c("low risk", "mid risk", "high risk"))
+
+model <- multinom(RiskLevel ~ Age + SystolicBP + DiastolicBP + BS + BodyTemp + HeartRate,
+                  data = df,
+                  trace = FALSE)
+
+summary(model)
+```
+
+## Model Performance
+
+```{r}
+#| label: model-performance
+
+# Predictions
+pred <- predict(model, newdata = df)
+
+# Confusion matrix
+conf_mat <- table(Predicted = pred, Actual = df$RiskLevel)
+print(conf_mat)
+
+# Accuracy
+accuracy <- sum(diag(conf_mat)) / sum(conf_mat)
+cat("\nOverall Accuracy:", round(accuracy * 100, 2), "%\n")
+
+# Class-specific metrics
+conf_mat %>%
+  as.data.frame() %>%
+  group_by(Actual) %>%
+  summarise(
+    n = sum(Freq),
+    correct = Freq[Predicted == Actual],
+    sensitivity = correct / n
+  )
+```
+
+## Model Interpretation
+
+### Odds Ratios
+
+```{r}
+#| label: odds-ratios
+exp(coef(model))
+```
+
+### Key Findings
+
+1. **High vs Low Risk**:
+   - Higher systolic BP substantially increases odds of high risk
+   - Blood sugar (BS) is a strong predictor
+   - Diastolic BP also increases risk
+
+2. **Mid vs Low Risk**:
+   - Similar pattern but weaker effects
+   - Blood sugar shows moderate association
+
+3. **Model Fit**:
+   - Accuracy of ~67% for this 3-class problem
+   - Best at identifying high risk cases
+   - Some confusion between mid and low risk categories
+
+## Conclusion
+
+The multinomial logistic regression model successfully identifies key health indicators that distinguish maternal risk levels. Blood pressure (systolic and diastolic) and blood sugar are the strongest predictors. The model provides clinically interpretable results suitable for screening applications, though additional data or features might improve discrimination between low and mid risk categories.

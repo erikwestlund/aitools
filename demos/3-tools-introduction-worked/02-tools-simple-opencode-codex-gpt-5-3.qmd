@@ -1,0 +1,292 @@
+---
+title: "Tools Comparison (Simple): OpenCode + Codex GPT-5.3"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+if (requireNamespace("framework", quietly = TRUE)) {
+  framework::scaffold()
+} else {
+  if (file.exists("../../../scaffold.R")) source("../../../scaffold.R")
+}
+```
+
+## Run Metadata
+
+- Harness: `opencode`
+- Model: `codex-gpt-5-3`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(splines)
+
+df <- data_read("data/synthetic/simulated_maternal_health_data.csv")
+
+analysis_df <- df |>
+  mutate(
+    received_comprehensive_postnatal_care = as.integer(received_comprehensive_postnatal_care),
+    state = factor(state),
+    self_report_income = factor(self_report_income),
+    edu = factor(edu),
+    race_ethnicity = factor(race_ethnicity),
+    insurance = factor(insurance),
+    job_type = factor(job_type)
+  )
+
+binary_vars <- c(
+  "obesity", "multiple_gestation", "diabetes", "heart_disease",
+  "placenta_previa", "hypertension", "gest_hypertension", "preeclampsia"
+)
+
+auc_fast <- function(y, p) {
+  r <- rank(p)
+  n_pos <- sum(y == 1)
+  n_neg <- sum(y == 0)
+  (sum(r[y == 1]) - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg)
+}
+
+classification_metrics <- function(y_true, y_hat) {
+  tp <- sum(y_true == 1 & y_hat == 1)
+  tn <- sum(y_true == 0 & y_hat == 0)
+  fp <- sum(y_true == 0 & y_hat == 1)
+  fn <- sum(y_true == 1 & y_hat == 0)
+
+  tibble(
+    accuracy = (tp + tn) / length(y_true),
+    sensitivity = tp / (tp + fn),
+    specificity = tn / (tn + fp),
+    precision = tp / (tp + fp)
+  )
+}
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Data Overview
+
+```{r}
+#| label: overview
+
+tibble(
+  n_rows = nrow(analysis_df),
+  n_columns = ncol(analysis_df),
+  n_states = n_distinct(analysis_df$state),
+  n_providers = n_distinct(analysis_df$provider_id)
+)
+```
+
+```{r}
+#| label: missingness
+
+analysis_df |>
+  summarise(across(everything(), ~ sum(is.na(.)))) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "missing_n") |>
+  mutate(missing_pct = 100 * missing_n / nrow(analysis_df)) |>
+  arrange(desc(missing_n))
+```
+
+## Descriptive Statistics
+
+### Outcome Distribution
+
+```{r}
+#| label: outcome-distribution
+
+analysis_df |>
+  summarise(
+    prevalence = mean(received_comprehensive_postnatal_care),
+    n_positive = sum(received_comprehensive_postnatal_care),
+    n_negative = sum(1 - received_comprehensive_postnatal_care)
+  )
+```
+
+### Continuous Variables
+
+```{r}
+#| label: continuous-summary
+
+analysis_df |>
+  summarise(
+    age_mean = mean(age),
+    age_sd = sd(age),
+    age_median = median(age),
+    age_iqr = IQR(age),
+    dependents_mean = mean(dependents),
+    dependents_sd = sd(dependents),
+    distance_mean = mean(distance_to_provider),
+    distance_sd = sd(distance_to_provider),
+    distance_median = median(distance_to_provider),
+    distance_iqr = IQR(distance_to_provider)
+  )
+```
+
+### Categorical Variables
+
+```{r}
+#| label: categorical-summary
+
+freq_table <- function(data, var) {
+  data |>
+    count({{ var }}, name = "n") |>
+    mutate(pct = 100 * n / sum(n)) |>
+    arrange(desc(n))
+}
+
+freq_table(analysis_df, self_report_income)
+freq_table(analysis_df, edu)
+freq_table(analysis_df, race_ethnicity)
+freq_table(analysis_df, insurance)
+freq_table(analysis_df, job_type)
+```
+
+### Clinical Risk Factors
+
+```{r}
+#| label: risk-factor-summary
+
+analysis_df |>
+  summarise(across(all_of(binary_vars), ~ mean(.))) |>
+  pivot_longer(everything(), names_to = "risk_factor", values_to = "prevalence") |>
+  mutate(prevalence_pct = 100 * prevalence) |>
+  select(risk_factor, prevalence_pct) |>
+  arrange(desc(prevalence_pct))
+```
+
+### Outcome by Key Groups
+
+```{r}
+#| label: outcome-by-groups
+
+analysis_df |>
+  group_by(insurance) |>
+  summarise(
+    n = n(),
+    postnatal_care_rate = mean(received_comprehensive_postnatal_care),
+    .groups = "drop"
+  ) |>
+  arrange(desc(postnatal_care_rate))
+```
+
+```{r}
+#| label: outcome-by-income
+
+analysis_df |>
+  group_by(self_report_income) |>
+  summarise(
+    n = n(),
+    postnatal_care_rate = mean(received_comprehensive_postnatal_care),
+    .groups = "drop"
+  ) |>
+  arrange(desc(postnatal_care_rate))
+```
+
+## Modeling Strategy
+
+We model `received_comprehensive_postnatal_care` as a binary outcome using logistic regression. This is a good fit because:
+
+1. The target is binary.
+2. Coefficients are easy to interpret as odds ratios for policy and clinical audiences.
+3. We can include both social and clinical covariates in one model.
+
+To capture potential nonlinearity, age and distance to provider are modeled with natural splines.
+
+## Model Fitting and Performance
+
+```{r}
+#| label: train-test-split
+
+set.seed(2026)
+idx <- sample.int(nrow(analysis_df), size = floor(0.8 * nrow(analysis_df)))
+
+train_df <- analysis_df[idx, ]
+test_df <- analysis_df[-idx, ]
+
+model_formula <- received_comprehensive_postnatal_care ~
+  ns(age, df = 4) +
+  self_report_income +
+  edu +
+  race_ethnicity +
+  insurance +
+  job_type +
+  dependents +
+  ns(distance_to_provider, df = 4) +
+  obesity +
+  multiple_gestation +
+  diabetes +
+  heart_disease +
+  placenta_previa +
+  hypertension +
+  gest_hypertension +
+  preeclampsia +
+  state
+
+logit_fit <- glm(model_formula, data = train_df, family = binomial())
+```
+
+```{r}
+#| label: model-performance
+
+test_prob <- predict(logit_fit, newdata = test_df, type = "response")
+test_y <- test_df$received_comprehensive_postnatal_care
+
+test_auc <- auc_fast(test_y, test_prob)
+threshold <- mean(train_df$received_comprehensive_postnatal_care)
+test_pred <- as.integer(test_prob >= threshold)
+
+tibble(
+  metric = c("AUC", "Threshold (train prevalence)"),
+  value = c(test_auc, threshold)
+)
+```
+
+```{r}
+#| label: model-classification
+
+classification_metrics(test_y, test_pred)
+```
+
+## Model Report
+
+```{r}
+#| label: model-odds-ratios
+
+coef_tbl <- summary(logit_fit)$coefficients
+
+or_tbl <- tibble(
+  term = rownames(coef_tbl),
+  estimate = coef_tbl[, "Estimate"],
+  std_error = coef_tbl[, "Std. Error"],
+  z_value = coef_tbl[, "z value"],
+  p_value = coef_tbl[, "Pr(>|z|)"],
+  odds_ratio = exp(estimate),
+  ci_low = exp(estimate - 1.96 * std_error),
+  ci_high = exp(estimate + 1.96 * std_error)
+) |>
+  arrange(p_value)
+
+or_tbl
+```
+
+```{r}
+#| label: top-effects
+
+or_tbl |>
+  filter(term != "(Intercept)") |>
+  mutate(abs_log_or = abs(log(odds_ratio))) |>
+  arrange(desc(abs_log_or)) |>
+  select(term, odds_ratio, ci_low, ci_high, p_value) |>
+  slice_head(n = 15)
+```

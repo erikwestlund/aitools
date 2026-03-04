@@ -1,0 +1,16 @@
+Variable,IRR,CI_lower,CI_upper,P_value
+(Intercept),0.575,0.507,0.651,0
+age,1.017,1.015,1.018,0
+distance_to_provider,1,0.999,1,0.4608
+dependents,0.992,0.982,1.003,0.1725
+insuranceprivate,0.984,0.961,1.007,0.1749
+insurancestate_provided,0.975,0.95,1,0.0518
+race_ethnicityasian,0.996,0.886,1.123,0.9454
+race_ethnicityblack,1.052,0.939,1.182,0.3931
+race_ethnicityhispanic,1.028,0.919,1.155,0.6327
+race_ethnicitynhpi,0.995,0.762,1.285,0.9712
+race_ethnicityother,1.134,0.96,1.339,0.1395
+race_ethnicitywhite,1.041,0.932,1.167,0.4867
+eduhs,0.994,0.962,1.028,0.7303
+edusome_college,0.971,0.937,1.005,0.0974
+educollege,1.035,0.992,1.079,0.1158

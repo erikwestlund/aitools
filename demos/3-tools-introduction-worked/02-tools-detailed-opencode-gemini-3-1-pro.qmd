@@ -1,0 +1,251 @@
+---
+title: "Tools Comparison (Detailed): OpenCode + Gemini 3.1 Pro"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `opencode`
+- Model: `gemini-3-1-pro`
+- Prompt type: `detailed`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+I want you to help me analyze this dataset: `data/synthetic/simulated_maternal_health_data.csv`
+
+My goal is to produce a thorough analysis that is statistically sound and lays out all steps of the analysis.
+
+Please do the following:
+
+1. Load the dataset and normalize columns/types.
+   - Use clear snake_case names.
+   - Ensure categorical vs numeric types are explicit.
+
+2. Summarize the data.
+   - Report row count, column count, missingness, and key descriptive summaries.
+   - Flag suspicious values or quality concerns.
+
+3. Create key visualizations.
+   - Show relationships for:
+     - `received_comprehensive_postnatal_care`
+     - `distance_to_provider`
+     - `insurance`
+     - `race_ethnicity`
+
+4. Build a count outcome and model it.
+   - Define `comorbidity_count` as the row-wise sum of:
+     - `obesity`,
+     - `multiple_gestation`,
+     - `diabetes`,
+     - `heart_disease`,
+     - `placenta_previa`,
+     - `hypertension`,
+     - `gest_hypertension`,
+     - `preeclampsia`.
+   - Select an appropriate count-model strategy (Poisson vs negative binomial, with justification).
+   - Fit the model and report interpretable results.
+
+5. Report results responsibly.
+   - Do not overstate causality.
+   - Include model assumptions, diagnostics, and limitations.
+
+Constraints:
+- Prefer readable, modular, reproducible code that follows R community idioms.
+- Report back a summary of what you changed.
+```
+
+## Analysis
+
+### 1. Load Data and Normalize Types
+
+We normalize the column names to `snake_case` (though they already appear to be formatted) and explicitly convert our categorical attributes and binary flags to `factor` and `logical` respectively.
+
+```{r}
+#| label: load-normalize
+#| message: false
+#| warning: false
+
+library(janitor)
+library(tidyr)
+library(ggplot2)
+library(skimr)
+library(MASS)
+library(broom)
+
+df_clean <- df %>%
+  clean_names() %>%
+  mutate(
+    # Convert categorical variables to factors
+    across(c(state, self_report_income, edu, race_ethnicity, insurance, job_type), as.factor),
+    # Convert binary flags to logicals
+    received_comprehensive_postnatal_care = as.logical(received_comprehensive_postnatal_care),
+    across(c(obesity, multiple_gestation, diabetes, heart_disease, 
+             placenta_previa, hypertension, gest_hypertension, preeclampsia), as.logical)
+  )
+
+glimpse(df_clean)
+```
+
+### 2. Summarize the Data
+
+Next, we calculate the dataset's basic dimensions, check for missing values, and review descriptive summaries.
+
+```{r}
+#| label: summarize-data
+
+n_rows <- nrow(df_clean)
+n_cols <- ncol(df_clean)
+
+cat(sprintf("Row Count: %s\nColumn Count: %s\n\n", scales::comma(n_rows), n_cols))
+
+skim_res <- skim(df_clean)
+skim_res
+```
+
+**Quality Flags and Suspicious Values:**
+
+```{r}
+#| label: flag-issues
+summary(df_clean$distance_to_provider)
+summary(df_clean$age)
+```
+
+- **Missingness**: The dataset is complete. No `NA` values observed.
+- **Distance**: The `distance_to_provider` has a large right skew (max ~163 miles). This might be possible in highly rural states (e.g., Alaska), but could be an outlier worth flagging depending on the context.
+- **Age**: The `age` parameter ranges from 15 to 44, which is typical for a dataset regarding maternal health.
+- **Care Rate**: ~32.3% of the recorded individuals received comprehensive postnatal care.
+
+### 3. Key Visualizations
+
+Let's visualize relationships revolving around `received_comprehensive_postnatal_care`, `distance_to_provider`, `insurance`, and `race_ethnicity`.
+
+```{r}
+#| label: visualizations
+#| fig-width: 10
+#| fig-height: 8
+#| warning: false
+#| message: false
+
+library(patchwork)
+theme_set(theme_minimal())
+
+# 1. Postnatal Care by Insurance
+p1 <- ggplot(df_clean, aes(x = insurance, fill = received_comprehensive_postnatal_care)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Care Reception by Insurance Type",
+    y = "Proportion",
+    x = "Insurance Type",
+    fill = "Received Care"
+  )
+
+# 2. Distance to Provider by Care Reception
+p2 <- ggplot(df_clean, aes(x = received_comprehensive_postnatal_care, y = distance_to_provider, fill = received_comprehensive_postnatal_care)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.2) +
+  scale_y_log10(labels = scales::comma) + 
+  labs(
+    title = "Distance to Provider by Care Reception",
+    y = "Distance (miles, log scale)",
+    x = "Received Comprehensive Care"
+  ) +
+  theme(legend.position = "none")
+
+# 3. Postnatal Care by Race/Ethnicity
+p3 <- ggplot(df_clean, aes(x = race_ethnicity, fill = received_comprehensive_postnatal_care)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  coord_flip() +
+  labs(
+    title = "Care Reception by Race/Ethnicity",
+    y = "Proportion",
+    x = "Race / Ethnicity",
+    fill = "Received Care"
+  )
+
+(p1 / p3) | p2
+```
+
+### 4. Build a Count Outcome and Model It
+
+We calculate `comorbidity_count` for each patient.
+
+```{r}
+#| label: count-outcome
+
+df_model <- df_clean %>%
+  mutate(
+    comorbidity_count = rowSums(
+      dplyr::select(., obesity, multiple_gestation, diabetes, heart_disease, 
+                    placenta_previa, hypertension, gest_hypertension, preeclampsia), 
+      na.rm = TRUE
+    )
+  )
+
+ggplot(df_model, aes(x = comorbidity_count)) +
+  geom_bar(fill = "steelblue", color = "black", alpha = 0.8) +
+  labs(
+    title = "Distribution of Comorbidity Count", 
+    x = "Number of Comorbidities", 
+    y = "Frequency"
+  )
+```
+
+**Model Selection:** Poisson vs. Negative Binomial
+
+```{r}
+#| label: overdispersion-check
+mean_count <- mean(df_model$comorbidity_count)
+var_count <- var(df_model$comorbidity_count)
+
+cat(sprintf("Mean Count: %.3f\nVariance: %.3f\nVariance/Mean Ratio: %.3f\n", 
+            mean_count, var_count, var_count / mean_count))
+```
+
+The variance is greater than the mean, indicating slight overdispersion. Due to the count nature of the outcome and the presence of overdispersion (Var/Mean > 1), a **Negative Binomial regression** is more appropriate than standard Poisson regression, which assumes that the variance equals the mean. We proceed with negative binomial modeling.
+
+```{r}
+#| label: modeling
+nb_model <- glm.nb(
+  comorbidity_count ~ distance_to_provider + insurance + race_ethnicity + age, 
+  data = df_model
+)
+
+tidy(nb_model, exponentiate = TRUE, conf.int = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(across(where(is.numeric), \(x) round(x, 3))) %>%
+  knitr::kable(caption = "Negative Binomial Model (Exponentiated Coefficients: IRRs)")
+```
+
+### 5. Responsible Reporting
+
+**Results & Interpretation:**
+Based on the multivariable Negative Binomial model:
+
+- **Age**: Holding other factors constant, older age is associated with an expected increase in the number of comorbidities. A one-year increase in age corresponds to a ~6% increase in the comorbidity rate (IRR = 1.062).
+- **Insurance**: When adjusting for distance, race, and age, individuals with private or state insurance are expected to have a different rate of comorbidities compared to the baseline group (no insurance).
+- **Distance to Provider**: Distance is slightly negatively correlated with the comorbidity count (IRR = 0.998), suggesting those living further away might have fewer detected or recorded comorbidities, which could be an artifact of under-diagnosis in rural settings rather than true underlying health status.
+
+**Model Diagnostics and Limitations:**
+- **Observational Data / Causality**: These findings demonstrate *associations*, not causal relationships. There may be omitted variables (e.g., household income, clinical access characteristics, detailed nutritional information) confounding the relationships.
+- **Simulated Context**: The underlying data (`simulated_maternal_health_data.csv`) is synthetic. Any specific coefficient estimate is an artifact of the simulation logic and holds no real-world clinical weight.
+- **Model Assumptions**: Negative binomial regression assumes individual independence and that the predictor effects act multiplicatively on the expected count. There is a possibility that observations are clustered geographically (e.g., by state or provider ID), requiring a mixed-effects approach to handle non-independence of errors properly.

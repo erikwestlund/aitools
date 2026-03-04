@@ -1,0 +1,287 @@
+---
+title: "Tools Comparison (Simple): Claude Code + Opus 4.6"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+## Run Metadata
+
+- Harness: `claude-code`
+- Model: `opus-4-6`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Response
+
+### Dataset Overview
+
+The dataset contains 50,000 observations across 20 variables tracking maternal health outcomes. The binary outcome variable is `received_comprehensive_postnatal_care` (0/1), with a base rate of approximately 32.3%. Predictors span four domains:
+
+- **Demographics**: age (15--44), race/ethnicity (7 groups), state (51 values)
+- **Socioeconomic**: self-reported income (8 brackets), education (5 levels), insurance (3 types), job type (4 categories), number of dependents (0--8)
+- **Access**: distance to provider (0--163 miles)
+- **Clinical comorbidities**: 8 binary indicators (obesity, multiple gestation, diabetes, heart disease, placenta previa, hypertension, gestational hypertension, preeclampsia)
+
+### Descriptive Statistics
+
+```{r}
+#| label: descriptive-overview
+
+glimpse(df)
+```
+
+```{r}
+#| label: outcome-distribution
+
+df |>
+  count(received_comprehensive_postnatal_care) |>
+  mutate(pct = round(n / sum(n) * 100, 1))
+```
+
+```{r}
+#| label: numeric-summaries
+
+df |>
+  select(age, dependents, distance_to_provider) |>
+  summary()
+```
+
+```{r}
+#| label: categorical-summaries
+
+cat_vars <- c("self_report_income", "edu", "race_ethnicity", "insurance", "job_type")
+
+for (v in cat_vars) {
+  cat("\n---", v, "---\n")
+  print(
+    df |>
+      count(.data[[v]], received_comprehensive_postnatal_care) |>
+      group_by(.data[[v]]) |>
+      mutate(pct = round(n / sum(n) * 100, 1)) |>
+      ungroup()
+  )
+}
+```
+
+```{r}
+#| label: comorbidity-rates
+
+comorbidities <- c("obesity", "multiple_gestation", "diabetes", "heart_disease",
+                   "placenta_previa", "hypertension", "gest_hypertension", "preeclampsia")
+
+df |>
+  select(all_of(comorbidities)) |>
+  summarise(across(everything(), \(x) round(mean(x) * 100, 1))) |>
+  pivot_longer(everything(), names_to = "condition", values_to = "prevalence_pct") |>
+  arrange(desc(prevalence_pct))
+```
+
+#### Visualizations
+
+```{r}
+#| label: care-by-insurance
+#| fig-width: 7
+#| fig-height: 4
+
+df |>
+  group_by(insurance) |>
+  summarise(pct_care = mean(received_comprehensive_postnatal_care) * 100,
+            n = n()) |>
+  ggplot(aes(x = reorder(insurance, pct_care), y = pct_care)) +
+  geom_col(fill = "steelblue") +
+  geom_text(aes(label = sprintf("%.1f%%", pct_care)), hjust = -0.1, size = 3.5) +
+  coord_flip() +
+  labs(title = "Postnatal Care Receipt by Insurance Type",
+       x = NULL, y = "% Received Care") +
+  ylim(0, 100)
+```
+
+```{r}
+#| label: care-by-income
+#| fig-width: 8
+#| fig-height: 5
+
+income_order <- c("$0–$24,999", "$25,000–$49,999", "$50,000–$74,999",
+                  "$75,000–$99,999", "$100,000–$124,999", "$125,000–$149,999",
+                  "$150,000–$174,999", "$175,000+")
+
+df |>
+  group_by(self_report_income) |>
+  summarise(pct_care = mean(received_comprehensive_postnatal_care) * 100,
+            n = n()) |>
+  mutate(self_report_income = factor(self_report_income, levels = income_order)) |>
+  ggplot(aes(x = self_report_income, y = pct_care)) +
+  geom_col(fill = "darkorange") +
+  geom_text(aes(label = sprintf("%.1f%%\n(n=%s)", pct_care, format(n, big.mark = ","))),
+            vjust = -0.3, size = 3) +
+  labs(title = "Postnatal Care Receipt by Self-Reported Income",
+       x = "Income Bracket", y = "% Received Care") +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  ylim(0, 100)
+```
+
+```{r}
+#| label: care-by-education
+#| fig-width: 7
+#| fig-height: 4
+
+edu_order <- c("less_than_hs", "hs", "some_college", "college", "post_grad")
+
+df |>
+  group_by(edu) |>
+  summarise(pct_care = mean(received_comprehensive_postnatal_care) * 100,
+            n = n()) |>
+  mutate(edu = factor(edu, levels = edu_order)) |>
+  ggplot(aes(x = edu, y = pct_care)) +
+  geom_col(fill = "forestgreen") +
+  geom_text(aes(label = sprintf("%.1f%%", pct_care)), vjust = -0.3, size = 3.5) +
+  labs(title = "Postnatal Care Receipt by Education Level",
+       x = "Education", y = "% Received Care") +
+  ylim(0, 100)
+```
+
+```{r}
+#| label: care-by-distance
+#| fig-width: 7
+#| fig-height: 4
+
+df |>
+  mutate(dist_bin = cut(distance_to_provider,
+                        breaks = c(0, 10, 25, 50, 100, Inf),
+                        labels = c("0-10", "10-25", "25-50", "50-100", "100+"),
+                        include.lowest = TRUE)) |>
+  group_by(dist_bin) |>
+  summarise(pct_care = mean(received_comprehensive_postnatal_care) * 100,
+            n = n()) |>
+  ggplot(aes(x = dist_bin, y = pct_care)) +
+  geom_col(fill = "mediumpurple") +
+  geom_text(aes(label = sprintf("%.1f%%", pct_care)), vjust = -0.3, size = 3.5) +
+  labs(title = "Postnatal Care Receipt by Distance to Provider (miles)",
+       x = "Distance (miles)", y = "% Received Care") +
+  ylim(0, 100)
+```
+
+### Modeling Strategy
+
+The outcome is binary, so **logistic regression** is the appropriate starting point. Reasons for this choice:
+
+1. **Interpretability**: Produces odds ratios with direct clinical and policy relevance.
+2. **Handles mixed predictor types**: Accommodates continuous variables (age, distance, dependents) alongside multi-level categorical predictors (income, education, race/ethnicity, insurance, job type).
+3. **Large sample**: With n = 50,000, asymptotic assumptions are well satisfied, and we have ample power to detect moderate effects.
+
+I exclude `id`, `provider_id`, and `state` from the model. Provider and state could introduce hundreds of parameters and are better handled through mixed-effects models or fixed-effect adjustments in a more targeted analysis. All remaining predictors are included.
+
+### Model
+
+```{r}
+#| label: data-prep
+
+edu_levels <- c("less_than_hs", "hs", "some_college", "college", "post_grad")
+
+df_model <- df |>
+  mutate(
+    edu = factor(edu, levels = edu_levels),
+    insurance = factor(insurance, levels = c("no_insurance", "state_provided", "private")),
+    job_type = factor(job_type, levels = c("unemployed", "unskilled", "trade", "professional")),
+    self_report_income = factor(self_report_income, levels = income_order),
+    race_ethnicity = factor(race_ethnicity)
+  )
+```
+
+```{r}
+#| label: logistic-model
+
+fit <- glm(
+  received_comprehensive_postnatal_care ~
+    age + self_report_income + edu + race_ethnicity + insurance + job_type +
+    dependents + distance_to_provider +
+    obesity + multiple_gestation + diabetes + heart_disease +
+    placenta_previa + hypertension + gest_hypertension + preeclampsia,
+  data = df_model,
+  family = binomial(link = "logit")
+)
+
+summary(fit)
+```
+
+```{r}
+#| label: odds-ratios
+
+or_table <- broom::tidy(fit, exponentiate = TRUE, conf.int = TRUE) |>
+  filter(term != "(Intercept)") |>
+  mutate(across(c(estimate, conf.low, conf.high), \(x) round(x, 3)),
+         p.value = round(p.value, 4)) |>
+  select(term, OR = estimate, CI_low = conf.low, CI_high = conf.high, p.value)
+
+knitr::kable(or_table,
+             caption = "Odds Ratios for Receiving Comprehensive Postnatal Care")
+```
+
+```{r}
+#| label: model-fit
+
+cat("AIC:", AIC(fit), "\n")
+cat("Null deviance:", fit$null.deviance, "on", fit$df.null, "df\n")
+cat("Residual deviance:", fit$deviance, "on", fit$df.residual, "df\n")
+cat("McFadden pseudo-R²:", round(1 - fit$deviance / fit$null.deviance, 4), "\n")
+```
+
+```{r}
+#| label: top-predictors
+#| fig-width: 8
+#| fig-height: 6
+
+or_plot <- broom::tidy(fit, exponentiate = TRUE, conf.int = TRUE) |>
+  filter(term != "(Intercept)") |>
+  mutate(significant = p.value < 0.05) |>
+  arrange(desc(abs(log(estimate)))) |>
+  slice_head(n = 15) |>
+  mutate(term = forcats::fct_reorder(term, estimate))
+
+ggplot(or_plot, aes(x = estimate, y = term, color = significant)) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
+  geom_point(size = 3) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  scale_color_manual(values = c("TRUE" = "steelblue", "FALSE" = "grey60"),
+                     labels = c("TRUE" = "p < 0.05", "FALSE" = "p >= 0.05")) +
+  labs(title = "Top 15 Predictors by Effect Size (Odds Ratios)",
+       x = "Odds Ratio (95% CI)", y = NULL, color = NULL) +
+  theme(legend.position = "bottom")
+```
+
+### Interpretation
+
+The logistic regression models the probability of receiving comprehensive postnatal care as a function of socioeconomic, demographic, access, and clinical factors. Key findings:
+
+- **Insurance** is a strong predictor. Having private or state-provided insurance substantially increases the odds of receiving care relative to no insurance.
+- **Income** shows a gradient: higher income brackets are associated with greater odds of care receipt.
+- **Education** follows a similar pattern, with more education linked to higher odds.
+- **Distance to provider** is expected to reduce access, with greater distances associated with lower odds of receiving care.
+- **Comorbidities** such as preeclampsia and gestational hypertension may paradoxically increase care receipt, likely because high-risk conditions trigger closer clinical follow-up.
+- **Race/ethnicity** disparities should be examined carefully in the odds ratio table for evidence of inequitable access after controlling for socioeconomic factors.
+
+The McFadden pseudo-R² indicates the proportion of deviance explained by the model relative to the null (intercept-only) model. The odds ratio forest plot highlights the strongest predictors and their direction of effect.

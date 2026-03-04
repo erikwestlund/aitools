@@ -1,0 +1,331 @@
+---
+title: "Tools Comparison (Detailed): OpenCode + GLM-5"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `opencode`
+- Model: `glm-5`
+- Prompt type: `detailed`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## 1. Load Dataset and Normalize Columns/Types
+
+```{r}
+#| label: normalize-data
+#| message: false
+
+df_clean <- df |>
+  rename_with(~ tolower(gsub(" ", "_", .x))) |>
+  mutate(
+    id = as.integer(id),
+    provider_id = as.integer(provider_id),
+    state = as.factor(state),
+    received_comprehensive_postnatal_care = as.factor(
+      case_when(
+        received_comprehensive_postnatal_care == 1 ~ "yes",
+        received_comprehensive_postnatal_care == 0 ~ "no",
+        TRUE ~ NA_character_
+      )
+    ),
+    self_report_income = as.factor(self_report_income),
+    age = as.integer(age),
+    edu = factor(edu, levels = c("less_than_hs", "hs", "some_college", "college", "post_grad")),
+    race_ethnicity = as.factor(race_ethnicity),
+    insurance = as.factor(insurance),
+    job_type = as.factor(job_type),
+    dependents = as.integer(dependents),
+    distance_to_provider = as.numeric(distance_to_provider),
+    obesity = as.integer(obesity),
+    multiple_gestation = as.integer(multiple_gestation),
+    diabetes = as.integer(diabetes),
+    heart_disease = as.integer(heart_disease),
+    placenta_previa = as.integer(placenta_previa),
+    hypertension = as.integer(hypertension),
+    gest_hypertension = as.integer(gest_hypertension),
+    preeclampsia = as.integer(preeclampsia)
+  ) |>
+  select(-id)
+
+glimpse(df_clean)
+```
+
+## 2. Data Summary
+
+```{r}
+#| label: data-summary
+
+n_row <- nrow(df_clean)
+n_col <- ncol(df_clean)
+missing_per_col <- sapply(df_clean, function(x) sum(is.na(x)))
+
+cat("Rows:", n_row, "\n")
+cat("Columns:", n_col, "\n")
+cat("\nMissingness per column:\n")
+print(missing_per_col[missing_per_col > 0])
+```
+
+```{r}
+#| label: descriptives
+
+skimr::skim(df_clean)
+```
+
+```{r}
+#| label: quality-checks
+
+suspicious <- df_clean |>
+  summarise(
+    min_age = min(age, na.rm = TRUE),
+    max_age = max(age, na.rm = TRUE),
+    min_distance = min(distance_to_provider, na.rm = TRUE),
+    max_distance = max(distance_to_provider, na.rm = TRUE),
+    ages_outside_range = sum(age < 10 | age > 55, na.rm = TRUE),
+    negative_distance = sum(distance_to_provider < 0, na.rm = TRUE)
+  )
+
+cat("Age range:", suspicious$min_age, "-", suspicious$max_age, "\n")
+cat("Ages outside 10-55 range:", suspicious$ages_outside_range, "\n")
+cat("Negative distances:", suspicious$negative_distance, "\n")
+```
+
+## 3. Key Visualizations
+
+```{r}
+#| label: viz-postnatal-care
+#| fig-width: 10
+#| fig-height: 4
+
+library(ggplot2)
+
+p1 <- df_clean |>
+  count(received_comprehensive_postnatal_care, insurance) |>
+  ggplot(aes(x = insurance, y = n, fill = received_comprehensive_postnatal_care)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Postnatal Care Receipt by Insurance Type",
+    x = "Insurance Type",
+    y = "Count",
+    fill = "Received Care"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+p2 <- df_clean |>
+  count(received_comprehensive_postnatal_care, race_ethnicity) |>
+  ggplot(aes(x = race_ethnicity, y = n, fill = received_comprehensive_postnatal_care)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Postnatal Care Receipt by Race/Ethnicity",
+    x = "Race/Ethnicity",
+    y = "Count",
+    fill = "Received Care"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+
+patchwork::wrap_plots(p1, p2)
+```
+
+```{r}
+#| label: viz-distance
+#| fig-width: 10
+#| fig-height: 4
+
+p3 <- df_clean |>
+  ggplot(aes(x = received_comprehensive_postnatal_care, y = distance_to_provider)) +
+  geom_boxplot() +
+  labs(
+    title = "Distance to Provider by Care Receipt",
+    x = "Received Comprehensive Postnatal Care",
+    y = "Distance to Provider (miles)"
+  ) +
+  theme_minimal()
+
+p4 <- df_clean |>
+  ggplot(aes(x = distance_to_provider)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Distance to Provider",
+    x = "Distance (miles)",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+patchwork::wrap_plots(p3, p4)
+```
+
+## 4. Count Outcome Model
+
+### Define Comorbidity Count
+
+```{r}
+#| label: comorbidity-count
+
+df_model <- df_clean |>
+  mutate(
+    comorbidity_count = obesity + multiple_gestation + diabetes + 
+      heart_disease + placenta_previa + hypertension + 
+      gest_hypertension + preeclampsia
+  )
+
+df_model |>
+  count(comorbidity_count) |>
+  ggplot(aes(x = factor(comorbidity_count))) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Distribution of Comorbidity Count",
+    x = "Number of Comorbidities",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+### Model Selection: Poisson vs Negative Binomial
+
+```{r}
+#| label: model-selection
+
+mean_count <- mean(df_model$comorbidity_count)
+var_count <- var(df_model$comorbidity_count)
+
+cat("Mean comorbidity count:", round(mean_count, 3), "\n")
+cat("Variance:", round(var_count, 3), "\n")
+cat("Variance/Mean ratio:", round(var_count / mean_count, 3), "\n")
+```
+
+The variance is `r round(var_count, 2)` and mean is `r round(mean_count, 2)`.
+Variance exceeds the mean considerably, indicating **overdispersion**. We will use a **negative binomial model** (via `MASS::glm.nb()`) rather than Poisson.
+
+### Fit Negative Binomial Model
+
+```{r}
+#| label: fit-model
+#| message: false
+
+library(MASS)
+
+model_nb <- glm.nb(
+  comorbidity_count ~ age + insurance + distance_to_provider + race_ethnicity,
+  data = df_model
+)
+
+summary(model_nb)
+```
+
+### Model Diagnostics
+
+```{r}
+#| label: model-diagnostics
+
+df_model$residuals <- residuals(model_nb, type = "pearson")
+
+df_model |>
+  ggplot(aes(sample = residuals)) +
+  geom_qq() +
+  geom_qq_line() +
+  labs(
+    title = "Q-Q Plot of Pearson Residuals",
+    x = "Theoretical Quantiles",
+    y = "Sample Quantiles"
+  ) +
+  theme_minimal()
+
+cat("\nOverdispersion check (residual deviance / df):", 
+    round(model_nb$deviance / model_nb$df.residual, 3))
+```
+
+## 5. Results Summary
+
+```{r}
+#| label: results-summary
+
+broom::tidy(model_nb, conf.int = TRUE, exponentiate = TRUE) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+```
+
+### Key Findings
+
+```{r}
+#| label: key-findings
+
+results_df <- broom::tidy(model_nb, conf.int = TRUE, exponentiate = TRUE)
+
+sig_results <- results_df |>
+  filter(p.value < 0.05) |>
+  arrange(p.value)
+
+knitr::kable(sig_results, caption = "Statistically Significant Predictors (p < 0.05)")
+```
+
+**Interpretation**: The incidence rate ratios (IRR) above represent multiplicative effects on expected comorbidity count.
+
+- **Caveats**: 
+  - This is **observational data**; associations do not imply causation.
+  - Potential unmeasured confounders (e.g., prenatal care, geography, SES).
+  - Model assumes independence of observations (no clustering by provider/state addressed here).
+  - Residual diagnostics suggest acceptable fit; overdispersion was accounted for via negative binomial.
+
+## Prompt
+
+```text
+I want you to help me analyze this dataset: `data/synthetic/simulated_maternal_health_data.csv`
+
+My goal is to produce a thorough analysis that is statistically sound and lays out all steps of the analysis.
+
+Please do the following:
+
+1. Load the dataset and normalize columns/types.
+   - Use clear snake_case names.
+   - Ensure categorical vs numeric types are explicit.
+
+2. Summarize the data.
+   - Report row count, column count, missingness, and key descriptive summaries.
+   - Flag suspicious values or quality concerns.
+
+3. Create key visualizations.
+   - Show relationships for:
+     - `received_comprehensive_postnatal_care`
+     - `distance_to_provider`
+     - `insurance`
+     - `race_ethnicity`
+
+4. Build a count outcome and model it.
+   - Define `comorbidity_count` as the row-wise sum of:
+     - `obesity`,
+     - `multiple_gestation`,
+     - `diabetes`,
+     - `heart_disease`,
+     - `placenta_previa`,
+     - `hypertension`,
+     - `gest_hypertension`,
+     - `preeclampsia`.
+   - Select an appropriate count-model strategy (Poisson vs negative binomial, with justification).
+   - Fit the model and report interpretable results.
+
+5. Report results responsibly.
+   - Do not overstate causality.
+   - Include model assumptions, diagnostics, and limitations.
+
+Constraints:
+- Prefer readable, modular, reproducible code that follows R community idioms.
+- Report back a summary of what you changed.
+```

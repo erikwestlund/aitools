@@ -1,0 +1,118 @@
+---
+title: "Two-Machine PHI Workflow: Synthetic/Simulated Development Loop"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+```{r}
+#| include: false
+library(dplyr)
+library(tidyr)
+library(readr)
+```
+
+## Setup
+
+We're simulating two machines:
+
+- **Machine A (restricted)** has the real sensitive data. Data cannot leave.
+- **Machine B (dev)** has synthetic or simulated stand-ins and full AI tooling access.
+
+Quick distinction worth knowing: **simulated** data comes from an explicit data-generating mechanism you define. **Synthetic** data tries to mimic the schema and distributions of the real thing for privacy reasons. Synthetic data can be generated with tools like `synthpop` in R or `SDV` in Python, while simulated data is often created with custom code or packages like `simstudy` in R.
+
+I prefer simulated data: it helps you reason about the data-generating process and build intuition modeling. As a side note, synthetic data is not always 100% privacy-preserving, especially if the real dataset is small or has unique records.
+
+## Restricted side: schema-only export
+
+On the restricted machine, you can pull out structure and summaries, just not rows.
+
+```{r}
+restricted_df <- read_csv("../../data/private/real_maternal_data.csv",
+                          show_col_types = FALSE)
+```
+
+The goal is to dump everything an agent needs into a single text file: column names, types, possible values for each categorical, ranges and distributions for numerics, missingness rates. An agent can read that file and generate a realistic simulated dataset without ever seeing a row of real data.
+
+### Build the schema description
+
+```{r}
+schema_lines <- c(
+  paste("Dataset:", nrow(restricted_df), "rows,", ncol(restricted_df), "columns"),
+  ""
+)
+
+for (col in names(restricted_df)) {
+  vals <- restricted_df[[col]]
+  n_miss <- sum(is.na(vals))
+  miss_pct <- round(100 * n_miss / length(vals), 1)
+
+  if (is.numeric(vals)) {
+    schema_lines <- c(schema_lines,
+      paste0("Column: ", col),
+      paste0("  Type: numeric"),
+      paste0("  Range: ", min(vals, na.rm = TRUE), " to ", max(vals, na.rm = TRUE)),
+      paste0("  Mean: ", round(mean(vals, na.rm = TRUE), 2),
+             ", Median: ", median(vals, na.rm = TRUE),
+             ", SD: ", round(sd(vals, na.rm = TRUE), 2)),
+      paste0("  Missing: ", n_miss, " (", miss_pct, "%)"),
+      ""
+    )
+  } else {
+    freq <- sort(table(vals, useNA = "no"), decreasing = TRUE)
+    levels_str <- paste0(names(freq), " (n=", freq, ")", collapse = ", ")
+    schema_lines <- c(schema_lines,
+      paste0("Column: ", col),
+      paste0("  Type: categorical"),
+      paste0("  Unique values: ", length(freq)),
+      paste0("  Levels: ", levels_str),
+      paste0("  Missing: ", n_miss, " (", miss_pct, "%)"),
+      ""
+    )
+  }
+}
+```
+
+### Preview the output
+
+```{r}
+cat(schema_lines, sep = "\n")
+```
+
+### Write the schema file
+
+This is what you commit and push to the dev machine. No rows leave the restricted environment.
+
+```{r}
+writeLines(schema_lines, "../../data/private/schema_description.txt")
+```
+
+## Dev side: use the schema to generate simulated data
+
+On the dev machine, an agent reads the schema file and writes code to simulate data that matches the structure, distributions, and missingness of the real dataset. You never copy the real data. Instead, the schema description is the bridge.
+
+Here is what you could give an agent:
+
+> Read `data/private/schema_description.txt` and write R code to simulate 500 rows
+> matching the described column types, value ranges, categorical levels, and
+> missingness rates. Save the result to `data/synthetic/simulated_maternal_health_data.csv`.
+
+Then iterate on the simulated data with full agent access. Build your pipeline, test your models, refine your plots. The agent has everything it needs from the schema file.
+
+```{r}
+#| eval: false
+dev_df <- read_csv("data/synthetic/simulated_maternal_health_data.csv")
+
+missingness <- dev_df |>
+  summarise(across(everything(), ~mean(is.na(.x)))) |>
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "missing_rate")
+
+write_csv(missingness, "output/missingness_report.csv")
+```
+
+## Handoff
+
+Once the code works on simulated data: commit, push, pull into the restricted environment, run against the real data, and validate outputs there. Row-level PHI, logs, and temp extracts stay behind -- keep your `.gitignore` tight.
+
+This workflow requires back and forth, but this will ultimately allow you to use agents on data in a way that will apply to PHI-sensitive data.

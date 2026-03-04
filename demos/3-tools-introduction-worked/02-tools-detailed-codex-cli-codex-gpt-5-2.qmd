@@ -1,0 +1,325 @@
+---
+title: "Tools Comparison (Detailed): Codex CLI + Codex GPT-5.2"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `codex-cli`
+- Model: `codex-gpt-5-2`
+- Prompt type: `detailed`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+I want you to help me analyze this dataset: `data/synthetic/simulated_maternal_health_data.csv`
+
+My goal is to produce a thorough analysis that is statistically sound and lays out all steps of the analysis.
+
+Please do the following:
+
+1. Load the dataset and normalize columns/types.
+   - Use clear snake_case names.
+   - Ensure categorical vs numeric types are explicit.
+
+2. Summarize the data.
+   - Report row count, column count, missingness, and key descriptive summaries.
+   - Flag suspicious values or quality concerns.
+
+3. Create key visualizations.
+   - Show relationships for:
+     - `received_comprehensive_postnatal_care`
+     - `distance_to_provider`
+     - `insurance`
+     - `race_ethnicity`
+
+4. Build a count outcome and model it.
+   - Define `comorbidity_count` as the row-wise sum of:
+     - `obesity`,
+     - `multiple_gestation`,
+     - `diabetes`,
+     - `heart_disease`,
+     - `placenta_previa`,
+     - `hypertension`,
+     - `gest_hypertension`,
+     - `preeclampsia`.
+   - Select an appropriate count-model strategy (Poisson vs negative binomial, with justification).
+   - Fit the model and report interpretable results.
+
+5. Report results responsibly.
+   - Do not overstate causality.
+   - Include model assumptions, diagnostics, and limitations.
+
+Constraints:
+- Prefer readable, modular, reproducible code that follows R community idioms.
+- Report back a summary of what you changed.
+```
+
+## Load And Normalize
+
+```{r}
+#| label: load-normalize
+#| message: false
+#| warning: false
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(MASS)
+
+raw_df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+
+normalize_names <- function(x) {
+  x <- tolower(x)
+  x <- gsub("[^a-z0-9]+", "_", x)
+  x <- gsub("^_|_$", "", x)
+  x
+}
+
+df <- raw_df
+names(df) <- normalize_names(names(df))
+
+categorical_vars <- c(
+  "state",
+  "self_report_income",
+  "edu",
+  "race_ethnicity",
+  "insurance",
+  "job_type",
+  "received_comprehensive_postnatal_care"
+)
+
+numeric_vars <- c(
+  "id",
+  "provider_id",
+  "age",
+  "dependents",
+  "distance_to_provider",
+  "obesity",
+  "multiple_gestation",
+  "diabetes",
+  "heart_disease",
+  "placenta_previa",
+  "hypertension",
+  "gest_hypertension",
+  "preeclampsia"
+)
+
+df <- df %>%
+  mutate(across(all_of(categorical_vars), as.factor)) %>%
+  mutate(across(all_of(numeric_vars), as.numeric))
+```
+
+## Data Summary
+
+```{r}
+#| label: data-summary
+
+row_count <- nrow(df)
+col_count <- ncol(df)
+
+missing_summary <- df %>%
+  summarize(across(everything(), ~ sum(is.na(.x)))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "missing")
+
+summary_numeric <- df %>%
+  summarize(across(where(is.numeric), list(
+    min = ~ min(.x, na.rm = TRUE),
+    median = ~ median(.x, na.rm = TRUE),
+    mean = ~ mean(.x, na.rm = TRUE),
+    max = ~ max(.x, na.rm = TRUE)
+  )))
+
+row_count
+col_count
+missing_summary
+summary_numeric
+```
+
+```{r}
+#| label: suspicious-values
+
+suspicious <- list(
+  age_out_of_range = df %>% filter(age < 10 | age > 55) %>% nrow(),
+  negative_distance = df %>% filter(distance_to_provider < 0) %>% nrow(),
+  insurance_unknown = df %>% filter(is.na(insurance)) %>% nrow()
+)
+
+suspicious
+```
+
+## Key Visualizations
+
+```{r}
+#| label: viz-postnatal-care
+
+ggplot(df, aes(x = received_comprehensive_postnatal_care)) +
+  geom_bar(fill = "#3a5a40") +
+  labs(
+    title = "Comprehensive Postnatal Care",
+    x = "Received Comprehensive Postnatal Care",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: viz-distance
+
+ggplot(df, aes(x = distance_to_provider)) +
+  geom_histogram(bins = 30, fill = "#2a9d8f") +
+  labs(
+    title = "Distance To Provider",
+    x = "Distance",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: viz-insurance
+
+ggplot(df, aes(x = insurance)) +
+  geom_bar(fill = "#e76f51") +
+  labs(
+    title = "Insurance Distribution",
+    x = "Insurance",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+```{r}
+#| label: viz-race-ethnicity
+
+ggplot(df, aes(x = race_ethnicity)) +
+  geom_bar(fill = "#264653") +
+  labs(
+    title = "Race/Ethnicity Distribution",
+    x = "Race/Ethnicity",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+## Count Outcome Modeling
+
+```{r}
+#| label: comorbidity-count
+
+comorbidity_vars <- c(
+  "obesity",
+  "multiple_gestation",
+  "diabetes",
+  "heart_disease",
+  "placenta_previa",
+  "hypertension",
+  "gest_hypertension",
+  "preeclampsia"
+)
+
+df <- df %>%
+  mutate(comorbidity_count = rowSums(across(all_of(comorbidity_vars)), na.rm = TRUE))
+
+count_summary <- df %>%
+  summarize(
+    mean_count = mean(comorbidity_count),
+    var_count = var(comorbidity_count)
+  )
+
+count_summary
+```
+
+```{r}
+#| label: count-model
+
+poisson_fit <- glm(
+  comorbidity_count ~ age + dependents + distance_to_provider +
+    insurance + race_ethnicity + received_comprehensive_postnatal_care,
+  data = df,
+  family = poisson()
+)
+
+overdispersion_ratio <- sum(residuals(poisson_fit, type = "pearson")^2) /
+  poisson_fit$df.residual
+
+use_negbin <- overdispersion_ratio > 1.2
+
+if (use_negbin) {
+  count_fit <- MASS::glm.nb(
+    comorbidity_count ~ age + dependents + distance_to_provider +
+      insurance + race_ethnicity + received_comprehensive_postnatal_care,
+    data = df
+  )
+  model_choice <- "Negative Binomial (overdispersion detected)"
+} else {
+  count_fit <- poisson_fit
+  model_choice <- "Poisson (no strong overdispersion detected)"
+}
+
+model_choice
+overdispersion_ratio
+summary(count_fit)
+```
+
+```{r}
+#| label: count-model-results
+
+coefs <- coef(count_fit)
+conf <- suppressMessages(confint(count_fit))
+
+results <- data.frame(
+  term = names(coefs),
+  estimate = exp(coefs),
+  conf_low = exp(conf[, 1]),
+  conf_high = exp(conf[, 2])
+)
+
+results
+```
+
+## Model Assumptions, Diagnostics, And Limitations
+
+```{r}
+#| label: diagnostics
+
+par(mfrow = c(2, 2))
+plot(count_fit)
+par(mfrow = c(1, 1))
+```
+
+Key considerations:
+
+- The outcome is a sum of binary conditions, so a count model is appropriate.
+- If overdispersion is present (variance > mean), a negative binomial model is preferred.
+- Coefficients are interpreted as multiplicative effects on the expected count.
+- Associations do not imply causality; this is observational synthetic data.
+- Diagnostics focus on residual patterns and dispersion, but do not establish causal validity.
+
+## Summary Of Changes
+
+- Added data normalization (snake_case names, explicit categorical and numeric types).
+- Added missingness and descriptive summaries plus basic data quality flags.
+- Built key visualizations for postnatal care, distance to provider, insurance, and race/ethnicity.
+- Created `comorbidity_count`, selected Poisson vs negative binomial based on dispersion, and fit the model.
+- Added model diagnostics and responsible reporting guidance.

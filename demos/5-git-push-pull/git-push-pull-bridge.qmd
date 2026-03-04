@@ -1,0 +1,53 @@
+---
+title: "Git Push/Pull Bridge for PHI-Constrained Work"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+```{r}
+#| include: false
+if (requireNamespace("framework", quietly = TRUE)) {
+  framework::scaffold()
+} else {
+  if (file.exists("../../scaffold.R")) source("../../scaffold.R")
+}
+```
+
+## The idea
+
+Code can cross boundaries. Data can't. Git gives us a clean way to enforce that.
+
+Work locally with synthetic or public data, push the code, pull it into the restricted environment, and run it there against the real thing. The repo history becomes your audit trail for what moved and when.
+
+## Local side
+
+```bash
+#| eval: false
+git checkout -b workflow-demo
+git status
+git add demos/5-git-push-pull/
+git commit -m "Add session 3 workflow notebooks"
+git push -u origin workflow-demo
+```
+
+## Restricted side
+
+```bash
+#| eval: false
+git fetch origin
+git checkout workflow-demo
+git pull
+quarto render demos/7-phi-two-machine/phi-two-machine-synthetic-simulated.qmd
+```
+
+## `.gitignore` matters here
+
+Your `.gitignore` should block data, credentials, and generated artifacts from ever reaching the remote. It also cuts down on the noise agents wade through when searching files.
+
+This repo already ignores `util_docs/`, `.env`, and `course_docs/readings/*.pdf`.
+
+## Discussion
+
+If the same code works locally but fails in restricted compute, what should we check first?

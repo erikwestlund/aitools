@@ -1,0 +1,7 @@
+---
+title: "VS Code GUI Agent Quickstart"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---

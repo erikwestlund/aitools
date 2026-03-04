@@ -1,0 +1,420 @@
+---
+title: "Tools Comparison (Detailed): Claude Code + Sonnet 4.6"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+
+```
+
+## Run Metadata
+
+- Harness: `claude-code`
+- Model: `sonnet-4-6`
+- Prompt type: `detailed`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+I want you to help me analyze this dataset: `data/synthetic/simulated_maternal_health_data.csv`
+
+My goal is to produce a thorough analysis that is statistically sound and lays out all steps of the analysis.
+
+Please do the following:
+
+1. Load the dataset and normalize columns/types.
+   - Use clear snake_case names.
+   - Ensure categorical vs numeric types are explicit.
+
+2. Summarize the data.
+   - Report row count, column count, missingness, and key descriptive summaries.
+   - Flag suspicious values or quality concerns.
+
+3. Create key visualizations.
+   - Show relationships for:
+     - `received_comprehensive_postnatal_care`
+     - `distance_to_provider`
+     - `insurance`
+     - `race_ethnicity`
+
+4. Build a count outcome and model it.
+   - Define `comorbidity_count` as the row-wise sum of:
+     - `obesity`,
+     - `multiple_gestation`,
+     - `diabetes`,
+     - `heart_disease`,
+     - `placenta_previa`,
+     - `hypertension`,
+     - `gest_hypertension`,
+     - `preeclampsia`.
+   - Select an appropriate count-model strategy (Poisson vs negative binomial, with justification).
+   - Fit the model and report interpretable results.
+
+5. Report results responsibly.
+   - Do not overstate causality.
+   - Include model assumptions, diagnostics, and limitations.
+
+Constraints:
+- Prefer readable, modular, reproducible code that follows R community idioms.
+- Report back a summary of what you changed.
+```
+
+## Response
+
+### Step 1: Normalize Column Types
+
+Column names are already in snake_case. We explicitly cast categorical variables
+to factors and ensure binary indicators are stored as integers.
+
+```{r}
+#| label: normalize-types
+
+# Ordered income levels
+income_levels <- c(
+  "Under $25,000",
+  "$25,000–$49,999",
+  "$50,000–$74,999",
+  "$75,000–$99,999",
+  "$100,000 or more"
+)
+
+edu_levels <- c("less_than_hs", "hs", "some_college", "bachelors", "graduate")
+
+comorbidity_cols <- c(
+  "obesity", "multiple_gestation", "diabetes", "heart_disease",
+  "placenta_previa", "hypertension", "gest_hypertension", "preeclampsia"
+)
+
+df <- df |>
+  mutate(
+    self_report_income = factor(self_report_income, levels = income_levels, ordered = TRUE),
+    edu                = factor(edu, levels = edu_levels, ordered = TRUE),
+    race_ethnicity     = factor(race_ethnicity),
+    insurance          = factor(insurance),
+    job_type           = factor(job_type),
+    state              = factor(state),
+    received_comprehensive_postnatal_care = as.integer(received_comprehensive_postnatal_care),
+    across(all_of(comorbidity_cols), as.integer)
+  )
+
+glimpse(df)
+```
+
+### Step 2: Data Summary and Quality Checks
+
+```{r}
+#| label: dimensions
+
+cat("Rows:   ", nrow(df), "\n")
+cat("Columns:", ncol(df), "\n")
+```
+
+```{r}
+#| label: missingness
+
+miss <- colSums(is.na(df))
+if (any(miss > 0)) {
+  miss[miss > 0]
+} else {
+  cat("No missing values detected.\n")
+}
+```
+
+```{r}
+#| label: numeric-summaries
+
+df |>
+  select(age, dependents, distance_to_provider) |>
+  tidyr::pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  group_by(variable) |>
+  summarise(
+    n      = n(),
+    mean   = mean(value, na.rm = TRUE),
+    sd     = sd(value, na.rm = TRUE),
+    min    = min(value, na.rm = TRUE),
+    median = median(value, na.rm = TRUE),
+    max    = max(value, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Numeric variable summaries")
+```
+
+```{r}
+#| label: categorical-frequencies
+
+cat("--- Insurance ---\n")
+print(table(df$insurance, useNA = "ifany"))
+
+cat("\n--- Race/Ethnicity ---\n")
+print(table(df$race_ethnicity, useNA = "ifany"))
+
+cat("\n--- Education ---\n")
+print(table(df$edu, useNA = "ifany"))
+
+cat("\n--- Received Postnatal Care ---\n")
+print(table(df$received_comprehensive_postnatal_care, useNA = "ifany"))
+```
+
+```{r}
+#| label: quality-flags
+
+# Check distance range (negative values would be suspicious)
+cat("Distance to provider — min:", min(df$distance_to_provider, na.rm = TRUE),
+    " max:", max(df$distance_to_provider, na.rm = TRUE), "\n")
+
+# Check age range (very young or old would be clinically implausible)
+cat("Age — min:", min(df$age, na.rm = TRUE),
+    " max:", max(df$age, na.rm = TRUE), "\n")
+
+# Confirm binary columns are 0/1 only
+bad_binary <- sapply(comorbidity_cols, function(col) {
+  setdiff(unique(df[[col]]), c(0L, 1L))
+})
+bad_binary[lengths(bad_binary) > 0]
+```
+
+### Step 3: Key Visualizations
+
+```{r}
+#| label: viz-postnatal-by-insurance
+#| fig-cap: "Rate of comprehensive postnatal care by insurance type"
+
+library(ggplot2)
+
+df |>
+  group_by(insurance) |>
+  summarise(
+    pct = mean(received_comprehensive_postnatal_care, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = reorder(insurance, pct), y = pct)) +
+  geom_col(fill = "#2166ac") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Proportion Receiving Care",
+    title = "Comprehensive Postnatal Care by Insurance Type"
+  )
+```
+
+```{r}
+#| label: viz-postnatal-by-race
+#| fig-cap: "Rate of comprehensive postnatal care by race/ethnicity"
+
+df |>
+  group_by(race_ethnicity) |>
+  summarise(
+    pct = mean(received_comprehensive_postnatal_care, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = reorder(race_ethnicity, pct), y = pct)) +
+  geom_col(fill = "#d6604d") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Proportion Receiving Care",
+    title = "Comprehensive Postnatal Care by Race/Ethnicity"
+  )
+```
+
+```{r}
+#| label: viz-distance-distribution
+#| fig-cap: "Distribution of distance to provider by postnatal care receipt"
+
+df |>
+  mutate(
+    care_status = ifelse(
+      received_comprehensive_postnatal_care == 1,
+      "Received Care", "Did Not Receive"
+    )
+  ) |>
+  ggplot(aes(x = distance_to_provider, fill = care_status)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c("Received Care" = "#4dac26", "Did Not Receive" = "#b8860b")) +
+  labs(
+    x = "Distance to Provider (miles)",
+    y = "Density",
+    fill = NULL,
+    title = "Distance to Provider by Postnatal Care Status"
+  )
+```
+
+```{r}
+#| label: viz-distance-by-race
+#| fig-cap: "Distance to provider by race/ethnicity"
+
+df |>
+  ggplot(aes(x = reorder(race_ethnicity, distance_to_provider, median),
+             y = distance_to_provider)) +
+  geom_boxplot(fill = "#74add1", outlier.alpha = 0.1) +
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Distance to Provider (miles)",
+    title = "Distance to Provider by Race/Ethnicity"
+  )
+```
+
+### Step 4: Comorbidity Count Outcome
+
+#### 4a. Create the Outcome Variable
+
+```{r}
+#| label: create-comorbidity-count
+
+df <- df |>
+  mutate(comorbidity_count = rowSums(across(all_of(comorbidity_cols))))
+
+cat("Comorbidity count distribution:\n")
+print(table(df$comorbidity_count))
+cat("\nMean:", round(mean(df$comorbidity_count), 3),
+    "  Variance:", round(var(df$comorbidity_count), 3), "\n")
+```
+
+```{r}
+#| label: viz-comorbidity
+#| fig-cap: "Distribution of comorbidity count"
+
+ggplot(df, aes(x = comorbidity_count)) +
+  geom_bar(fill = "#5e3c99") +
+  labs(
+    x = "Number of Comorbidities",
+    y = "Count",
+    title = "Distribution of Comorbidity Count"
+  )
+```
+
+#### 4b. Model Selection: Poisson vs Negative Binomial
+
+For count outcomes we first consider Poisson regression. Poisson assumes
+mean = variance; if the variance substantially exceeds the mean (overdispersion),
+a negative binomial model—which estimates an extra dispersion parameter θ—is
+preferred.
+
+```{r}
+#| label: overdispersion-check
+
+dispersion_ratio <- var(df$comorbidity_count) / mean(df$comorbidity_count)
+cat("Mean:             ", round(mean(df$comorbidity_count), 3), "\n")
+cat("Variance:         ", round(var(df$comorbidity_count), 3), "\n")
+cat("Variance/Mean:    ", round(dispersion_ratio, 3), "\n")
+cat("Overdispersed?    ", ifelse(dispersion_ratio > 1.5, "Yes — favour NB", "Marginal / No"), "\n")
+```
+
+```{r}
+#| label: fit-poisson
+
+fit_pois <- glm(
+  comorbidity_count ~ age + edu + race_ethnicity + insurance +
+    distance_to_provider + self_report_income + dependents,
+  data   = df,
+  family = poisson(link = "log")
+)
+
+# Residual deviance / df as a quick overdispersion diagnostic
+cat("Poisson residual deviance / df:",
+    round(fit_pois$deviance / fit_pois$df.residual, 3), "\n")
+```
+
+```{r}
+#| label: fit-negbin
+
+library(MASS)
+
+fit_nb <- glm.nb(
+  comorbidity_count ~ age + edu + race_ethnicity + insurance +
+    distance_to_provider + self_report_income + dependents,
+  data = df
+)
+
+cat("Poisson AIC:           ", round(AIC(fit_pois), 1), "\n")
+cat("Negative Binomial AIC: ", round(AIC(fit_nb), 1), "\n")
+```
+
+```{r}
+#| label: select-model
+
+use_nb <- AIC(fit_nb) < AIC(fit_pois)
+best_fit   <- if (use_nb) fit_nb   else fit_pois
+model_name <- if (use_nb) "Negative Binomial" else "Poisson"
+cat("Selected model:", model_name, "\n")
+```
+
+#### 4c. Interpretable Results
+
+Coefficients are exponentiated to Incidence Rate Ratios (IRRs). An IRR > 1
+indicates a higher expected comorbidity count; IRR < 1 indicates a lower count,
+holding all other predictors constant.
+
+```{r}
+#| label: irr-table
+
+irr    <- exp(coef(best_fit))
+irr_ci <- exp(confint.default(best_fit))
+
+data.frame(
+  IRR      = irr,
+  CI_lower = irr_ci[, 1],
+  CI_upper = irr_ci[, 2]
+) |>
+  knitr::kable(digits = 3, caption = paste("IRRs from", model_name, "Model"))
+```
+
+#### 4d. Model Diagnostics
+
+```{r}
+#| label: diagnostics
+#| fig-cap: "Residual diagnostic plots for the selected model"
+
+par(mfrow = c(2, 2))
+plot(best_fit)
+par(mfrow = c(1, 1))
+```
+
+### Step 5: Responsible Reporting
+
+#### Summary of Changes
+
+- Converted `self_report_income` and `edu` to ordered factors with substantively
+  meaningful level sequences.
+- Cast `race_ethnicity`, `insurance`, `job_type`, and `state` to unordered factors.
+- Ensured all eight binary comorbidity indicators are stored as integers.
+- Created `comorbidity_count` as a row-wise sum of those eight indicators.
+- Chose between Poisson and negative binomial via variance/mean ratio and AIC
+  comparison; reported exponentiated coefficients (IRRs) with 95% confidence
+  intervals.
+
+#### Limitations and Cautions
+
+1. **Association, not causation.** This is a cross-sectional analysis. The IRRs
+   describe statistical associations conditional on included covariates, not
+   causal effects.
+2. **Unmeasured confounding.** Variables such as access to preventive care,
+   health literacy, and provider quality are absent from the model and may
+   confound observed associations.
+3. **Clustering not modelled.** Patients share `provider_id` and `state`, which
+   likely induces within-cluster correlation. Mixed models or clustered standard
+   errors would better account for this structure.
+4. **Self-reported income.** Broad income brackets introduce measurement
+   imprecision and are subject to recall and social-desirability bias.
+5. **Synthetic data.** The dataset was simulated. Results illustrate the analytic
+   workflow and should not be interpreted as real-world epidemiological evidence.
+6. **Model specification.** Predictors were selected from the prompt rather than
+   from a domain-informed causal model (e.g., a directed acyclic graph). Some
+   covariates may be mediators of the exposure–outcome relationship.

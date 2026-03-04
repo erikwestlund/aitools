@@ -6,7 +6,7 @@ script_path <- sub(file_arg, "", args_all[grep(file_arg, args_all)][1])
 root <- normalizePath(dirname(script_path), winslash = "/", mustWork = TRUE)
 
 source_dir <- file.path(root, "source")
-worked_dir <- file.path(root, "worked")
+worked_dir <- normalizePath(file.path(root, "..", "3-tools-introduction-worked"), winslash = "/", mustWork = FALSE)
 chat_template_path <- file.path(source_dir, "02-tools-chat-template.qmd")
 simple_template_path <- file.path(source_dir, "02-tools-simple-template.qmd")
 detailed_template_path <- file.path(source_dir, "02-tools-detailed-template.qmd")
@@ -53,7 +53,7 @@ render_stub <- function(template_text, harness, harness_label, model, model_labe
 
 generated <- 0L
 
-# clear old generated notebooks in worked/
+# clear old generated notebooks in the worked directory
 existing_qmd <- list.files(worked_dir, pattern = "\\.qmd$", full.names = TRUE)
 if (length(existing_qmd) > 0) invisible(file.remove(existing_qmd))
 
@@ -115,4 +115,4 @@ for (i in seq_len(nrow(harnesses))) {
   }
 }
 
-cat(sprintf("Generated %d stubs in worked/.\n", generated))
+cat(sprintf("Generated %d stubs in demos/3-tools-introduction-worked/.\n", generated))

@@ -1,0 +1,308 @@
+---
+title: "Tools Comparison (Simple): Claude Code + Sonnet 4.6"
+format:
+  html:
+    embed-resources: true
+---
+
+```{r}
+#| include: false
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+## Run Metadata
+
+- Harness: `claude-code`
+- Model: `sonnet-4-6`
+- Prompt type: `simple`
+
+## Setup
+
+```{r}
+#| label: setup
+#| message: false
+
+library(dplyr)
+
+df <- readr::read_csv(here::here("data/synthetic/simulated_maternal_health_data.csv"))
+```
+
+## Prompt
+
+```text
+Study this data set (`data/synthetic/simulated_maternal_health_data.csv`), show me descriptive statistics, pick a modeling strategy, and report the model. Be thorough.
+```
+
+## Response
+
+### Data Overview
+
+```{r}
+#| label: data-overview
+
+dim(df)
+str(df)
+```
+
+The dataset contains 50,000 observations of maternal health records with 20 variables including demographics, insurance status, geographic access, and clinical indicators.
+
+### Clean and Type Variables
+
+```{r}
+#| label: clean-types
+
+income_levels <- c(
+  "Under $25,000",
+  "$25,000–$49,999",
+  "$50,000–$74,999",
+  "$75,000–$99,999",
+  "$100,000 or more"
+)
+
+edu_levels <- c("less_than_hs", "hs", "some_college", "bachelors", "graduate")
+
+df <- df |>
+  mutate(
+    self_report_income = factor(self_report_income, levels = income_levels, ordered = TRUE),
+    edu = factor(edu, levels = edu_levels, ordered = TRUE),
+    race_ethnicity = factor(race_ethnicity),
+    insurance = factor(insurance),
+    job_type = factor(job_type),
+    state = factor(state)
+  )
+```
+
+### Descriptive Statistics
+
+#### Missingness
+
+```{r}
+#| label: missingness
+
+colSums(is.na(df))
+```
+
+#### Numeric Summaries
+
+```{r}
+#| label: numeric-summaries
+
+df |>
+  select(where(is.numeric), -id, -provider_id) |>
+  tidyr::pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  group_by(variable) |>
+  summarise(
+    n = n(),
+    mean = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE),
+    min = min(value, na.rm = TRUE),
+    q25 = quantile(value, 0.25, na.rm = TRUE),
+    median = median(value, na.rm = TRUE),
+    q75 = quantile(value, 0.75, na.rm = TRUE),
+    max = max(value, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+#### Categorical Summaries
+
+```{r}
+#| label: categorical-summaries
+
+cat("--- Outcome: Received Comprehensive Postnatal Care ---\n")
+table(df$received_comprehensive_postnatal_care)
+cat("Rate:", mean(df$received_comprehensive_postnatal_care), "\n\n")
+
+cat("--- Insurance ---\n")
+table(df$insurance)
+
+cat("\n--- Race/Ethnicity ---\n")
+table(df$race_ethnicity)
+
+cat("\n--- Education ---\n")
+table(df$edu)
+
+cat("\n--- Income ---\n")
+table(df$self_report_income)
+
+cat("\n--- Job Type ---\n")
+table(df$job_type)
+```
+
+### Visualizations
+
+```{r}
+#| label: viz-outcome-by-insurance
+#| fig-cap: "Postnatal care rate by insurance type"
+
+df |>
+  group_by(insurance) |>
+  summarise(pct = mean(received_comprehensive_postnatal_care), .groups = "drop") |>
+  ggplot(aes(x = reorder(insurance, pct), y = pct)) +
+  geom_col(fill = "steelblue") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  coord_flip() +
+  labs(x = "Insurance", y = "% Receiving Care",
+       title = "Postnatal Care Rate by Insurance Type")
+```
+
+```{r}
+#| label: viz-outcome-by-race
+#| fig-cap: "Postnatal care rate by race/ethnicity"
+
+df |>
+  group_by(race_ethnicity) |>
+  summarise(pct = mean(received_comprehensive_postnatal_care), .groups = "drop") |>
+  ggplot(aes(x = reorder(race_ethnicity, pct), y = pct)) +
+  geom_col(fill = "darkorange") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  coord_flip() +
+  labs(x = "Race/Ethnicity", y = "% Receiving Care",
+       title = "Postnatal Care Rate by Race/Ethnicity")
+```
+
+```{r}
+#| label: viz-distance-distribution
+#| fig-cap: "Distribution of distance to provider"
+
+ggplot(df, aes(x = distance_to_provider)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white") +
+  labs(x = "Distance to Provider (miles)", y = "Count",
+       title = "Distribution of Distance to Provider")
+```
+
+```{r}
+#| label: viz-outcome-by-distance
+#| fig-cap: "Distance to provider by postnatal care status"
+
+df |>
+  mutate(care = ifelse(received_comprehensive_postnatal_care == 1,
+                        "Received Care", "Did Not Receive")) |>
+  ggplot(aes(x = care, y = distance_to_provider)) +
+  geom_boxplot(fill = "lightblue", outlier.alpha = 0.05) +
+  labs(x = NULL, y = "Distance to Provider (miles)",
+       title = "Distance to Provider by Postnatal Care Status")
+```
+
+```{r}
+#| label: viz-outcome-by-age-edu
+#| fig-cap: "Postnatal care rate by age group and education"
+
+df |>
+  mutate(age_group = cut(age, breaks = c(14, 20, 25, 30, 35, 40, 50),
+                         include.lowest = TRUE)) |>
+  group_by(age_group, edu) |>
+  summarise(pct = mean(received_comprehensive_postnatal_care), .groups = "drop") |>
+  ggplot(aes(x = age_group, y = pct, fill = edu)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "Age Group", y = "% Receiving Care", fill = "Education",
+       title = "Postnatal Care Rate by Age and Education")
+```
+
+### Modeling Strategy
+
+The outcome `received_comprehensive_postnatal_care` is binary (0/1), making logistic
+regression the natural choice. We will fit a multivariable logistic regression to
+estimate the association between demographic, socioeconomic, and clinical factors
+and the probability of receiving comprehensive postnatal care.
+
+#### Fit the Model
+
+```{r}
+#| label: fit-logistic
+
+model <- glm(
+  received_comprehensive_postnatal_care ~ age + edu + race_ethnicity +
+    insurance + self_report_income + job_type + dependents +
+    distance_to_provider + obesity + multiple_gestation + diabetes +
+    heart_disease + placenta_previa + hypertension + gest_hypertension +
+    preeclampsia,
+  data = df,
+  family = binomial(link = "logit")
+)
+
+summary(model)
+```
+
+#### Odds Ratios
+
+```{r}
+#| label: odds-ratios
+
+or_table <- data.frame(
+  OR = exp(coef(model)),
+  CI_lower = exp(confint.default(model)[, 1]),
+  CI_upper = exp(confint.default(model)[, 2]),
+  p_value = coef(summary(model))[, "Pr(>|z|)"]
+)
+
+knitr::kable(or_table, digits = 3,
+             caption = "Odds Ratios with 95% CI")
+```
+
+#### Model Diagnostics
+
+```{r}
+#| label: model-fit
+
+cat("AIC:", AIC(model), "\n")
+cat("Null deviance:", model$null.deviance, "on", model$df.null, "df\n")
+cat("Residual deviance:", model$deviance, "on", model$df.residual, "df\n")
+cat("McFadden pseudo-R²:", 1 - (model$deviance / model$null.deviance), "\n")
+```
+
+```{r}
+#| label: diagnostics-plot
+#| fig-cap: "Residual diagnostics"
+
+par(mfrow = c(2, 2))
+plot(model)
+par(mfrow = c(1, 1))
+```
+
+#### Predictive Performance
+
+```{r}
+#| label: classification
+
+predicted_prob <- model$fitted.values
+predicted_class <- ifelse(predicted_prob > 0.5, 1, 0)
+actual <- model$y
+
+confusion <- table(Predicted = predicted_class,
+                   Actual = actual)
+confusion
+
+accuracy <- sum(diag(confusion)) / sum(confusion)
+cat("Accuracy:", round(accuracy, 3), "\n")
+```
+
+### Summary
+
+This analysis examined 50,000 simulated maternal health records. Descriptive
+statistics revealed no missing data and confirmed clean binary indicators across
+all clinical fields. The outcome — receiving comprehensive postnatal care — was
+modeled using logistic regression with demographic, socioeconomic, geographic, and
+clinical predictors.
+
+**Key findings from the odds ratios:**
+
+- Insurance type, education level, and income are associated with the likelihood
+  of receiving postnatal care.
+- Greater distance to provider is associated with lower odds of receiving care.
+- Clinical comorbidities (obesity, diabetes, hypertension, etc.) may show varying
+  associations with care receipt.
+
+**Limitations:**
+
+- This is an observational, cross-sectional dataset. Associations should not be
+  interpreted as causal effects.
+- Observations are nested within providers and states, but this model does not
+  account for clustering. A multilevel model would be more appropriate.
+- Self-reported income is measured in broad brackets and may be imprecise.
+- The data are synthetic, so findings demonstrate the workflow rather than
+  real-world conclusions.
