@@ -36,6 +36,9 @@ util_docs/
 **/tmp/**
 **/temp/**
 
+# Local demo repos
+/live-demos/
+
 # Rendered slide artifacts
 /slides/_rendered/
 

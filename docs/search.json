@@ -200,42 +200,7 @@
     "href": "slides/03-tools-and-workflow.html#practical-security-habits",
     "title": "AI Tools for Data Science and Statistics",
     "section": "Practical Security Habits",
-    "text": "Practical Security Habits\n\nNever feed PHI/PII to cloud-hosted models: use local/institutionally-hosted models or simulated data for sensitive work\nReview before you run: read generated shell commands and API calls before approving; agents can hallucinate destructive operations\nScope tool access: give agents the minimum permissions they need; avoid “yolo” mode on sensitive projects\nTreat agent output as untrusted: validate results the same way you’d review a colleague’s code"
-  },
-  {
-    "objectID": "slides/03-tools-and-workflow.html#section-3",
-    "href": "slides/03-tools-and-workflow.html#section-3",
-    "title": "AI Tools for Data Science and Statistics",
-    "section": "",
-    "text": "Demo Sequence"
-  },
-  {
-    "objectID": "slides/03-tools-and-workflow.html#demo-1-git-pushpull-workflow-demos5-git-push-pull",
-    "href": "slides/03-tools-and-workflow.html#demo-1-git-pushpull-workflow-demos5-git-push-pull",
-    "title": "AI Tools for Data Science and Statistics",
-    "section": "Demo 1: Git Push/Pull Workflow (demos/5-git-push-pull)",
-    "text": "Demo 1: Git Push/Pull Workflow (demos/5-git-push-pull)\n\nWork locally on synthetic/public data with agents\nCommit and push code; pull into restricted environment\nRestricted side: run on real data, inspect schema and aggregates only\nEmphasize audit trail and boundary discipline throughout"
-  },
-  {
-    "objectID": "slides/03-tools-and-workflow.html#demo-2-tmux-for-agent-workflows-demos6-tmux-workflow",
-    "href": "slides/03-tools-and-workflow.html#demo-2-tmux-for-agent-workflows-demos6-tmux-workflow",
-    "title": "AI Tools for Data Science and Statistics",
-    "section": "Demo 2: tmux for Agent Workflows (demos/6-tmux-workflow)",
-    "text": "Demo 2: tmux for Agent Workflows (demos/6-tmux-workflow)\n\nShow session/window/pane structure\nShow launcher script pattern\nShow attach/kill alias flow (tma, tmk)"
-  },
-  {
-    "objectID": "slides/03-tools-and-workflow.html#demo-3-two-machine-phi-workflow-demos7-phi-two-machine",
-    "href": "slides/03-tools-and-workflow.html#demo-3-two-machine-phi-workflow-demos7-phi-two-machine",
-    "title": "AI Tools for Data Science and Statistics",
-    "section": "Demo 3: Two-Machine PHI Workflow (demos/7-phi-two-machine)",
-    "text": "Demo 3: Two-Machine PHI Workflow (demos/7-phi-two-machine)\n\nSynthetic/simulated development on unrestricted machine\nPush code to restricted machine for real data runs\nAgents never touch PHI directly"
-  },
-  {
-    "objectID": "slides/03-tools-and-workflow.html#demo-4-context-ab-exercise-demos8-context-comparison",
-    "href": "slides/03-tools-and-workflow.html#demo-4-context-ab-exercise-demos8-context-comparison",
-    "title": "AI Tools for Data Science and Statistics",
-    "section": "Demo 4: Context A/B Exercise (demos/8-context-comparison)",
-    "text": "Demo 4: Context A/B Exercise (demos/8-context-comparison)\n\nPalmer Penguins scatter plot: bill length vs body mass by species\nSame notebook and prompt in both directories\nwith-context/ has an AGENTS.md specifying theme, colors, axis labels, captions\nwithout-context/ has no style guidance\n\nRun an agent in each directory and compare the output styling.\n\n\n\n\nGloaguen, Thibaud, Niels Mündler, Mark Müller, Veselin Raychev, and Martin Vechev. 2026. “Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?” https://arxiv.org/abs/2602.11988."
+    "text": "Practical Security Habits\n\nNever feed PHI/PII to cloud-hosted models: use local/institutionally-hosted models or simulated data for sensitive work\nReview before you run: read generated shell commands and API calls before approving; agents can hallucinate destructive operations\nScope tool access: give agents the minimum permissions they need; avoid “yolo” mode on sensitive projects\nTreat agent output as untrusted: validate results the same way you’d review a colleague’s code\n\n\n\n\n\nGloaguen, Thibaud, Niels Mündler, Mark Müller, Veselin Raychev, and Martin Vechev. 2026. “Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?” https://arxiv.org/abs/2602.11988."
   },
   {
     "objectID": "slides/01-foundations.html#section",
@@ -781,7 +746,7 @@
     "href": "demos/4-tools-and-workflow-index.html#notebook-sequence",
     "title": "Session 3 Demos: Tools and Workflow",
     "section": "Notebook Sequence",
-    "text": "Notebook Sequence\n\nVS Code GUI Agent Quickstart\nGit Push/Pull Bridge for PHI-Constrained Work\ntmux Session/Window/Pane Workflow\nTwo-Machine PHI Workflow (Synthetic/Simulated Development)"
+    "text": "Notebook Sequence\n\nGit Push/Pull Bridge for PHI-Constrained Work\ntmux Session/Window/Pane Workflow\nTwo-Machine PHI Workflow (Synthetic/Simulated Development)"
   },
   {
     "objectID": "demos/4-tools-and-workflow-index.html#context-ab-exercise-palmer-penguins",
@@ -789,13 +754,6 @@
     "title": "Session 3 Demos: Tools and Workflow",
     "section": "Context A/B Exercise (Palmer Penguins)",
     "text": "Context A/B Exercise (Palmer Penguins)\nRun an agent in each directory with the same prompt. Compare whether the agent follows the styling rules when an AGENTS.md is present.\n\nWith context file (AGENTS.md)\nWithout context file"
-  },
-  {
-    "objectID": "demos/4-tools-and-workflow-index.html#suggested-use",
-    "href": "demos/4-tools-and-workflow-index.html#suggested-use",
-    "title": "Session 3 Demos: Tools and Workflow",
-    "section": "Suggested Use",
-    "text": "Suggested Use\n\nIn class: run 2-3 notebooks end-to-end\nAt home: complete the remaining notebooks and keep verification notes"
   },
   {
     "objectID": "demos/2-tools-introduction/source/02-tools-simple-template.html",

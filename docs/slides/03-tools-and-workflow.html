@@ -1241,7 +1241,7 @@ Erik Westlund
 </section>
 <section id="context-files-evidence-and-balance" class="slide level2">
 <h2>Context Files: Evidence and Balance</h2>
-<p>An ETH Zurich study found that AI-generated <code>AGENTS.md</code> files reduced agent success rates and increased cost on SWE-bench tasks <span class="citation" data-cites="gloaguen2026agentsmd">(<a href="#/demo-4-context-ab-exercise-demos8-context-comparison" role="doc-biblioref" onclick>Gloaguen et al. 2026</a>)</span>. However, hand-written context files performed better.</p>
+<p>An ETH Zurich study found that AI-generated <code>AGENTS.md</code> files reduced agent success rates and increased cost on SWE-bench tasks <span class="citation" data-cites="gloaguen2026agentsmd">(<a href="#/practical-security-habits" role="doc-biblioref" onclick>Gloaguen et al. 2026</a>)</span>. However, hand-written context files performed better.</p>
 <ul>
 <li>Write your own context files</li>
 <li>Keep context files minimal and high-signal</li>
@@ -1410,7 +1410,7 @@ Erik Westlund
 <li>Mitigation: review agent actions, limit tool permissions, don’t paste untrusted content</li>
 </ul>
 </section>
-<section id="practical-security-habits" class="slide level2">
+<section id="practical-security-habits" class="slide level2 smaller scrollable">
 <h2>Practical Security Habits</h2>
 <ul>
 <li><strong>Never feed PHI/PII to cloud-hosted models</strong>: use local/institutionally-hosted models or simulated data for sensitive work</li>
@@ -1418,47 +1418,6 @@ Erik Westlund
 <li><strong>Scope tool access</strong>: give agents the minimum permissions they need; avoid “yolo” mode on sensitive projects</li>
 <li><strong>Treat agent output as untrusted</strong>: validate results the same way you’d review a colleague’s code</li>
 </ul>
-</section>
-<section id="section-3" class="slide level2" data-background-color="#2c3e50">
-<h2></h2>
-<div style="color: white; font-size: 1.5em; text-align: center;">
-<p>Demo Sequence</p>
-</div>
-</section>
-<section id="demo-1-git-pushpull-workflow-demos5-git-push-pull" class="slide level2">
-<h2>Demo 1: Git Push/Pull Workflow (<code>demos/5-git-push-pull</code>)</h2>
-<ul>
-<li>Work locally on synthetic/public data with agents</li>
-<li>Commit and push code; pull into restricted environment</li>
-<li>Restricted side: run on real data, inspect schema and aggregates only</li>
-<li>Emphasize audit trail and boundary discipline throughout</li>
-</ul>
-</section>
-<section id="demo-2-tmux-for-agent-workflows-demos6-tmux-workflow" class="slide level2">
-<h2>Demo 2: tmux for Agent Workflows (<code>demos/6-tmux-workflow</code>)</h2>
-<ul>
-<li>Show session/window/pane structure</li>
-<li>Show launcher script pattern</li>
-<li>Show attach/kill alias flow (<code>tma</code>, <code>tmk</code>)</li>
-</ul>
-</section>
-<section id="demo-3-two-machine-phi-workflow-demos7-phi-two-machine" class="slide level2">
-<h2>Demo 3: Two-Machine PHI Workflow (<code>demos/7-phi-two-machine</code>)</h2>
-<ul>
-<li>Synthetic/simulated development on unrestricted machine</li>
-<li>Push code to restricted machine for real data runs</li>
-<li>Agents never touch PHI directly</li>
-</ul>
-</section>
-<section id="demo-4-context-ab-exercise-demos8-context-comparison" class="slide level2 smaller scrollable">
-<h2>Demo 4: Context A/B Exercise (<code>demos/8-context-comparison</code>)</h2>
-<ul>
-<li>Palmer Penguins scatter plot: bill length vs body mass by species</li>
-<li>Same notebook and prompt in both directories</li>
-<li><code>with-context/</code> has an <code>AGENTS.md</code> specifying theme, colors, axis labels, captions</li>
-<li><code>without-context/</code> has no style guidance</li>
-</ul>
-<p>Run an agent in each directory and compare the output styling.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
