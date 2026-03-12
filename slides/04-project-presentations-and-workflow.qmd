@@ -1,0 +1,169 @@
+---
+title: "AI Tools for Data Science and Statistics"
+subtitle: "Project Presentations and Workflow Craft"
+author: "Erik Westlund"
+date: "March 12, 2026"
+bibliography: references.bib
+format:
+  revealjs:
+    slide-number: true
+    transition: slide
+    background-transition: fade
+    self-contained: true
+    css: slides.css
+---
+
+```{r}
+#| include: false
+if (requireNamespace("framework", quietly = TRUE)) {
+  framework::scaffold()
+} else {
+  if (file.exists("../scaffold.R")) source("../scaffold.R")
+}
+```
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Session 4: Project Presentations and Workflow Craft
+:::
+
+## Plan for Today
+
+1. Project presentations
+2. Questions and discussion
+3. Workflow tips for efficient, durable, low-friction work
+
+## Project Presentations
+
+Each group or student should briefly cover:
+
+- What you are building or analyzing
+- What worked
+- What didn't
+- Anything you found surprising, important, interesting, or instructive.
+
+## Submitting Presentations
+
+- You can email me your project at ewestlund@jhu.edu
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Workflow Craft
+:::
+
+## The Goal
+
+Good workflow techniues:
+
+- Make it easy to start/restart work
+- Make it easy to inspect what changed
+- Make it easy to recover from mistakes
+- Make it easy to be safe with sensitive data
+- Make it easy to leave a trail for your future self
+
+## `.gitignore`
+
+Two big reasons to care:
+
+1. **Safety:** avoid accidental commits of data, secrets, logs, and generated files
+2. **Hygiene:** reduce noise for both you and your tools
+
+```text
+data/
+*.csv
+.env
+.Renviron
+.claude/
+.cursor/
+```
+
+## `.gitignore`: Practical Takeaway
+
+- Keep sensitive or noisy files out of version control
+- Keep your repo easier to search and review
+- Give agents fewer irrelevant files to crawl
+
+. . .
+
+Helpful, but not security: `.gitignore` improves cleanliness, not access control.
+
+## What Is `tmux`?
+
+`tmux` is a terminal multiplexer: one persistent workspace for multiple terminal tasks.
+
+- **Session:** a named project workspace
+- **Window:** a tab inside that session
+- **Pane:** a split inside a window
+
+## Why `tmux` Helps
+
+- Your work survives a closed laptop or dropped SSH connection
+- You can keep editors, shells, REPLs, and agents open together
+- You do not need to rebuild the same setup every day
+
+This is mostly about persistence and fewer annoyances.
+
+## A Simple `tmux` Pattern
+
+Use a project launcher plus a few small aliases:
+
+- `tm<project>`: start your standard project session
+- `tma <session>`: attach to an existing session
+- `tmk <session>`: kill a session you no longer need
+
+Small ergonomics matter when you repeat them every day.
+
+## Aliases Are Tiny Investments
+
+- Short commands remove repeated friction
+- Good aliases encode your preferred setup
+- They help make local and remote work feel similar
+
+. . .
+
+The point is not clever shell tricks; it is less typing and less setup overhead.
+
+## Give Your Work a Paper Trail
+
+- Keep a `docs/` or `notes/` directory for plans, prompts, and decision logs
+- Save intermediate findings instead of trusting memory
+- Let tools write summaries you can review later
+
+Text files are cheap, searchable, and easy to revisit.
+
+## Checkpoints and Logs
+
+- Commit after each meaningful step
+- Use commits as rollback points when something goes sideways
+- Keep short logs or notes so you can resume without rethinking everything
+
+Good workflow reduces the cost of being interrupted.
+
+## Ask for Explanations
+
+- Ask tools to explain what they are doing
+- Catch misunderstandings before they compound
+- Use one tool to review another when stakes are higher
+
+Understanding the process is part of the workflow.
+
+## Closing Thought
+
+The goal is not to become a terminal purist.
+
+The goal is to build a way of working that is:
+
+- Persistent
+- Inspectable
+- Recoverable
+- Less annoying
+
+## Next Time You Work
+
+Ask yourself:
+
+1. What part of my workflow is most fragile?
+2. What part is most annoying?
+3. What tiny change would make restarting easier tomorrow?
