@@ -41,3 +41,32 @@ glimpse(penguins)
 
 # TODO: interpretation (as a comment or markdown text)
 ```
+
+```{r}
+# Clean the data
+penguins_clean <- penguins %>%
+  tidyr::drop_na(bill_length_mm, body_mass_g, species)
+
+# Build the scatter plot
+ggplot(
+  penguins_clean,
+  aes(x = bill_length_mm, y = body_mass_g, color = species)
+) +
+  geom_point(size = 2.6, alpha = 0.85) +
+  scale_color_brewer(palette = "Dark2") +
+  labs(
+    x = "Bill length (mm)",
+    y = "Body mass (g)",
+    color = "Species",
+    title = "Bill Length vs Body Mass in Palmer Penguins"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(face = "bold"),
+    legend.position = "top",
+    legend.title = element_text(face = "bold")
+  )
+```
+
+The scatter plot shows clear species-specific clustering in the bill length–body mass relationship. Gentoo penguins tend to have larger body mass and longer bills, while Adelie and Chinstrap cluster at lower body masses with shorter bills, indicating distinct morphological profiles by species.
