@@ -57,7 +57,7 @@ We will cover practical workflows for using AI agents in data science: VS Code a
 
 We will spend most of this session sharing our experiences with our projects, but will leave it open to address lingering questions.
 
-- Slides [coming soon]
+- [Slides](slides/04-project-presentations-and-workflow.html)
 - **Due:** [Course project](course_docs/course-project.html): project materials and 2–3 page reflection; in-class share
 
 ## Course Readings

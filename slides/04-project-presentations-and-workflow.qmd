@@ -53,6 +53,13 @@ Each group or student should briefly cover:
 Workflow Craft
 :::
 
+## Don't Use A Forklift in the Gym
+
+- You are a student, your goal is to learn
+- If you want to get strong, don't use a forklift to lift weights and marvel over how much you can lift
+- Everyone has access to these tools for cheap. Longterm, you will have a big comparative advantage if you can do everythign an LLM can do by yourself
+- My hypothesis: the biggest "winners" in the AI era will be those who could live without LLMs, because they'll have the judgment to know when to use them and when not to, and the skills to do things themselves when they need to
+
 ## The Goal
 
 Good workflow techniues:
@@ -121,17 +128,35 @@ Small ergonomics matter when you repeat them every day.
 - Good aliases encode your preferred setup
 - They help make local and remote work feel similar
 
-. . .
+## LLMs Help Automate Things That Used To Be Too "Expensive" to Automate
 
-The point is not clever shell tricks; it is less typing and less setup overhead.
+- LLMs can help you write scripts, aliases, and templates for common tasks
+- When you have the thought "Wouldn't it be nice if..." ask yourself if an LLM can help you build that thing
+- I do this all the time for workflow, down to having scripts that automate project setup.
 
-## Give Your Work a Paper Trail
+## Keep A Paper Trail
 
 - Keep a `docs/` or `notes/` directory for plans, prompts, and decision logs
 - Save intermediate findings instead of trusting memory
 - Let tools write summaries you can review later
 
 Text files are cheap, searchable, and easy to revisit.
+
+## Write Comments/Documentation You Otherwise Wouldn't
+
+- We are all on tight deadlines
+- Documentation is often overlooked or deferred
+- Costs you later when you need to revisit
+- Use tools to help generate documentation
+- Make sure you give yourself time to review these for accuracy and bloat
+
+## Write Tests You Otherwise Wouldn't
+
+- Tests are a safety net for future changes
+- They can be a sanity check for new tools or techniques
+- They can be a way to capture assumptions and expected behavior
+- Make sure you give yourself time to review these tests; LLMs will write useless stuff
+- You can use LLMs to look for stupid tests, too.
 
 ## Checkpoints and Logs
 
@@ -141,6 +166,58 @@ Text files are cheap, searchable, and easy to revisit.
 
 Good workflow reduces the cost of being interrupted.
 
+## Sometimes You Should Just ****ing Do It Yourself
+
+- I sometimes find myself working on a data visualization or similar task
+- I know how to do it myself
+- I spend 3x longer getting mad at an LLM for failing instead of just doing it myself
+
+## Strong Pattern
+
+- Design the project yourself
+- Write out the function signatures and Roxygen blocks yourself
+- Put comments in the functions saying what the function should do
+- Let the LLM implement; this way, you are in charge
+
+## Example
+
+```{r}
+#' Calculate the mean of a numeric vector
+#' @param x A numeric vector
+#' @return The mean of the vector
+#' @export
+calculate_mean <- function(x) {
+  # Write a function to calculate the mean of a numeric vector
+}
+```
+
+## Use LLMs to Organize Files
+
+- I have moved away from going first to Zotero to organize literature reviews, notes, etc.
+- Everything is a project with a directory
+- LLMs can help organize things and summarize
+- Not an excuse for reading, but having text of everything can really help you do things faster that would otherwise take forever.
+
+## Use Alternative / Multiple Models To Look For Mistakes
+
+- This is one of the lowest risk, high reward uses for LLMs
+- Use a second model to review the work you produced
+- Even use a third pass
+- Don't trust these are always real mistakes; but even small catches can save you time and embarrassment later
+
+## Use Models to Rubber Duck
+
+- Rubber duck debugging is a classic technique where you explain your code to an inanimate object to find mistakes
+- Explain your thinking to a model, even if you don't need it to solve a problem
+- One of the biggest benefits of incorporating LLMs is I now spend a lot of time explaining my thoughts and goals, which brings clarity
+
+## Models Aren't Therapists, But They Are Non-judgmental
+
+- We all have gaps in our understanding, and we all make dumb mistakes
+- It can be embarrassing to ask for help or admit confusion to colleagues
+- LLMs can be a safe way to ask "stupid" questions or get feedback
+- All caveats apply: they can be confidently wrong, and they won't know when they are wrong.
+
 ## Ask for Explanations
 
 - Ask tools to explain what they are doing
@@ -149,21 +226,12 @@ Good workflow reduces the cost of being interrupted.
 
 Understanding the process is part of the workflow.
 
-## Closing Thought
+## Closing Thoughts
 
-The goal is not to become a terminal purist.
+- AI Tools can accelerate work and learning, but they are not magic
+- Good workflow practices can help you get the most out of these tools while avoiding common pitfalls
+- Likewise, LLMs can help improve your workflow
 
-The goal is to build a way of working that is:
+. . .
 
-- Persistent
-- Inspectable
-- Recoverable
-- Less annoying
-
-## Next Time You Work
-
-Ask yourself:
-
-1. What part of my workflow is most fragile?
-2. What part is most annoying?
-3. What tiny change would make restarting easier tomorrow?
+- *But*: You  are responsible for your work, and you should understand it
