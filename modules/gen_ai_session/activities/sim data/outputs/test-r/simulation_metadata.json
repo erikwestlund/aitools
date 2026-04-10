@@ -1,0 +1,302 @@
+{
+  "input_path": "datasets/mtcars.csv",
+  "n_rows": 32,
+  "n_columns": 11,
+  "variables": [
+    {
+      "variable": "mpg",
+      "class": "numeric",
+      "kind": "numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 25,
+      "min_value": "10.4",
+      "max_value": "33.9",
+      "mean_value": 20.0906,
+      "sd_value": 6.0269,
+      "median_value": 19.2,
+      "q25_value": 15.425,
+      "q75_value": 22.8,
+      "example_values": "21 | 22.8 | 21.4 | 18.7 | 18.1 | 14.3 | 24.4 | 19.2 | 17.8 | 16.4"
+    },
+    {
+      "variable": "cyl",
+      "class": "integer",
+      "kind": "categorical_numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 3,
+      "min_value": "4",
+      "max_value": "8",
+      "mean_value": 6.1875,
+      "sd_value": 1.7859,
+      "median_value": 6,
+      "q25_value": 4,
+      "q75_value": 8,
+      "example_values": "6 | 4 | 8"
+    },
+    {
+      "variable": "disp",
+      "class": "numeric",
+      "kind": "numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 27,
+      "min_value": "71.1",
+      "max_value": "472",
+      "mean_value": 230.7219,
+      "sd_value": 123.9387,
+      "median_value": 196.3,
+      "q25_value": 120.825,
+      "q75_value": 326,
+      "example_values": "160 | 108 | 258 | 360 | 225 | 146.7 | 140.8 | 167.6 | 275.8 | 472"
+    },
+    {
+      "variable": "hp",
+      "class": "integer",
+      "kind": "integer",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 22,
+      "min_value": "52",
+      "max_value": "335",
+      "mean_value": 146.6875,
+      "sd_value": 68.5629,
+      "median_value": 123,
+      "q25_value": 96.5,
+      "q75_value": 180,
+      "example_values": "110 | 93 | 175 | 105 | 245 | 62 | 95 | 123 | 180 | 205"
+    },
+    {
+      "variable": "drat",
+      "class": "numeric",
+      "kind": "numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 22,
+      "min_value": "2.76",
+      "max_value": "4.93",
+      "mean_value": 3.5966,
+      "sd_value": 0.5347,
+      "median_value": 3.695,
+      "q25_value": 3.08,
+      "q75_value": 3.92,
+      "example_values": "3.9 | 3.85 | 3.08 | 3.15 | 2.76 | 3.21 | 3.69 | 3.92 | 3.07 | 2.93"
+    },
+    {
+      "variable": "wt",
+      "class": "numeric",
+      "kind": "numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 29,
+      "min_value": "1.513",
+      "max_value": "5.424",
+      "mean_value": 3.2172,
+      "sd_value": 0.9785,
+      "median_value": 3.325,
+      "q25_value": 2.5812,
+      "q75_value": 3.61,
+      "example_values": "2.62 | 2.875 | 2.32 | 3.215 | 3.44 | 3.46 | 3.57 | 3.19 | 3.15 | 4.07"
+    },
+    {
+      "variable": "qsec",
+      "class": "numeric",
+      "kind": "numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 30,
+      "min_value": "14.5",
+      "max_value": "22.9",
+      "mean_value": 17.8487,
+      "sd_value": 1.7869,
+      "median_value": 17.71,
+      "q25_value": 16.8925,
+      "q75_value": 18.9,
+      "example_values": "16.46 | 17.02 | 18.61 | 19.44 | 20.22 | 15.84 | 20 | 22.9 | 18.3 | 18.9"
+    },
+    {
+      "variable": "vs",
+      "class": "integer",
+      "kind": "categorical_numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 2,
+      "min_value": "0",
+      "max_value": "1",
+      "mean_value": 0.4375,
+      "sd_value": 0.504,
+      "median_value": 0,
+      "q25_value": 0,
+      "q75_value": 1,
+      "example_values": "0 | 1"
+    },
+    {
+      "variable": "am",
+      "class": "integer",
+      "kind": "categorical_numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 2,
+      "min_value": "0",
+      "max_value": "1",
+      "mean_value": 0.4062,
+      "sd_value": 0.499,
+      "median_value": 0,
+      "q25_value": 0,
+      "q75_value": 1,
+      "example_values": "1 | 0"
+    },
+    {
+      "variable": "gear",
+      "class": "integer",
+      "kind": "categorical_numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 3,
+      "min_value": "3",
+      "max_value": "5",
+      "mean_value": 3.6875,
+      "sd_value": 0.7378,
+      "median_value": 4,
+      "q25_value": 3,
+      "q75_value": 4,
+      "example_values": "4 | 3 | 5"
+    },
+    {
+      "variable": "carb",
+      "class": "integer",
+      "kind": "categorical_numeric",
+      "n": 32,
+      "n_missing": 0,
+      "pct_missing": 0,
+      "n_unique_non_missing": 6,
+      "min_value": "1",
+      "max_value": "8",
+      "mean_value": 2.8125,
+      "sd_value": 1.6152,
+      "median_value": 2,
+      "q25_value": 2,
+      "q75_value": 4,
+      "example_values": "4 | 1 | 2 | 3 | 6 | 8"
+    }
+  ],
+  "value_levels": {
+    "am": [
+      {
+        "variable": "am",
+        "value": "0",
+        "count": 19,
+        "proportion": 0.5938
+      },
+      {
+        "variable": "am",
+        "value": "1",
+        "count": 13,
+        "proportion": 0.4062
+      }
+    ],
+    "carb": [
+      {
+        "variable": "carb",
+        "value": "2",
+        "count": 10,
+        "proportion": 0.3125
+      },
+      {
+        "variable": "carb",
+        "value": "4",
+        "count": 10,
+        "proportion": 0.3125
+      },
+      {
+        "variable": "carb",
+        "value": "1",
+        "count": 7,
+        "proportion": 0.2188
+      },
+      {
+        "variable": "carb",
+        "value": "3",
+        "count": 3,
+        "proportion": 0.0938
+      },
+      {
+        "variable": "carb",
+        "value": "6",
+        "count": 1,
+        "proportion": 0.0312
+      },
+      {
+        "variable": "carb",
+        "value": "8",
+        "count": 1,
+        "proportion": 0.0312
+      }
+    ],
+    "cyl": [
+      {
+        "variable": "cyl",
+        "value": "8",
+        "count": 14,
+        "proportion": 0.4375
+      },
+      {
+        "variable": "cyl",
+        "value": "4",
+        "count": 11,
+        "proportion": 0.3438
+      },
+      {
+        "variable": "cyl",
+        "value": "6",
+        "count": 7,
+        "proportion": 0.2188
+      }
+    ],
+    "gear": [
+      {
+        "variable": "gear",
+        "value": "3",
+        "count": 15,
+        "proportion": 0.4688
+      },
+      {
+        "variable": "gear",
+        "value": "4",
+        "count": 12,
+        "proportion": 0.375
+      },
+      {
+        "variable": "gear",
+        "value": "5",
+        "count": 5,
+        "proportion": 0.1562
+      }
+    ],
+    "vs": [
+      {
+        "variable": "vs",
+        "value": "0",
+        "count": 18,
+        "proportion": 0.5625
+      },
+      {
+        "variable": "vs",
+        "value": "1",
+        "count": 14,
+        "proportion": 0.4375
+      }
+    ]
+  }
+}

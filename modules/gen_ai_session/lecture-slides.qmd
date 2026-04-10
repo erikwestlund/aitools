@@ -1,0 +1,603 @@
+---
+title: "Generative AI for Public Health Statistics & Data Science"
+subtitle: "Using AI tools safely and effectively in health research"
+author: "Erik Westlund"
+date: "04/10/2026"
+format:
+  revealjs:
+    slide-number: true
+    transition: slide
+    background-transition: fade
+    self-contained: true
+    css: ../../slides/slides.css
+---
+
+```{r}
+#| include: false
+framework::scaffold()
+```
+
+## In The News
+
+- This week Anthropic announced a new model called "Mythos"
+- They claim it's not being released to the public because of safety concerns: it has found security vulnerabilities in many major pieces of software
+- Questions:
+
+  - Does this raise the stakes for privacy and security in health research?
+  - How do we separate out marketing hype from real risk from these companies?
+
+## Learning Goals
+
+- Explain key data-safety risks in AI-assisted workflows
+- Use Git and GitHub to move code across environments
+- Distinguish chat workflows from agent workflows
+- Understand simulation as a safe development strategy
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Generative AI in Health Research: Introduction
+:::
+
+## Why We Are Here
+
+- Generative AI tools are increasingly useful for coding and data work
+- Their strengths in software tasks do not automatically transfer to statistics
+- In health research, **privacy** and **reproducibility** change how we can use these tools
+- Today's focus: how to use these tools safely and effectively in health research
+
+## AI History in Two Minutes
+
+- 1950s-1980s: repeated cycles of optimism, brittle systems, and disappointment
+- 1990s-2010s: statistical learning becomes more useful than symbolic AI
+- 2010s-now: deep learning and large language models produce fluent, general-purpose systems
+
+. . .
+
+The current moment is new in capability, but not new in hype.
+
+## Performance on Tasks
+
+- Frontier models have improved quickly on coding, math, and many benchmark tasks
+- Tool use has improved performance further: code execution, retrieval, and agent loops
+- In many cases, output quality is noticeably better than even 1 to 2 years ago
+
+## Benchmark Improvement Over Time {.smaller}
+
+::: {.smaller}
+
+| Benchmark | Earlier Strong Result | Recent Frontier Result | Change |
+|:----------|:----------------------|:-----------------------|:-------|
+| MATH (competition) | 43% | ~96% | +53 pts |
+| HumanEval (code generation) | 80% | ~95% | +15 pts |
+| MMLU (academic knowledge) | 86% | ~93% | +7 pts |
+| SWE-bench Verified | -- | 81% | -- |
+
+:::
+
+## Data Science Benchmarks Matter More Here
+
+- The relevant question for us today is not only whether models can code, but how they can help us in health research and how to use them safely
+- Useful tasks include data cleaning, plotting, table generation, debugging, documentation, and method selection
+
+## Generic Coding vs Data Science Tasks {.smaller}
+
+::: {.smaller}
+
+| Task | Type | Performance |
+|:-----|:-----|:------------|
+| HumanEval code generation | General | 80% |
+| MBPP Python problems | General | 74% |
+| DS-1000 data science code | Data science | 43% |
+
+:::
+
+. . .
+
+Generic coding improvements do not yet mean that AI models are adept at data science tasks; they are heavily engineered toward general-purpose software engineering work.
+
+## Benchmark Caution: Goodhart's Law
+
+When a measure becomes a target, it ceases to be a good measure.
+
+. . .
+
+- High benchmark scores can hide narrow optimization
+- Leaderboard gains may not reflect real world scientific workflows
+- Contamination (training on the benchmarks) and benchmark gaming can distort the picture
+
+## AI Weaknesses for Data Science
+
+- Statistical reasoning can still be shallow or inconsistent
+- Models can recommend the wrong method confidently
+- Generated code can run while implementing the wrong logic; requires auditing
+- Produces polished results which can "wow" but be wrong
+
+## Why Software Engineering Adopts AI Faster
+
+- Software tasks often have a built-in feedback loop
+- Write code, run tests, and see whether it passes
+- This creates a strong surface-level sense of "it works"
+- Even there, security, maintainability, and correctness can still be hidden problems
+
+## Why Science Is Often Different
+
+- Scientific work is theory-driven, not only output-driven
+- In engineering, it is often plausible to say: when the code can do X it works
+- In data science, this is sometimes plausible, such as with data cleaning/prep ("ensure when we do X, the data look like Y")
+- However, in analysis, there is rarely any "test" that can prove correctness
+
+## Why Privacy Changes the Workflow
+
+- Health research often involves restricted or identifiable data
+- The main risk is not just bad output
+- There is a large risk of unauthorized exposure of sensitive information
+- This makes workflow design part of the ethics of using AI
+
+## Two Major Risk Surfaces
+
+1. Sending data to third parties in an unauthorized way
+2. Leaking data into code repositories
+
+## Chat Interfaces and Agents
+
+- Chat tools usually see what you paste or upload; you control this
+- Agents can be given access to data files; this is a powerful but risky capability
+- File access changes the privacy risk.
+
+## Privacy: Subscription vs API Access
+
+- AI subscription products and web interfaces may have different data policies than APIs
+- API use often has stronger provider commitments around training use (namely, not training on user data)
+- Neither subscription nor API access makes it automatically acceptable to send sensitive data
+- Policy, contract, institution, and data type still control what is allowed
+
+## Practical Privacy Rule
+
+- It is typically fine to allow AI tools to see code (so long as collaborators have no issue; think "trade secrets")
+- You may sometimes allow AI tools to see public or synthetic data
+- If sensitive data are present in the project, assume an agent may inspect them unless blocked, and don't trust the AI to avoid seeing them
+
+## Reproducibility and AI Use
+
+- Use AI to help write and revise code that implements the analysis, but not to conduct the analysis itself
+- The analysis should be captured in scripts and scientific notebooks
+- You should always be able to re-run the analysis from start to finish
+
+## Questions
+
+- Before we proceed, are there any questions about the capabilities, risks, or ethical considerations of using AI tools in health research?
+
+## Common Setup in Health Research: Secure Environment
+
+- It is common to have a secure environment for working with sensitive data (e.g., SAFE Desktop)
+- This environment may have restrictions on internet access, software installation, and data movement
+- This creates a need for a workflow that allows you to use AI tools outside the secure environment
+
+## Workflow Challenge
+
+- You want to use AI tools to help write code for your analysis
+- You have sensitive data that cannot be exposed to AI tools
+- You need a way to move code between the AI environment and the secure environment without risking data leakage
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Git and GitHub
+:::
+
+## Workflow: Why Git Matters
+
+If code needs to move across environments, you need infrastructure for moving code safely and efficiently. Git provides a way to do this while also creating an auditable record of changes.
+
+## What Git Is
+
+- A version control system
+- A local record of changes over time
+- A way to inspect what changed, when, and why
+
+## Why Git Matters Here
+
+1. It creates an auditable record of work.
+2. It provides affordances like `.gitignore` to reduce accidental data leakage.
+3. It uses remotes to make code movement across environments straightforward.
+
+## `.gitignore` as a Safety Tool
+
+- Prevents selected files from being tracked
+- Helps keep data, secrets, and temporary files out of repositories
+- Does not fix mistakes retroactively
+
+. . .
+
+This is a guardrail, not a substitute for judgment.
+
+## Remotes as Workflow Infrastructure
+
+- Your local repository lives on your machine
+- A remote repository can live on GitHub or another server
+- This allows you to move code between environments without copying folders around manually
+
+## Secure Environment Pattern
+
+1. Develop code outside the secure environment when appropriate
+2. Keep restricted data out of the AI-visible workspace
+3. Commit the code
+4. Push to a remote
+5. Pull the code into the secure environment
+6. Run it there on the real data
+
+## Core Principle
+
+Code can move across computing environments; sensitive data cannot.
+
+## Git Demo
+
+- I will first demo this myself
+- I am going to use the terminal. Software like RStudio and VS Code have built-in Git interfaces that work similarly.
+- We will then do a hands-on activity where you practice the Git workflow and see how it supports safe code movement across environments
+
+## Git Demo: Create a Project Folder
+
+Create a new folder on your machine for this project, and navigate into it in the terminal.
+
+## Git Demo: Create a File
+
+In your editor, create a new file. For this, I'll use "README.md".
+
+Type something and save the file.
+
+## Git Demo: Initialize the Repository
+
+In the terminal, run:
+
+```bash
+git init
+```
+
+Make sure you are in the project folder when you run this.
+
+## Git Demo: Check Status
+
+```bash
+git status
+```
+
+Git status is your friend. It tells you what Git sees and what it thinks is going on.
+
+## Git Demo: Create a Repository on GitHub
+
+In your browser:
+
+1. Log in to GitHub.
+1. Click `New` next to repositories.
+1. Name the repository `[YOUR-PROJECT-NAME]`.
+1. For practice, make it public.
+1. Do not initialize it with a README, `.gitignore`, or license.
+1. Click `Create repository`.
+
+## Git Demo: Add a Remote
+
+Replace both bracketed values before you run this.
+
+Here, we use a public repository. In real sensitive work, you will often use a private one.
+
+```bash
+git remote add origin https://github.com/[YOUR-GITHUB-USERNAME]/[YOUR-PROJECT-NAME].git
+```
+
+## Git Demo: Add the File to Git
+
+```bash
+git add {filename}
+```
+
+## Git Demo: Commit the File
+
+```bash
+git commit -m "Initial commit"
+```
+
+`-m` means "message". The message should describe the change you made.
+
+## Git Demo: Push to GitHub
+
+```bash
+git push -u origin main
+```
+
+- `-u` means `--set-upstream`
+- It tells Git to remember that your local `main` branch is connected to `origin/main`
+
+After that, you can usually just run `git push` and `git pull`.
+
+## AI Tip: Git Is a Good AI Task
+
+- AI tools are good at Git commands
+- They can help explain what a command does before you run it
+- They are useful when you hit routine Git friction
+
+## Workflow Tip: Aliases
+
+- I use a lot of Git aliases to make common commands faster
+- I type `s` for `git status`, `ac` for `git add . && git commit -m`, `pullmain` for `git pull origin main`, and so on
+
+## Git Demo: Create `.gitignore`
+
+In your editor, create a new file named `.gitignore`.
+
+## Git Demo: Add a Rule to `.gitignore`
+
+```text
+data/
+```
+
+## Git Demo: Create an Ignored File
+
+In your editor or the terminal, create a new folder named `data`.
+
+```bash
+mkdir data
+```
+
+Then create a file like `data/private-data.csv`.
+
+## Git Demo: Confirm It Is Ignored
+
+```bash
+git status
+```
+
+You shouldn't see a mention of the file. To git, it should not exist.
+
+## Git Demo: Clone Into a Different Directory
+
+We can simulate a secure machine by changing directories and cloning the repository there.
+
+```bash
+cd ..
+git clone https://github.com/[YOUR-GITHUB-USERNAME]/[YOUR-PROJECT-NAME].git [YOUR-PROJECT-NAME]-copy
+```
+
+## Git Demo: Make a Change in the Copy
+
+```bash
+cd [YOUR-PROJECT-NAME]-copy
+```
+
+In your editor, create a new file like `notes.md`.
+
+Type something and save the file.
+
+```bash
+git add {filename}
+git commit -m "Add notes file"
+git push
+```
+
+## Git Demo: Return to the Original Directory
+
+```bash
+cd ../[YOUR-PROJECT-NAME]
+```
+
+## Git Demo: Pull the New Change
+
+```bash
+git pull
+```
+
+## Git Demo: What Just Happened?
+
+- You created a local repository
+- You connected it to a remote
+- You used `.gitignore` to keep a file out of version control
+- You cloned the project elsewhere
+- You pushed a change from one copy and pulled it into another
+
+## Private Repo Authentication
+
+- Private repositories require authentication to clone, push, and pull
+- Common options are browser sign-in, personal access tokens, and SSH keys
+- GitHub Desktop, VS Code, and the GitHub CLI can often simplify this
+
+## Exercise
+
+- Practice the Git workflow with your groups. You can follow the provided PDF handout.
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Harnesses: Chatbots and Agents
+:::
+
+## Harnesses
+
+- A harness is the interface around the model
+- The model is different from the "harness"
+- The model takes in context and returns outputs; the harness interfaces with the model and your files
+
+## Chat
+
+- A standard chat window where you ask questions and get responses back
+- You usually have to paste in the context yourself
+- Best for brainstorming, explanations, and small pieces of code
+- Usually the least connected to your actual project files
+
+## Agent CLI
+
+- An agent that runs in the terminal, such as Claude Code, OpenAI Codex, or Gemini CLI
+- Can read files, edit files, search the repository, and run commands
+
+## Agent GUI
+
+- An agent built into an editor or web interface
+- Best for people who want agent features in a more visual environment
+- In my experience, it can be easier to see what files are actually edited
+
+## Model/Harness Experiment
+
+- I ran an experiment where I gave the same task to multiple model and harness combinations
+- The variation in results gives insight into how much the harness and model each contribute to the final output
+
+## Agent Demo
+
+- I will demo an agent CLI and an agent GUI
+- We will see how they can read and edit files, and how this creates different privacy risks
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Preserving Privacy with Simulated Data
+:::
+
+## Simulated Data as a Privacy Strategy
+
+- One practical strategy is to move structure, not records
+- Extract useful information from the private dataset
+- Use that information to create a similar practice dataset elsewhere
+- Use AI tools on that practice dataset to develop code and workflow
+
+## Step 1: Extract Structure From Private Data
+
+- Variable names
+- Data types
+- Response categories
+- Plausible ranges
+- Missingness patterns
+- Basic frequencies or counts
+
+## Step 2: Generate Simulated Data
+
+- Create data files with similar variable names and response values
+- Preserve the structure needed for cleaning, plotting, and table-making workflows
+- Use AI tools on those simulated files outside the secure environment when appropriate
+
+## Simulated vs. Synthetic Data
+
+- Simulated data here means data created to mimic useful structure for workflow development
+- Synthetic data often suggests a more formal attempt to preserve the statistical structure of the original data
+- For this session, the practical goal is safe code development, not statistical replacement of the original dataset
+- R libraries like `synthpop` can be used for more formal synthetic data generation, but they are not necessary for the kind of simulated data we are discussing here
+
+## Limitation
+
+- This is useful for data cleaning, plots, tables, and workflow setup
+- It often does not preserve the joint distribution across variables unless you design that explicitly, so it can be less useful for modeling work
+- It should not be treated as a substitute for final modeling in the secure environment
+
+## 🚨 Privacy Warning 🚨
+
+- Data can still be identifiable even if you do not move the full dataset
+- Free-text fields are especially risky
+- Rare values and unusual combinations can still reveal people
+- Be careful not to extract PHI or other identifying information
+
+## Demo: Simulated Data Workflow
+
+- I have put several datasets into the `data` folder
+- I have also added a Stata `.do` file and an R script that extract crucial information from a dataset that can be useful for simulation, such as variable names, types, and value frequencies
+- We will use these materials to practice creating simulated datasets
+
+## Demo
+
+- I will demo this for you, and then we will practice on one of the datasets in the `data` folder
+- If you finish early, use the simulated dataset to generate summary statistics, visualizations, or additional exploratory work
+
+## Steps
+
+1. Run the metadata extraction code on a dataset, typically on a secure machine
+2. Use the extracted metadata to create a simulated dataset with an LLM
+
+In this case, I will give fewer explicit instructions. In my experience the LLMs are rather good at this task, so I want to give you more freedom to experiment with prompts and see what they can do.
+
+## {background-color="#2c3e50"}
+
+::: {style="color: white; font-size: 1.5em; text-align: center;"}
+Workflow Tips for Using LLMs in Health Research
+:::
+
+## LLMs Help Automate Things That Used To Be Too "Expensive" to Automate
+
+- LLMs can help you write scripts, aliases, and templates for common tasks
+- When you have the thought "Wouldn't it be nice if..." ask yourself if an LLM can help you build that thing
+- I do this all the time for workflow, down to having scripts that automate project setup.
+
+## Keep A Paper Trail
+
+- Keep a `docs/` or `notes/` directory for plans, prompts, and decision logs
+- Save intermediate findings instead of trusting memory
+- Let tools write summaries you can review later
+
+Text files are cheap, searchable, and easy to revisit.
+
+## Write Comments/Documentation You Otherwise Wouldn't
+
+- We are all on tight deadlines
+- Documentation is often overlooked or deferred
+- Costs you later when you need to revisit
+- Use tools to help generate documentation
+- Make sure you give yourself time to review these for accuracy and bloat
+
+## Checkpoints and Logs
+
+- Commit after each meaningful step
+- Use commits as rollback points when something goes sideways
+- Keep short logs or notes so you can resume without rethinking everything
+
+Good workflow reduces the cost of being interrupted.
+
+## Sometimes You Should Just Do It Yourself
+
+- I sometimes find myself working on a data visualization or similar task
+- I know how to do it myself
+- I spend 3x longer getting mad at an LLM for failing instead of just doing it myself
+
+## Use LLMs to Organize Files
+
+- I have moved away from going first to Zotero to organize literature reviews, notes, etc.
+- Everything is a project with a directory
+- LLMs can help organize things and summarize
+- Not an excuse for reading, but having text of everything can really help you do things faster that would otherwise take forever.
+
+## Use Alternative / Multiple Models To Look For Mistakes
+
+- This is one of the lowest risk, high reward uses for LLMs
+- Use a second model to review the work you produced
+- Even use a third pass
+- Don't trust these are always real mistakes; but even small catches can save you time and embarrassment later
+
+## Use Models to Rubber Duck
+
+- Rubber duck debugging is a classic technique where you explain your code to an inanimate object to find mistakes
+- Explain your thinking to a model, even if you don't need it to solve a problem
+- One of the biggest benefits of incorporating LLMs is I now spend a lot of time explaining my thoughts and goals, which brings clarity
+
+## Models Aren't Therapists, But They Are Non-judgmental
+
+- We all have gaps in our understanding, and we all make dumb mistakes
+- It can be embarrassing to ask for help or admit confusion to colleagues
+- LLMs can be a safe way to ask "stupid" questions or get feedback
+- All caveats apply: they can be confidently wrong, and they won't know when they are wrong.
+
+## Ask for Explanations
+
+- Ask tools to explain what they are doing
+- Catch misunderstandings before they compound
+- Use one tool to review another when stakes are higher
+
+Understanding the process is part of the workflow.
+
+## Closing Thoughts
+
+- AI tools can accelerate work and learning, but they are not magic
+- Good workflow practices can help you get the most out of these tools while avoiding common pitfalls
+- Likewise, LLMs can help improve your workflow
+
+. . .
+
+- *But*: You are responsible for your work, and you should understand it
+
+## Final Questions?
+
+- Are there any final questions about the tools, workflows, or ethical considerations we discussed today?

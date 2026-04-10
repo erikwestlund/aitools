@@ -1,0 +1,178 @@
+---
+title: "Simulated Data Activity"
+format:
+  pdf:
+    toc: false
+---
+
+```{r}
+#| include: false
+framework::scaffold()
+```
+
+# Simulated Data Activity
+
+## Goal
+
+Practice a workflow in which you extract useful structure from a private dataset, then use that structure to create a simulated dataset for AI-assisted code development.
+
+## Why This Matters
+
+In health research, you may want AI help writing code without allowing the tool to see the original restricted data.
+
+One practical strategy is:
+
+1. Extract structure from the private data.
+2. Move only that structure to a different environment.
+3. Create a simulated dataset there.
+4. Use AI tools on that simulated dataset.
+5. Bring the resulting code back to the secure environment when needed.
+
+## Important Warning
+
+This is not automatically safe.
+
+You still need to avoid moving:
+
+1. PHI
+2. direct identifiers
+3. free-text values that may identify people
+4. rare or unusual values that may create disclosure risk
+
+## Simulated vs Synthetic
+
+For this activity, simulated data means a dataset you create to mimic useful structure for workflow development.
+
+Synthetic data often implies a stronger goal of reproducing the statistical properties of the original data.
+
+For this class, the main goal is safe code development, not replacing the original dataset.
+
+## What To Extract From The Private Data
+
+Extract only what you need for development.
+
+Useful items include:
+
+1. variable names
+2. variable labels
+3. data types
+4. allowed values or response categories
+5. plausible ranges
+6. basic frequencies or counts
+7. missingness patterns
+8. simple notes on coding conventions
+
+## What This Approach Is Good For
+
+1. setting up cleaning code
+2. building recodes
+3. generating tables
+4. generating plots
+5. testing workflow structure
+6. documenting analysis steps
+
+## What This Approach Is Not Good For
+
+1. final inference
+2. model tuning
+3. checking substantive associations unless you explicitly simulate them
+4. assuming the joint distribution is preserved
+
+## Suggested Workflow
+
+### Part 1: Work In The Secure Environment
+
+1. Inspect the dataset.
+2. Extract structural information only.
+3. Save that structural summary to a safe output file.
+4. Check that the output does not contain PHI or disclosive values.
+
+### Extraction Scripts In This Folder
+
+This folder includes two helper scripts for producing machine-readable metadata:
+
+1. `extract_sim_metadata.R`
+2. `extract_sim_metadata.do`
+
+Use the R script if you are working in R.
+
+Use the Stata do-file if you are working in Stata.
+
+These scripts are designed to extract:
+
+1. variable names
+2. data types or storage types
+3. inferred variable kinds
+4. response categories or value levels when appropriate
+5. missingness information
+6. numeric summaries and ranges
+7. example values
+
+The output is intended to be machine-readable so you can hand it to an AI tool when asking for help generating a simulated dataset.
+
+### What The Scripts Output
+
+The R script writes:
+
+1. `variable_metadata.csv`
+2. `value_levels.csv`
+3. `simulation_metadata.json`
+
+The Stata script writes:
+
+1. `variable_metadata.csv`
+2. `dataset_summary.csv`
+3. one CSV per categorical variable in `value_levels/`
+
+Before sharing these outputs outside a secure environment, inspect them carefully for PHI, free text, and rare or identifying values.
+
+### Part 2: Work Outside The Secure Environment
+
+1. Start a clean project with no access to the real data.
+2. Bring in only the structural summary.
+3. Ask an AI tool to help generate code that creates a simulated dataset.
+4. Use the simulated data for cleaning, table, and plot development.
+
+## What To Give The AI Tool
+
+Provide:
+
+1. variable names
+2. variable types
+3. categories or ranges
+4. approximate missingness
+5. any simple relationships you want to preserve intentionally
+6. the desired output format and file name
+
+Do not provide:
+
+1. raw protected records
+2. PHI
+3. free-text notes copied from the real data
+4. anything your project rules do not allow to leave the secure environment
+
+## How To Do This Exercise
+
+1. Run one of the extraction scripts in this folder on a provided dataset.
+2. Review the output carefully before sharing it with any AI tool.
+3. Give the LLM the extracted metadata rather than the original dataset.
+4. Ask the LLM to help you write code that simulates a similar dataset.
+
+For this exercise, the goal is to use the extracted description of the data to generate the simulated dataset yourself.
+
+If you have extra time, use the simulated data to go further: ask the LLM to help profile the dataset with summary statistics, visualizations, and other exploratory work.
+
+Experiment as much as you can, but keep the distinction clear between workflow development on simulated data and final analysis on the real data.
+
+## Example Agent Prompt
+
+```text
+In this project, create an R script that generates a simulated dataset for
+workflow development.
+
+Use only the metadata extracted by the script in this project. 
+
+{You fill in this part}
+
+Explain what assumptions you made.
+```

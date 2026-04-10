@@ -1,0 +1,40 @@
+---
+title: "Reflection Prompt"
+subtitle: "Privacy, Data Boundaries, and Technical Workflow"
+format: docx
+---
+
+```{r}
+#| include: false
+framework::scaffold()
+```
+
+## Instructions
+
+Write two paragraphs of at least four sentences each, and one closing remark, reflecting on what you learned in this session about privacy, technical workflow, and responsible use of generative AI in public health or research settings.
+
+## Paragraph 1: Privacy or Workflow Risk
+
+Describe a situation in which using generative AI could create privacy, confidentiality, reproducibility, or workflow risks. Focus on how the risk changes depending on the tool and workflow you use, and explain what could go wrong.
+
+You might compare:
+
+- a subscription chat interface versus an API-based workflow
+- a simple chatbot versus an agent with access to files or tools
+- a tool that only sees pasted text versus a tool that can inspect a project directory
+- local development on synthetic data versus external tool use with real or sensitive data
+
+## Paragraph 2: Responsibility and Safeguards
+
+Describe at least one technical or workflow safeguard that could help prevent data leakage, unnecessary exposure, or loss of reproducibility.
+
+Be specific about:
+
+- how the safeguard would work in practice
+- who would be responsible for implementing it
+- who would be responsible for following it
+- what would happen if it failed
+
+## Closing Remark: Looking Forward
+
+How, if at all, do you think this session will change how you use generative AI, especially with respect to privacy, data handling, or workflow?

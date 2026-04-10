@@ -1,0 +1,221 @@
+---
+title: "Git Activity"
+format:
+  pdf:
+    toc: false
+---
+
+```{r}
+#| include: false
+framework::scaffold()
+```
+
+# Git and GitHub Activity
+
+## Goal
+
+Complete one full local-to-remote Git workflow by hand.
+
+## What You Will Do
+
+1. Create a new project folder.
+2. Create a file.
+3. Initialize a Git repository.
+4. Add a remote GitHub repository.
+5. Stage and commit a file.
+6. Push to GitHub.
+7. Create and test a `.gitignore`.
+8. Clone the repository into a second directory.
+9. Make a change there.
+10. Push the change and pull it back into the original directory.
+
+## Before You Start
+
+You will need:
+
+1. Git installed on your machine.
+2. A GitHub account.
+3. A new empty repository on GitHub.
+
+For practice in class, we will use a public repository.
+
+In real research workflows, you will often use private repositories instead, especially when the project itself is sensitive.
+
+Use your own repository URL anywhere you see `[YOUR-GITHUB-USERNAME]` below.
+
+Use your own folder name anywhere you see `[YOUR-PROJECT-NAME]` below.
+
+Do not copy and paste these commands exactly as written. Typing things out yourself will help you understand what you are doing.
+
+I use terminal commands here, but you can use your editor to create directories and files if you prefer.
+
+## Step 1: Create a Project Folder
+
+Terminal:
+
+```bash
+mkdir [YOUR-PROJECT-NAME]
+cd [YOUR-PROJECT-NAME]
+```
+
+You can also just use your editor.
+
+## Step 2: Create a File
+
+In your editor, create a new file, such as `README.md`.
+
+Type something and save it.
+
+## Step 3: Initialize Git
+
+```bash
+git init
+git status
+```
+
+Check that Git now sees `README.md` as an untracked file.
+
+## Step 4: Create a Repository on GitHub
+
+In your browser:
+
+1. Log in to GitHub.
+2. Go to `Repositories` and click the green `New` button.
+4. Enter `[YOUR-PROJECT-NAME]` as the repository name.
+5. For this class exercise, make it `Public`.
+6. Do not initialize the repository with a README, `.gitignore`, or license.
+7. Click `Create repository`.
+
+## Step 5: Connect Your Local Repository to GitHub
+
+After GitHub creates the empty repository, run:
+
+```bash
+git remote add origin https://github.com/[YOUR-GITHUB-USERNAME]/[YOUR-PROJECT-
+NAME].git
+```
+
+You can verify the remote with:
+
+```bash
+git remote -v
+```
+
+## Step 6: Stage and Commit
+
+```bash
+git add README.md
+git commit -m "Initial commit"
+```
+
+## Step 7: Push to GitHub
+
+```bash
+git push -u origin main
+```
+
+Here, `-u` means `--set-upstream`.
+
+That tells Git to remember that your local `main` branch is connected to `origin/main`.
+
+After that, you can usually just run:
+
+```bash
+git push
+git pull
+```
+
+## Step 8: Create `.gitignore`
+
+In your editor, create a new file named `.gitignore`.
+
+Add this line to `.gitignore`:
+
+```text
+data/
+```
+
+## Step 9: Test `.gitignore`
+
+In the terminal:
+
+```bash
+mkdir data
+git status
+```
+
+In your editor or file browser, create a file named something like `private-data.csv` inside the `data` folder.
+
+Check that `data/private-data.csv` does not appear in `git status`.
+
+Now add and commit `.gitignore` itself:
+
+```bash
+git add .gitignore
+git commit -m "Add gitignore"
+git push
+```
+
+## Step 10: Clone Into a Second Directory
+
+Move back out of the folder and clone the repository somewhere else:
+
+```bash
+cd ..
+git clone https://github.com/[YOUR-GITHUB-USERNAME]/[YOUR-PROJECT-NAME].git [YOUR-PROJECT-NAME]-copy
+cd [YOUR-PROJECT-NAME]-copy
+```
+
+## Step 11: Make a Change in the Copy
+
+In your editor, create a new file named `notes.md`.
+
+Type one line of text and save it.
+
+```bash
+git add notes.md
+git commit -m "Add notes file"
+git push
+```
+
+## Step 12: Pull the Change Into the Original Directory
+
+```bash
+cd ../[YOUR-PROJECT-NAME]
+git pull
+```
+
+Confirm that the new file is now present.
+
+## AI Tip
+
+AI tools are really good at Git.
+
+Good uses include:
+
+1. asking what a command does
+2. asking how to fix a common Git error
+3. asking what sequence of commands you need next
+
+
+## Status
+
+You should end with:
+
+1. a local repository
+2. at least two commits
+3. a remote GitHub repository
+4. one ignored file or directory
+5. a successful push and pull workflow across two local copies
+
+## Authentication for Private Repositories
+
+For a private repository, GitHub will require authentication when you push, pull, or clone.
+
+Common options are:
+
+1. Sign in through your browser when Git prompts you.
+2. Use a personal access token instead of a password.
+3. Set up SSH keys and use an SSH remote URL.
+
+If GitHub Desktop, VS Code, or the GitHub CLI is installed, they can often handle authentication for you.
