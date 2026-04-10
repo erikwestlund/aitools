@@ -273,3 +273,55 @@ Take `data/synthetic/simulated_maternal_health_data.csv`. Normalize it, summariz
 
 **We will evaluate:**
 Code quality, statistical judgment, and prompt adherence.
+
+## Harness Experiment
+
+- We ran an experiment comparing different harnesses on the same plotting and analysis tasks
+- We will look at the results in class once the outputs are uploaded
+- The point is not only which model "won"
+- The point is how harness, permissions, context, and workflow changed the result
+
+## After the Break: Simulated Data as a Privacy Strategy
+
+- One practical pattern is to move structure, not records
+- Extract useful information from the private dataset
+- Use that information to create a similar non-sensitive dataset elsewhere
+- Use AI tools on that simulated dataset to develop code and workflow
+
+## Step 1: Extract Structure From Private Data
+
+Extract only the information you need for development:
+
+- Variable names
+- Data types
+- Response categories
+- Plausible ranges
+- Missingness patterns
+- Basic frequencies or counts
+
+## Step 2: Generate Simulated Data
+
+- Use the extracted structure to create a practice dataset
+- Match variable names and general response values
+- Preserve workflow-relevant features such as missingness and coding conventions
+- Use the simulated data to write cleaning, plotting, and table code
+
+## Simulated Data Is Not Synthetic Data
+
+- In this class, simulated data means a dataset you create to mimic useful structure for workflow development
+- Synthetic data often implies a more formal effort to reproduce the statistical properties of the original data
+- Either way, the goal here is safe workflow development, not recreating the real dataset
+
+## Important Risk: Data Can Still Be Identifiable
+
+- Do not extract direct identifiers or PHI
+- Free-text fields can be identifying even when names are removed
+- Rare values and unusual combinations can also create disclosure risk
+- This workflow still requires care and judgment
+
+## Important Limitation
+
+- Simulated data are useful for cleaning code, plots, tables, and workflow development
+- They often do not preserve the full joint distribution of the original data
+- Unless you build that structure explicitly, they should not be trusted for final modeling decisions
+- Final analytic work still belongs in the secure environment
