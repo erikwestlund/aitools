@@ -47,7 +47,50 @@ Use your own folder name anywhere you see `[YOUR-PROJECT-NAME]` below.
 
 Do not copy and paste these commands exactly as written. Typing things out yourself will help you understand what you are doing.
 
-I use terminal commands here, but you can use your editor to create directories and files if you prefer.
+I use terminal commands here, but you can use your editor or the `GitHub Desktop` application to create directories and files if you prefer.
+
+## Authentication
+
+If your repository is private, GitHub will require authentication when you push, pull, or clone.
+
+If it is public, you will also need to authenticate to be able to push to it. (Otherwise anyone from the general public woudl be allowed to overwrite your work!)
+
+When Git prompts you for credentials over HTTPS:
+
+1. Your username is your GitHub username.
+2. Your password is a personal access token, not your GitHub account password.
+
+For this class, the most straightforward option is usually a classic personal access token.
+
+To create one on GitHub:
+
+1. Log in to GitHub in your browser.
+2. Click your profile picture in the top right.
+3. Go to `Settings`.
+4. In the left sidebar, click `Developer settings`.
+5. Click `Personal access tokens`.
+6. Click `Tokens (classic)`.
+7. Click `Generate new token`, then `Generate new token (classic)`.
+
+Key details:
+
+1. Give the token a clear name, such as `git-class-activity`.
+2. Set an expiration date. A short expiration is safer, because if you leak your token, it will expire and be useless. Long expirations are convenient, but more risky.
+3. Under scopes, check `repo` if you need to work with private repositories.
+4. If you are only working with public repositories, checking `public_repo` is enough.
+5. You do not need to check others boxes for this activity; these are for large projects with bigger needs than standard small-team or solo scientific work.
+
+After GitHub shows you the token:
+
+1. Copy it immediately. GitHub will not show it to you again.
+2. Store it somewhere safe, such as a password manager like 1password or BitWarden.
+3. When Git asks for your password, paste the token and hit einter. (In a terminal, it will often show a little key icon or something similar. It will not show anything when you type; that is normal. Just paste and hit enter.)
+
+Other options also exist, including signing in through your browser or using SSH keys, but a classic personal access token is usually the easiest way to understand what Git is asking for.
+
+If you work with Git and GitHub a lot, is is worth researching `.gitconfig` on your machine, which can help you avoid this setup.
+
+Treat your personal access tokens like passwords, because they are. **Never put them in remote repositories, public or private.**
 
 ## Step 1: Create a Project Folder
 
@@ -74,6 +117,37 @@ git status
 ```
 
 Check that Git now sees `README.md` as an untracked file.
+
+## Branches: What They Mean
+
+A branch is a named line of development in a Git repository.
+
+You can think of a branch as a pointer to a sequence of commits. It lets you keep track of one version of the project while other branches can hold other versions.
+
+For this activity, you will mostly work on the default branch, which is usually `main`.
+
+You may also see the name `master` in older tutorials or older repositories.
+
+`main` and `master` mean the same basic thing here: the primary branch of the repository.
+
+The difference is mostly naming:
+
+1. `master` was the older default branch name in many Git and GitHub workflows.
+2. `main` is the newer standard default branch name on GitHub.
+
+That is why some tutorials say:
+
+```bash
+git push -u origin master
+```
+
+but in this activity we will use:
+
+```bash
+git push -u origin main
+```
+
+If your repository uses `master` instead of `main`, use that branch name consistently in your commands.
 
 ## Step 4: Create a Repository on GitHub
 
@@ -207,15 +281,3 @@ You should end with:
 3. a remote GitHub repository
 4. one ignored file or directory
 5. a successful push and pull workflow across two local copies
-
-## Authentication for Private Repositories
-
-For a private repository, GitHub will require authentication when you push, pull, or clone.
-
-Common options are:
-
-1. Sign in through your browser when Git prompts you.
-2. Use a personal access token instead of a password.
-3. Set up SSH keys and use an SSH remote URL.
-
-If GitHub Desktop, VS Code, or the GitHub CLI is installed, they can often handle authentication for you.
